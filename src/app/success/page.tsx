@@ -1,30 +1,99 @@
 "use client";
 
+import { useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ShoppingBasket } from 'lucide-react';
+import { useCart } from '@/context/cart-context';
+import { cn } from '@/lib/utils';
 
 export default function SuccessPage() {
+  const { clearCart, cartItems, subtotal } = useCart();
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      // Redirect if cart is empty, maybe they refreshed the page
+      // router.push('/'); 
+      // This might be too aggressive, let's keep it simple for now
+    }
+  }, [cartItems, router]);
+  
+  // Clear cart on mount and when leaving
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      clearCart();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    // Clear cart when component unmounts
+    return () => {
+      clearCart();
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [clearCart]);
+
   return (
-    <div className="flex flex-col items-center justify-center text-center min-h-screen bg-background p-8">
-      <div className="animate-in fade-in zoom-in-50 duration-1000">
-        <CheckCircle2 className="h-24 w-24 text-green-500 mx-auto" />
+    <div className="flex flex-col items-center justify-center text-center min-h-screen bg-gray-100 p-4 overflow-hidden">
+      <div className="relative w-full max-w-sm bg-white rounded-lg shadow-xl p-6 pt-12">
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2">
+           <div className="animate-in fade-in zoom-in-50 duration-1000">
+            <CheckCircle2 className="h-16 w-16 text-green-500 bg-white rounded-full p-1" />
+          </div>
+        </div>
+        
+        <div className="animate-receipt-scroll-up origin-bottom">
+          <h1 className="text-2xl font-headline font-bold mt-2 mb-2">Payment Successful!</h1>
+          <p className="text-muted-foreground mb-4">
+            Thank you for your order!
+          </p>
+          
+          <div className="my-6 border-t-2 border-b-2 border-dashed py-4 space-y-2 text-left text-sm">
+            {cartItems.map(item => (
+              <div key={item.id} className="flex justify-between">
+                <span>{item.quantity}x {item.name}</span>
+                <span>${(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-between font-bold text-lg mb-6">
+            <span>Total Paid</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
+
+          <div className="text-center text-xs text-muted-foreground">
+            <p>Your order number is #{Math.floor(Math.random() * 90000) + 10000}.</p>
+            <p>A receipt has been sent to your email.</p>
+          </div>
+        </div>
       </div>
-
-      <h1 className="text-3xl font-headline font-bold mt-6 mb-2 animate-in fade-in-0 slide-in-from-bottom-5 delay-300 duration-700">Payment Successful!</h1>
-      <p className="text-muted-foreground mb-8 animate-in fade-in-0 slide-in-from-bottom-5 delay-500 duration-700">
-        Your order has been placed.
-        <br />
-        Thank you for using SwiftBite!
-      </p>
-
-      <div className="animate-in fade-in-0 slide-in-from-bottom-5 delay-700 duration-700">
+      
+      <div className="mt-8 animate-in fade-in-0 slide-in-from-bottom-5 delay-1000 duration-700">
         <Link href="/" passHref>
           <Button className="h-12 px-8 text-lg bg-accent text-accent-foreground hover:bg-accent/90">
-            Go to Home
+            New Order
           </Button>
         </Link>
       </div>
+
+       <style jsx>{`
+        @keyframes receipt-scroll-up {
+          from {
+            transform: translateY(100%) scaleY(0);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0) scaleY(1);
+            opacity: 1;
+          }
+        }
+        .animate-receipt-scroll-up {
+          animation: receipt-scroll-up 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+      `}</style>
     </div>
   );
 }

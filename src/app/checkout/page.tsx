@@ -16,9 +16,11 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const handlePayment = () => {
-    // In a real app, you'd process payment here
-    clearCart();
-    router.push('/success');
+    if (paymentMethod === 'card') {
+      router.push('/card-payment');
+    } else {
+      router.push('/cash-payment');
+    }
   };
   
   const total = subtotal; // Assuming no tax/fees for this example
@@ -56,17 +58,19 @@ export default function CheckoutPage() {
                       <div className="flex-grow">
                         <p className="font-semibold">{item.name}</p>
                         <p className="text-sm text-primary font-bold">${item.price.toFixed(2)}</p>
-                        <QuantitySelector
+                      </div>
+                      <div className="flex items-center gap-4">
+                         <QuantitySelector
                           quantity={item.quantity}
                           onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
                           onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
                         />
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <div className="flex flex-col items-end gap-2 w-16 text-right">
+                          <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </li>
                   ))}

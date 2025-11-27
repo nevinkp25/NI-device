@@ -13,8 +13,8 @@ export function FoodCard({ item }: { item: MenuItem }) {
 
   return (
     <Card className="flex flex-col overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-      <CardContent className="p-3 flex-grow">
-        <CardTitle className="text-base font-headline font-semibold leading-tight">{item.name}</CardTitle>
+      <CardContent className="p-3 flex-grow flex items-center justify-center">
+        <CardTitle className="text-base font-headline font-semibold leading-tight text-center">{item.name}</CardTitle>
       </CardContent>
       <CardFooter className="p-3 pt-0 flex justify-between items-center">
         <p className="font-bold text-primary">${item.price.toFixed(2)}</p>
