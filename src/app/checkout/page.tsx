@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { QuantitySelector } from '@/components/quantity-selector';
 import { CreditCard, Landmark, ArrowLeft, Trash2, ShoppingCart } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
@@ -55,7 +53,6 @@ export default function CheckoutPage() {
                 <ul className="divide-y">
                   {cartItems.map(item => (
                     <li key={item.id} className="flex items-center p-3 gap-3">
-                      <Image src={item.image.imageUrl} alt={item.name} width={64} height={64} className="rounded-md object-cover" data-ai-hint={item.image.imageHint} />
                       <div className="flex-grow">
                         <p className="font-semibold">{item.name}</p>
                         <p className="text-sm text-primary font-bold">${item.price.toFixed(2)}</p>

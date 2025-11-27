@@ -1,8 +1,7 @@
 "use client";
 
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardTitle } from '@/components/ui/card';
 import { useCart } from '@/context/cart-context';
 import type { MenuItem } from '@/lib/data';
 import { Plus } from 'lucide-react';
@@ -14,18 +13,6 @@ export function FoodCard({ item }: { item: MenuItem }) {
 
   return (
     <Card className="flex flex-col overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-      <CardHeader className="p-0">
-        <div className="aspect-square relative w-full">
-          <Image
-            src={item.image.imageUrl}
-            alt={item.name}
-            fill
-            sizes="(max-width: 768px) 50vw, 33vw"
-            className="object-cover"
-            data-ai-hint={item.image.imageHint}
-          />
-        </div>
-      </CardHeader>
       <CardContent className="p-3 flex-grow">
         <CardTitle className="text-base font-headline font-semibold leading-tight">{item.name}</CardTitle>
       </CardContent>
