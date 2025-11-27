@@ -103,11 +103,11 @@ export default function CheckoutPage() {
             <div>
               <h3 className="text-lg font-semibold mb-3">Payment Method</h3>
               <div className="grid grid-cols-2 gap-4 mb-4">
-                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-16 flex-col gap-1 bg-primary text-primary-foreground data-[variant=outline]:bg-transparent data-[variant=outline]:text-primary shadow-sm hover:shadow-md transition-shadow">
+                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-16 flex-col gap-1 shadow-sm hover:shadow-md transition-shadow">
                   <CreditCard />
                   <span>Card</span>
                 </Button>
-                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-16 flex-col gap-1 bg-primary text-primary-foreground data-[variant=outline]:bg-transparent data-[variant=outline]:text-primary shadow-sm hover:shadow-md transition-shadow">
+                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-16 flex-col gap-1 shadow-sm hover:shadow-md transition-shadow">
                   <Landmark />
                   <span>Cash</span>
                 </Button>
