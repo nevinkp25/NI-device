@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { CreditCard, Wifi } from 'lucide-react';
 import Link from 'next/link';
 
-const PAYMENT_TIMEOUT = 15; // 15 seconds
+const PAYMENT_TIMEOUT = 5; // 5 seconds
 
 export default function CardPaymentPage() {
   const { subtotal } = useCart();
