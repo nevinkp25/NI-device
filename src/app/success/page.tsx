@@ -72,7 +72,7 @@ export default function SuccessPage() {
       </div>
       
       <div className="mt-8 animate-in fade-in-0 slide-in-from-bottom-5 delay-1000 duration-700">
-        <Link href="/menu" passHref>
+        <Link href="/" passHref>
           <Button className="h-12 px-8 text-lg bg-accent text-accent-foreground hover:bg-accent/90">
             New Order
           </Button>
