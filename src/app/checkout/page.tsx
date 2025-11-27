@@ -49,7 +49,14 @@ export default function CheckoutPage() {
       ) : (
         <>
           <main className="flex-grow overflow-y-auto p-4">
-            <h2 className="text-lg font-semibold mb-2">Order Summary</h2>
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-semibold">Order Summary</h2>
+              <Link href="/menu" passHref>
+                <Button variant="outline" size="sm">
+                  Order More
+                </Button>
+              </Link>
+            </div>
             <Card className="shadow-md">
               <CardContent className="p-0">
                 <ul className="divide-y">
