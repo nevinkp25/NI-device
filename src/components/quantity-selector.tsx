@@ -10,11 +10,11 @@ type QuantitySelectorProps = {
 export function QuantitySelector({ quantity, onIncrease, onDecrease }: QuantitySelectorProps) {
   return (
     <div className="flex items-center justify-center gap-1">
-      <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-accent text-accent" onClick={onDecrease}>
+      <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-brand text-brand" onClick={onDecrease}>
         <Minus className="h-4 w-4" />
       </Button>
       <span className="w-8 text-center font-bold text-lg">{quantity}</span>
-      <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-accent text-accent" onClick={onIncrease}>
+      <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-brand text-brand" onClick={onIncrease}>
         <Plus className="h-4 w-4" />
       </Button>
     </div>

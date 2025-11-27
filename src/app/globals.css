@@ -33,6 +33,9 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.75rem;
+
+    --brand: 22 98% 54%;
+    --brand-foreground: 0 0% 100%;
   }
   .dark {
     --background: 240 6% 10%;

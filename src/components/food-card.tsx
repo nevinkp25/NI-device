@@ -27,7 +27,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
         ) : (
           <Button
             size="icon"
-            className="h-9 w-9 rounded-full bg-accent text-accent-foreground hover:bg-accent/90"
+            className="h-9 w-9 rounded-full bg-brand text-brand-foreground hover:bg-brand/90"
             onClick={() => addToCart(item)}
           >
             <Plus className="h-5 w-5" />
