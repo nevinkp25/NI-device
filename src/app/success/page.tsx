@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -11,12 +11,16 @@ export default function SuccessPage() {
   const { clearCart, cartItems, subtotal } = useCart();
   const router = useRouter();
   const clearedCart = useRef(false);
-  
+  const [orderNumber, setOrderNumber] = useState<number | null>(null);
+
   // Keep a stable copy of cart data for the receipt
   const receiptItems = useRef(cartItems).current;
   const receiptSubtotal = useRef(subtotal).current;
 
   useEffect(() => {
+    // Generate order number only on the client
+    setOrderNumber(Math.floor(Math.random() * 90000) + 10000);
+    
     if (receiptItems.length === 0) {
       // If there's nothing to show, go to the start.
       router.replace('/');
@@ -61,7 +65,7 @@ export default function SuccessPage() {
           </div>
 
           <div className="text-center text-xs text-muted-foreground">
-            <p>Your order number is #{Math.floor(Math.random() * 90000) + 10000}.</p>
+            {orderNumber && <p>Your order number is #{orderNumber}.</p>}
             <p>A receipt has been sent to your email.</p>
           </div>
         </div>
