@@ -1,38 +1,34 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ShoppingBasket } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
-import { cn } from '@/lib/utils';
 
 export default function SuccessPage() {
   const { clearCart, cartItems, subtotal } = useCart();
   const router = useRouter();
+  const clearedCart = useRef(false);
   
-  useEffect(() => {
-    if (cartItems.length === 0) {
-      // Redirect if cart is empty, maybe they refreshed the page
-      // router.push('/'); 
-      // This might be too aggressive, let's keep it simple for now
-    }
-  }, [cartItems, router]);
-  
-  // Clear cart on mount and when leaving
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      clearCart();
-    };
+  // Keep a stable copy of cart data for the receipt
+  const receiptItems = useRef(cartItems).current;
+  const receiptSubtotal = useRef(subtotal).current;
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    // Clear cart when component unmounts
-    return () => {
+  useEffect(() => {
+    if (receiptItems.length === 0) {
+      // If there's nothing to show, go to the start.
+      router.replace('/');
+    }
+  }, [receiptItems.length, router]);
+  
+  // Clear cart only once on mount
+  useEffect(() => {
+    if (!clearedCart.current) {
       clearCart();
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
+      clearedCart.current = true;
+    }
   }, [clearCart]);
 
   return (
@@ -51,7 +47,7 @@ export default function SuccessPage() {
           </p>
           
           <div className="my-6 border-t-2 border-b-2 border-dashed py-4 space-y-2 text-left text-sm">
-            {cartItems.map(item => (
+            {receiptItems.map(item => (
               <div key={item.id} className="flex justify-between">
                 <span>{item.quantity}x {item.name}</span>
                 <span>${(item.price * item.quantity).toFixed(2)}</span>
@@ -61,7 +57,7 @@ export default function SuccessPage() {
 
           <div className="flex justify-between font-bold text-lg mb-6">
             <span>Total Paid</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>${receiptSubtotal.toFixed(2)}</span>
           </div>
 
           <div className="text-center text-xs text-muted-foreground">
