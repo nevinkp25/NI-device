@@ -36,11 +36,11 @@ export default function SuccessPage() {
   }, [clearCart]);
 
   return (
-    <div className="flex flex-col items-center justify-center text-center min-h-screen bg-gray-100 p-4 overflow-hidden">
-      <div className="relative w-full max-w-sm bg-white rounded-lg shadow-xl p-6 pt-12">
+    <div className="flex flex-col items-center justify-center text-center min-h-screen bg-muted/30 p-4 overflow-hidden">
+      <div className="relative w-full max-w-sm bg-card rounded-lg shadow-xl p-6 pt-12">
         <div className="absolute -top-8 left-1/2 -translate-x-1/2">
            <div className="animate-in fade-in zoom-in-50 duration-1000">
-            <CheckCircle2 className="h-16 w-16 text-green-500 bg-white rounded-full p-1" />
+            <CheckCircle2 className="h-16 w-16 text-green-500 bg-card rounded-full p-1" />
           </div>
         </div>
         

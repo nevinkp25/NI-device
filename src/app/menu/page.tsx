@@ -48,7 +48,7 @@ export default function MenuPage() {
   return (
     <div className="bg-background min-h-screen">
       <header className="p-4 pt-6 text-center">
-        <h1 className="text-3xl font-headline font-bold text-gray-800 flex items-center justify-center gap-2">
+        <h1 className="text-3xl font-headline font-bold flex items-center justify-center gap-2">
           <Utensils className="text-primary" />
           Food Menu
         </h1>
@@ -64,7 +64,7 @@ export default function MenuPage() {
                 "px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors duration-300",
                 activeCategory === category.id
                   ? "bg-primary text-primary-foreground"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  : "bg-muted text-muted-foreground/80 hover:bg-muted/90"
               )}
             >
               {category.name}

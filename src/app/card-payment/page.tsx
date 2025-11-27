@@ -31,27 +31,27 @@ export default function CardPaymentPage() {
   const progressPercentage = ((PAYMENT_TIMEOUT - countdown) / PAYMENT_TIMEOUT) * 100;
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-white">
+    <div className="flex flex-col h-screen bg-background text-foreground">
       <header className="flex items-center p-4">
         <h1 className="text-xl font-semibold mx-auto">Card Payment</h1>
       </header>
 
       <main className="flex-grow flex flex-col items-center justify-center p-8 text-center space-y-8">
         <div className="relative">
-          <CreditCard className="h-32 w-32 text-gray-500 animate-pulse" />
-          <Wifi className="h-10 w-10 text-gray-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <CreditCard className="h-32 w-32 text-muted-foreground animate-pulse" />
+          <Wifi className="h-10 w-10 text-muted-foreground/70 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
         
         <div className="space-y-2">
           <h2 className="text-2xl font-headline font-semibold">Processing Payment...</h2>
-          <p className="text-6xl font-bold text-amber-400">${total.toFixed(2)}</p>
+          <p className="text-6xl font-bold text-primary">${total.toFixed(2)}</p>
         </div>
 
         <div className="w-full max-w-sm space-y-4">
-            <p className="text-gray-400">Please wait</p>
-            <div className="w-full bg-gray-700 rounded-full h-2.5">
+            <p className="text-muted-foreground">Please wait</p>
+            <div className="w-full bg-muted rounded-full h-2.5">
                 <div 
-                    className="bg-amber-400 h-2.5 rounded-full transition-all duration-1000 ease-linear" 
+                    className="bg-primary h-2.5 rounded-full transition-all duration-1000 ease-linear" 
                     style={{ width: `${progressPercentage}%`}}
                 ></div>
             </div>
@@ -64,7 +64,7 @@ export default function CardPaymentPage() {
 
       <footer className="p-4">
         <Link href="/checkout" passHref>
-          <Button variant="outline" className="w-full h-12 bg-transparent text-gray-300 border-gray-600 hover:bg-gray-800 hover:text-white">
+          <Button variant="outline" className="w-full h-12">
             Cancel
           </Button>
         </Link>
