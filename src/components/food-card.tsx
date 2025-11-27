@@ -12,7 +12,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
   const cartItem = cartItems.find(ci => ci.id === item.id);
 
   return (
-    <Card className="flex flex-col overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
+    <Card className="flex flex-col overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="p-3">
         <CardTitle className="text-base font-headline font-semibold leading-tight text-center h-10 flex items-center justify-center">{item.name}</CardTitle>
       </CardHeader>

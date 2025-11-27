@@ -50,7 +50,7 @@ export default function CheckoutPage() {
         <>
           <main className="flex-grow overflow-y-auto p-4">
             <h2 className="text-lg font-semibold mb-2">Order Summary</h2>
-            <Card>
+            <Card className="shadow-md">
               <CardContent className="p-0">
                 <ul className="divide-y">
                   {cartItems.map(item => (
@@ -79,7 +79,7 @@ export default function CheckoutPage() {
             </Card>
           </main>
 
-          <footer className="p-4 border-t bg-background">
+          <footer className="p-4 border-t bg-background shadow-lg">
             <div className="space-y-2 mb-4">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
@@ -96,16 +96,16 @@ export default function CheckoutPage() {
             <div>
               <h3 className="text-lg font-semibold mb-3">Payment Method</h3>
               <div className="grid grid-cols-2 gap-4 mb-4">
-                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-16 flex-col gap-1 bg-primary text-primary-foreground data-[variant=outline]:bg-transparent data-[variant=outline]:text-primary">
+                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-16 flex-col gap-1 bg-primary text-primary-foreground data-[variant=outline]:bg-transparent data-[variant=outline]:text-primary shadow-sm hover:shadow-md transition-shadow">
                   <CreditCard />
                   <span>Card</span>
                 </Button>
-                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-16 flex-col gap-1 bg-primary text-primary-foreground data-[variant=outline]:bg-transparent data-[variant=outline]:text-primary">
+                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-16 flex-col gap-1 bg-primary text-primary-foreground data-[variant=outline]:bg-transparent data-[variant=outline]:text-primary shadow-sm hover:shadow-md transition-shadow">
                   <Landmark />
                   <span>Cash</span>
                 </Button>
               </div>
-              <Button onClick={handlePayment} className="w-full h-14 bg-accent text-accent-foreground text-lg hover:bg-accent/90">
+              <Button onClick={handlePayment} className="w-full h-14 bg-accent text-accent-foreground text-lg hover:bg-accent/90 shadow-md hover:shadow-lg transition-shadow">
                 Proceed to Payment
               </Button>
             </div>
