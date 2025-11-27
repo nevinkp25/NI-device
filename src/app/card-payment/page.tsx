@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { CreditCard, Wifi } from 'lucide-react';
 import Link from 'next/link';
 
-const PAYMENT_TIMEOUT = 50; // 50 seconds
+const PAYMENT_TIMEOUT = 15; // 15 seconds
 
 export default function CardPaymentPage() {
   const { subtotal } = useCart();
@@ -38,17 +38,17 @@ export default function CardPaymentPage() {
 
       <main className="flex-grow flex flex-col items-center justify-center p-8 text-center space-y-8">
         <div className="relative">
-          <CreditCard className="h-32 w-32 text-gray-500" />
-          <Wifi className="h-10 w-10 text-gray-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+          <CreditCard className="h-32 w-32 text-gray-500 animate-pulse" />
+          <Wifi className="h-10 w-10 text-gray-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
         
         <div className="space-y-2">
-          <h2 className="text-2xl font-headline font-semibold">Tap to Pay</h2>
+          <h2 className="text-2xl font-headline font-semibold">Processing Payment...</h2>
           <p className="text-6xl font-bold text-amber-400">${total.toFixed(2)}</p>
         </div>
 
         <div className="w-full max-w-sm space-y-4">
-            <p className="text-gray-400">Present your card on the terminal</p>
+            <p className="text-gray-400">Please wait</p>
             <div className="w-full bg-gray-700 rounded-full h-2.5">
                 <div 
                     className="bg-amber-400 h-2.5 rounded-full transition-all duration-1000 ease-linear" 
