@@ -78,7 +78,7 @@ export default function CheckoutPage() {
         </div>
       ) : (
         <div className="flex flex-col">
-          <main className="p-4">
+          <main className="p-4 pb-52">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-semibold">Order Summary</h2>
               <Link href="/menu" passHref>
@@ -109,15 +109,13 @@ export default function CheckoutPage() {
                 </ul>
               </CardContent>
             </Card>
-          </main>
 
-          <div className="p-4 border-t bg-background shadow-lg">
-             <div className="space-y-3 mb-4">
+            <div className="space-y-3 my-4">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-semibold">${subtotal.toFixed(2)}</span>
               </div>
-               <div className="flex justify-between">
+              <div className="flex justify-between">
                 <span className="text-muted-foreground">Tip</span>
                 <span className="font-semibold">${tipAmount.toFixed(2)}</span>
               </div>
@@ -127,7 +125,7 @@ export default function CheckoutPage() {
                 <span>${total.toFixed(2)}</span>
               </div>
             </div>
-
+            
             {/* Tip Section */}
             <div className="mb-4">
                  <h3 className="text-lg font-semibold mb-3">Add a Tip</h3>
@@ -194,9 +192,9 @@ export default function CheckoutPage() {
                  </div>
               )}
             </div>
+          </main>
 
-            <Separator className="my-4" />
-
+          <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 border-t bg-background/95 backdrop-blur-sm shadow-lg">
             <div>
               <h3 className="text-lg font-semibold mb-3">Payment Method</h3>
                <div className="grid grid-cols-2 gap-4 mb-4">
@@ -213,7 +211,7 @@ export default function CheckoutPage() {
                 Proceed to Payment
               </Button>
             </div>
-          </div>
+          </footer>
         </div>
       )}
     </div>
