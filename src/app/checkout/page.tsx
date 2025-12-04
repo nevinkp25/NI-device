@@ -9,46 +9,58 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { QuantitySelector } from '@/components/quantity-selector';
-import { CreditCard, Landmark, ArrowLeft, ShoppingCart, Minus, Plus } from 'lucide-react';
+import { CreditCard, Landmark, ArrowLeft, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import { SegmentedControl, SegmentedControlItem } from '@/components/segmented-control';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from '@/components/ui/sheet';
+import { SplitBillSheet } from '@/components/split-bill-sheet';
+import type { Split } from '@/components/split-bill-sheet';
 
 
 export default function CheckoutPage() {
-  const { cartItems, updateQuantity, subtotal, decreaseSubtotal } = useCart();
+  const { cartItems, updateQuantity, subtotal } = useCart();
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
   const [tipPercentage, setTipPercentage] = useState(0.18);
   const [showCustomTip, setShowCustomTip] = useState(false);
   const [customTip, setCustomTip] = useState('');
-  const [splitCount, setSplitCount] = useState(1);
+  const [splitMode, setSplitMode] = useState<'full' | 'split'>('full');
+  const [splits, setSplits] = useState<Split[]>([{ id: 1, amount: 0, isPaid: false }]);
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const isSplitPayment = searchParams.get('split') === 'true';
+  const isReturningFromSplit = searchParams.get('split') === 'true';
+
+  const vatRate = 0.05;
+  const vatAmount = subtotal * vatRate;
+  const tipAmount = showCustomTip ? parseFloat(customTip) || 0 : subtotal * tipPercentage;
+  const total = subtotal + vatAmount + tipAmount;
 
   useEffect(() => {
-    if (isSplitPayment) {
-        // If coming back from a split payment, re-open the sheet
-        // This is a simple way to keep context, a more robust solution might use state management
-        setSplitCount(Number(searchParams.get('count') || 2));
+    if (splitMode === 'full') {
+      setSplits([{ id: 1, amount: total, isPaid: false }]);
     }
-  }, [isSplitPayment, searchParams]);
+  }, [total, splitMode]);
   
-
+  useEffect(() => {
+    if (isReturningFromSplit) {
+      // Re-open sheet or handle state if needed
+    }
+  }, [isReturningFromSplit]);
+  
   const handlePayment = () => {
-    const paymentAmount = splitCount > 1 ? splitAmount : total;
-    const returnUrl = splitCount > 1 
-      ? `/checkout?split=true&count=${splitCount}`
+    const amountToPay = splits.find(s => !s.isPaid)?.amount || 0;
+    
+    // A more robust implementation would mark one split as paid and return
+    // For now, we just proceed with the first unpaid amount
+    const returnUrl = splitMode === 'split' 
+      ? `/checkout?split=true`
       : '/';
 
     if (paymentMethod === 'card') {
-      router.push(`/card-payment?amount=${paymentAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+      router.push(`/card-payment?amount=${amountToPay}&returnUrl=${encodeURIComponent(returnUrl)}`);
     } else {
-      router.push(`/cash-payment?amount=${paymentAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+      router.push(`/cash-payment?amount=${amountToPay}&returnUrl=${encodeURIComponent(returnUrl)}`);
     }
   };
 
@@ -69,22 +81,22 @@ export default function CheckoutPage() {
       setTipPercentage(0);
   }
 
-  const vatRate = 0.05;
-  const vatAmount = subtotal * vatRate;
-  const tipAmount = showCustomTip ? parseFloat(customTip) || 0 : subtotal * tipPercentage;
-  const total = subtotal + vatAmount + tipAmount;
-  const splitAmount = total / splitCount;
-  
-  const splitMode = splitCount > 1 ? 'split' : 'full';
-
   const handleSplitModeChange = (value: string) => {
-    if (value === 'split') {
+    const newMode = value as 'full' | 'split';
+    setSplitMode(newMode);
+    if (newMode === 'split') {
         setIsSplitSheetOpen(true);
     } else {
-        setSplitCount(1);
-        setIsSplitSheetOpen(false);
+        setSplits([{ id: 1, amount: total, isPaid: false }]);
     }
   }
+  
+  const handleSplitsConfirmed = (newSplits: Split[]) => {
+      setSplits(newSplits);
+      setIsSplitSheetOpen(false);
+  }
+
+  const amountToPay = splits.find(s => !s.isPaid)?.amount || 0;
 
 
   return (
@@ -99,7 +111,7 @@ export default function CheckoutPage() {
         <div className="w-8"></div>
       </header>
 
-      {cartItems.length === 0 && subtotal === 0 ? (
+      {cartItems.length === 0 && subtotal <= 0 ? (
         <div className="flex-grow flex flex-col items-center justify-center text-center p-8">
           <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
           <h2 className="text-2xl font-headline font-bold">Your Cart is Empty</h2>
@@ -199,48 +211,30 @@ export default function CheckoutPage() {
             </div>
             
             {/* Split Bill Section */}
-            <Sheet open={isSplitSheetOpen} onOpenChange={setIsSplitSheetOpen}>
-              <SegmentedControl onValueChange={handleSplitModeChange} value={splitMode} className="mb-4">
-                  <SegmentedControlItem value="full" className="flex-1">Pay Full Amount</SegmentedControlItem>
-                  <SegmentedControlItem value="split" className="flex-1">Split Bill</SegmentedControlItem>
-              </SegmentedControl>
-              <SheetContent side="bottom" className="h-full flex flex-col">
-                  <SheetHeader>
-                     <SheetTitle>Split Bill</SheetTitle>
-                  </SheetHeader>
-                  <div className="flex-grow flex flex-col items-center justify-center text-center p-4">
-                     <div className='max-w-sm w-full space-y-8'>
-                        <div className="text-center">
-                            <p className="text-muted-foreground">Total Amount</p>
-                            <h2 className="text-6xl font-bold text-primary">${total.toFixed(2)}</h2>
+            <SegmentedControl onValueChange={handleSplitModeChange} value={splitMode} className="mb-4">
+                <SegmentedControlItem value="full" className="flex-1">Pay Full Amount</SegmentedControlItem>
+                <SegmentedControlItem value="split" className="flex-1">Split Bill</SegmentedControlItem>
+            </SegmentedControl>
+            
+            {splitMode === 'split' && (
+                <Card className="p-4 bg-muted">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="text-muted-foreground">{splits.filter(s => !s.isPaid).length} of {splits.length} payments remaining</p>
+                            <p className="font-bold text-2xl">${amountToPay.toFixed(2)} / person</p>
                         </div>
-                        <Card className="flex items-center justify-between p-4">
-                            <Button variant="ghost" size="icon" className="h-16 w-16" onClick={() => setSplitCount(Math.max(1, splitCount - 1))}>
-                                <Minus className="h-8 w-8" />
-                            </Button>
-                            <div className="text-center">
-                                <p className="font-bold text-5xl">{splitCount}</p>
-                                <p className="text-base text-muted-foreground">
-                                    {splitCount > 1 ? 'People' : 'Person'}
-                                </p>
-                            </div>
-                            <Button variant="ghost" size="icon" className="h-16 w-16" onClick={() => setSplitCount(splitCount + 1)}>
-                                <Plus className="h-8 w-8" />
-                            </Button>
-                        </Card>
-                        <Card className="p-4 text-center bg-muted">
-                            <p className="text-muted-foreground text-lg">Amount per person</p>
-                            <p className="font-bold text-5xl">${splitAmount.toFixed(2)}</p>
-                        </Card>
+                        <Button variant="secondary" onClick={() => setIsSplitSheetOpen(true)}>Edit Split</Button>
                     </div>
-                  </div>
-                  <SheetFooter className="p-4">
-                    <Button onClick={() => setIsSplitSheetOpen(false)} className="w-full h-14 text-lg">
-                        Done
-                    </Button>
-                  </SheetFooter>
-              </SheetContent>
-            </Sheet>
+                </Card>
+            )}
+
+            <SplitBillSheet 
+                isOpen={isSplitSheetOpen}
+                onOpenChange={setIsSplitSheetOpen}
+                totalAmount={total}
+                onSplitsConfirmed={handleSplitsConfirmed}
+            />
+
           </main>
 
           <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 border-t bg-background/95 backdrop-blur-sm shadow-lg">
@@ -256,8 +250,8 @@ export default function CheckoutPage() {
                   <span>Cash</span>
                 </Button>
               </div>
-              <Button onClick={handlePayment} className="w-full h-12 bg-accent text-accent-foreground text-lg hover:bg-accent/90 shadow-md">
-                 {splitCount > 1 ? `Pay $${splitAmount.toFixed(2)}` : `Pay $${total.toFixed(2)}`}
+              <Button onClick={handlePayment} disabled={amountToPay <= 0} className="w-full h-12 bg-accent text-accent-foreground text-lg hover:bg-accent/90 shadow-md">
+                 Pay ${amountToPay.toFixed(2)}
               </Button>
             </div>
           </footer>
