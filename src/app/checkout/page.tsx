@@ -9,11 +9,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { QuantitySelector } from '@/components/quantity-selector';
-import { CreditCard, Landmark, ArrowLeft, ShoppingCart, Minus, Plus } from 'lucide-react';
+import { CreditCard, Landmark, ArrowLeft, ShoppingCart, Minus, Plus, X } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { SegmentedControl, SegmentedControlItem } from '@/components/segmented-control';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from '@/components/ui/sheet';
 
 
 export default function CheckoutPage() {
@@ -23,7 +24,7 @@ export default function CheckoutPage() {
   const [showCustomTip, setShowCustomTip] = useState(false);
   const [customTip, setCustomTip] = useState('');
   const [splitCount, setSplitCount] = useState(1);
-  const [splitMode, setSplitMode] = useState<'full' | 'split'>('full');
+  const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const router = useRouter();
 
   const handlePayment = () => {
@@ -55,8 +56,9 @@ export default function CheckoutPage() {
   const vatAmount = subtotal * vatRate;
   const tipAmount = showCustomTip ? parseFloat(customTip) || 0 : subtotal * tipPercentage;
   const total = subtotal + vatAmount + tipAmount;
-  const currentSplitCount = splitMode === 'full' ? 1 : splitCount;
-  const splitAmount = total / currentSplitCount;
+  const splitAmount = total / splitCount;
+  
+  const splitMode = splitCount > 1 ? 'split' : 'full';
 
   return (
     <div className="flex flex-col bg-background min-h-screen">
@@ -170,35 +172,49 @@ export default function CheckoutPage() {
             </div>
             
             {/* Split Bill Section */}
-            <div className='mb-4'>
-              <SegmentedControl value={splitMode} onValueChange={(value) => setSplitMode(value as 'full' | 'split')} className="w-full mb-4">
-                <SegmentedControlItem value="full">Pay Full Amount</SegmentedControlItem>
-                <SegmentedControlItem value="split">Split Bill</SegmentedControlItem>
-              </SegmentedControl>
-              
-              {splitMode === 'split' && (
-                 <div className="grid grid-cols-2 gap-4 items-center animate-in fade-in-0 slide-in-from-top-2 duration-300">
-                    <Card className="flex items-center justify-between p-2">
-                        <Button variant="ghost" size="icon" onClick={() => setSplitCount(Math.max(1, splitCount - 1))}>
-                            <Minus />
-                        </Button>
+            <Sheet open={isSplitSheetOpen} onOpenChange={setIsSplitSheetOpen}>
+              <SheetTrigger asChild>
+                 <Button variant="outline" className="w-full h-12 mb-4">
+                    {splitCount > 1 ? `Split between ${splitCount}` : 'Split Bill'}
+                 </Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-full flex flex-col">
+                  <SheetHeader>
+                     <SheetTitle>Split Bill</SheetTitle>
+                  </SheetHeader>
+                  <div className="flex-grow flex flex-col items-center justify-center text-center p-4">
+                     <div className='max-w-sm w-full space-y-8'>
                         <div className="text-center">
-                            <p className="font-bold text-xl">{splitCount}</p>
-                            <p className="text-xs text-muted-foreground">
-                                {splitCount > 1 ? 'People' : 'Person'}
-                            </p>
+                            <p className="text-muted-foreground">Total Amount</p>
+                            <h2 className="text-6xl font-bold text-primary">${total.toFixed(2)}</h2>
                         </div>
-                        <Button variant="ghost" size="icon" onClick={() => setSplitCount(splitCount + 1)}>
-                            <Plus />
-                        </Button>
-                    </Card>
-                    <Card className="p-3 text-center">
-                        <p className="text-muted-foreground text-sm">Amount per person</p>
-                        <p className="font-bold text-2xl">${splitAmount.toFixed(2)}</p>
-                    </Card>
-                 </div>
-              )}
-            </div>
+                        <Card className="flex items-center justify-between p-4">
+                            <Button variant="ghost" size="icon" className="h-16 w-16" onClick={() => setSplitCount(Math.max(1, splitCount - 1))}>
+                                <Minus className="h-8 w-8" />
+                            </Button>
+                            <div className="text-center">
+                                <p className="font-bold text-5xl">{splitCount}</p>
+                                <p className="text-base text-muted-foreground">
+                                    {splitCount > 1 ? 'People' : 'Person'}
+                                </p>
+                            </div>
+                            <Button variant="ghost" size="icon" className="h-16 w-16" onClick={() => setSplitCount(splitCount + 1)}>
+                                <Plus className="h-8 w-8" />
+                            </Button>
+                        </Card>
+                        <Card className="p-4 text-center bg-muted">
+                            <p className="text-muted-foreground text-lg">Amount per person</p>
+                            <p className="font-bold text-5xl">${splitAmount.toFixed(2)}</p>
+                        </Card>
+                    </div>
+                  </div>
+                  <SheetFooter className="p-4">
+                    <Button onClick={() => setIsSplitSheetOpen(false)} className="w-full h-14 text-lg">
+                        Done
+                    </Button>
+                  </SheetFooter>
+              </SheetContent>
+            </Sheet>
           </main>
 
           <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 border-t bg-background/95 backdrop-blur-sm shadow-lg">
@@ -215,7 +231,7 @@ export default function CheckoutPage() {
                 </Button>
               </div>
               <Button onClick={handlePayment} className="w-full h-12 bg-accent text-accent-foreground text-lg hover:bg-accent/90 shadow-md">
-                Proceed to Payment
+                 {splitCount > 1 ? `Pay ${splitAmount.toFixed(2)}` : `Pay ${total.toFixed(2)}`}
               </Button>
             </div>
           </footer>
