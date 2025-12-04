@@ -175,7 +175,7 @@ export default function CheckoutPage() {
               </SegmentedControl>
               
               {splitMode === 'split' && (
-                 <div className="grid grid-cols-2 gap-4 items-center">
+                 <div className="grid grid-cols-2 gap-4 items-center animate-in fade-in-0 duration-300">
                     <Card className="flex items-center justify-between p-2">
                         <Button variant="ghost" size="icon" onClick={() => setSplitCount(Math.max(1, splitCount - 1))}>
                             <Minus />
@@ -222,5 +222,7 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+    
 
     
