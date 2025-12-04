@@ -60,6 +60,16 @@ export default function CheckoutPage() {
   
   const splitMode = splitCount > 1 ? 'split' : 'full';
 
+  const handleSplitModeChange = (value: string) => {
+    if (value === 'split') {
+        setIsSplitSheetOpen(true);
+    } else {
+        setSplitCount(1);
+        setIsSplitSheetOpen(false);
+    }
+  }
+
+
   return (
     <div className="flex flex-col bg-background min-h-screen">
       <header className="flex items-center p-4 border-b sticky top-0 bg-background/90 backdrop-blur-sm z-10">
@@ -173,11 +183,10 @@ export default function CheckoutPage() {
             
             {/* Split Bill Section */}
             <Sheet open={isSplitSheetOpen} onOpenChange={setIsSplitSheetOpen}>
-              <SheetTrigger asChild>
-                 <Button variant="outline" className="w-full h-12 mb-4">
-                    {splitCount > 1 ? `Split between ${splitCount}` : 'Split Bill'}
-                 </Button>
-              </SheetTrigger>
+              <SegmentedControl onValueChange={handleSplitModeChange} value={splitMode} className="mb-4">
+                  <SegmentedControlItem value="full" className="flex-1">Pay Full Amount</SegmentedControlItem>
+                  <SegmentedControlItem value="split" className="flex-1">Split Bill</SegmentedControlItem>
+              </SegmentedControl>
               <SheetContent side="bottom" className="h-full flex flex-col">
                   <SheetHeader>
                      <SheetTitle>Split Bill</SheetTitle>
