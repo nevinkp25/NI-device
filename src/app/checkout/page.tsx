@@ -91,23 +91,23 @@ export default function CheckoutPage() {
               <CardContent className="p-0">
                 <ul className="divide-y">
                   {cartItems.map(item => (
-                    <li key={item.id} className="flex items-center p-3 gap-3">
+                    <li key={item.id} className="flex items-start p-3 gap-3">
                       <div className="flex-grow">
                         <p className="font-semibold">{item.name}</p>
                         <p className="text-sm text-primary font-bold">${item.price.toFixed(2)}</p>
                       </div>
-                      <div className="flex items-center gap-4">
-                         <QuantitySelector
-                          quantity={item.quantity}
-                          onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
-                          onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
-                        />
-                        <div className="flex flex-col items-end gap-2 w-16 text-right">
-                          <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.id)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                      <div className="flex flex-col items-end gap-2">
+                        <div className="flex items-center gap-4">
+                          <QuantitySelector
+                            quantity={item.quantity}
+                            onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
+                            onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
+                          />
+                          <p className="font-bold w-16 text-right">${(item.price * item.quantity).toFixed(2)}</p>
                         </div>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive self-end" onClick={() => removeFromCart(item.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </li>
                   ))}
@@ -157,13 +157,15 @@ export default function CheckoutPage() {
                     </Button>
                  </div>
                  {showCustomTip && (
-                     <Input 
-                        type="number"
-                        placeholder="Enter custom tip amount"
-                        value={customTip}
-                        onChange={(e) => setCustomTip(e.target.value)}
-                        className="h-12 text-center"
-                    />
+                     <div className="animate-in fade-in-0 duration-300">
+                        <Input 
+                            type="number"
+                            placeholder="Enter custom tip amount"
+                            value={customTip}
+                            onChange={(e) => setCustomTip(e.target.value)}
+                            className="h-12 text-center"
+                        />
+                     </div>
                  )}
             </div>
             
@@ -222,7 +224,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-
-    
-
-    
