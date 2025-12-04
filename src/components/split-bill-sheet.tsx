@@ -25,28 +25,39 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConf
     const [splits, setSplits] = useState<Split[]>([{ id: 1, amount: totalAmount, isPaid: false }]);
 
     useEffect(() => {
-        // Reset to a single split when totalAmount changes and sheet is opened
         if (isOpen) {
            const initialSplitCount = 2;
-           const equalAmount = totalAmount / initialSplitCount;
-           const newSplits: Split[] = Array.from({ length: initialSplitCount }, (_, i) => ({
-               id: i + 1,
-               amount: equalAmount,
-               isPaid: false
-           }));
-           setSplits(newSplits);
+           distributeEqually(initialSplitCount);
         }
     }, [isOpen, totalAmount]);
-    
-    const handleSplitCountChange = (newCount: number) => {
-        if (newCount < 1) return;
-        const equalAmount = totalAmount / newCount;
-        const newSplits = Array.from({ length: newCount }, (_, i) => ({
-            id: i + 1,
+
+    const distributeEqually = (count: number) => {
+        if (count < 1) return;
+        const equalAmount = totalAmount / count;
+        const newSplits = Array.from({ length: count }, (_, i) => ({
+            id: Date.now() + i, // Use a more unique ID
             amount: equalAmount,
             isPaid: false
         }));
         setSplits(newSplits);
+    }
+    
+    const handleSplitCountChange = (newCount: number) => {
+        if (newCount < 1) return;
+        distributeEqually(newCount);
+    };
+
+    const handleRemoveSplit = (idToRemove: number) => {
+        if (splits.length <= 1) return;
+        const newSplits = splits.filter(s => s.id !== idToRemove);
+        const remainingTotal = newSplits.reduce((sum, s) => sum + s.amount, 0);
+        const deficit = totalAmount - remainingTotal;
+
+        // Distribute the deficit among remaining splits
+        if (newSplits.length > 0) {
+            const deficitPerSplit = deficit / newSplits.length;
+            setSplits(newSplits.map(s => ({...s, amount: s.amount + deficitPerSplit})));
+        }
     };
 
     const handleAmountChange = (id: number, newAmountStr: string) => {
@@ -97,12 +108,18 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConf
                             {splits.map((split, index) => (
                                 <div key={split.id} className="flex items-center gap-2">
                                     <span className="font-semibold text-muted-foreground w-20">Pay {index + 1}</span>
-                                    <Input
-                                        type="number"
-                                        value={split.amount > 0 ? split.amount.toFixed(2) : ''}
-                                        onChange={(e) => handleAmountChange(split.id, e.target.value)}
-                                        className="text-right font-mono text-lg h-12 flex-grow"
-                                    />
+                                    <div className='relative flex-grow'>
+                                      <span className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'>$</span>
+                                      <Input
+                                          type="number"
+                                          value={split.amount > 0 ? split.amount.toFixed(2) : ''}
+                                          onChange={(e) => handleAmountChange(split.id, e.target.value)}
+                                          className="text-right font-mono text-lg h-12 pr-4 pl-8"
+                                      />
+                                    </div>
+                                    <Button variant="ghost" size="icon" onClick={() => handleRemoveSplit(split.id)} disabled={splits.length <= 1}>
+                                        <Trash2 className="h-5 w-5 text-destructive" />
+                                    </Button>
                                 </div>
                             ))}
                         </div>
@@ -124,4 +141,3 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConf
         </Sheet>
     );
 }
-
