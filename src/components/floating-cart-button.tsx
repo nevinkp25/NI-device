@@ -1,10 +1,11 @@
+
 "use client";
 
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBasket, ArrowRight, ChevronUp, ChevronDown, Trash2 } from 'lucide-react';
+import { ShoppingBasket, ArrowRight, ChevronUp, ChevronDown } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { cn } from '@/lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -12,7 +13,7 @@ import { QuantitySelector } from './quantity-selector';
 import { Separator } from './ui/separator';
 
 export function FloatingCartButton() {
-  const { cartItems, totalItems, subtotal, updateQuantity, removeFromCart } = useCart();
+  const { cartItems, totalItems, subtotal, updateQuantity } = useCart();
   const [isOpen, setIsOpen] = useState(false);
 
   if (totalItems === 0) {
@@ -39,9 +40,6 @@ export function FloatingCartButton() {
                         onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
                         onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
                         />
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.id)}>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
                     </div>
                     </li>
                 ))}
