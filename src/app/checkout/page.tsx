@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { QuantitySelector } from '@/components/quantity-selector';
-import { CreditCard, Landmark, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { CreditCard, Landmark, ArrowLeft, ShoppingCart, X } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { SegmentedControl, SegmentedControlItem } from '@/components/segmented-control';
@@ -20,7 +20,7 @@ import type { Split } from '@/components/split-bill-sheet';
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal } = useCart();
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
-  const [tipPercentage, setTipPercentage] = useState(0.18);
+  const [tipPercentage, setTipPercentage] = useState(0);
   const [showCustomTip, setShowCustomTip] = useState(false);
   const [customTip, setCustomTip] = useState('');
   const [splitMode, setSplitMode] = useState<'full' | 'split'>('full');
@@ -188,6 +188,14 @@ export default function CheckoutPage() {
             <div className="mb-4">
                  <h3 className="text-lg font-semibold mb-3">Add a Tip</h3>
                  <div className="grid grid-cols-4 gap-2 mb-2">
+                    <Button 
+                        variant={tipPercentage === 0 && !showCustomTip ? 'default' : 'outline'}
+                        onClick={() => handleTipSelection(0)}
+                        className="flex-col h-14"
+                    >
+                       <X className="w-6 h-6 mb-1"/>
+                       <span className="text-xs">No Tip</span>
+                    </Button>
                     {tipOptions.map(opt => (
                         <Button 
                             key={opt.value}
@@ -271,3 +279,5 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+    
