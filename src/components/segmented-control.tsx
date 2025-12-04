@@ -13,7 +13,7 @@ const SegmentedControl = React.forwardRef<
     <RadixRadioGroup.Root
       ref={ref}
       className={cn(
-        "flex items-center justify-center gap-1 rounded-lg bg-muted p-1",
+        "grid grid-cols-2 gap-1 rounded-lg bg-muted p-1",
         className
       )}
       {...props}
@@ -30,7 +30,7 @@ const SegmentedControlItem = React.forwardRef<
     <RadixRadioGroup.Item
       ref={ref}
       className={cn(
-        "flex-1 rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-all",
+        "flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-all",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "data-[state=checked]:bg-background data-[state=checked]:text-foreground data-[state=checked]:shadow-sm",
         "disabled:cursor-not-allowed disabled:opacity-50",
@@ -38,14 +38,10 @@ const SegmentedControlItem = React.forwardRef<
       )}
       {...props}
     >
-      <RadixRadioGroup.Indicator className="flex items-center">
-        {children}
-      </RadixRadioGroup.Indicator>
+      {children}
     </RadixRadioGroup.Item>
   );
 });
 SegmentedControlItem.displayName = "SegmentedControlItem";
 
 export { SegmentedControl, SegmentedControlItem };
-
-    
