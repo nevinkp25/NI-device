@@ -2,14 +2,14 @@
 
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { QuantitySelector } from '@/components/quantity-selector';
-import { CreditCard, Landmark, ArrowLeft, ShoppingCart, Minus, Plus, X } from 'lucide-react';
+import { CreditCard, Landmark, ArrowLeft, ShoppingCart, Minus, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -18,7 +18,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter
 
 
 export default function CheckoutPage() {
-  const { cartItems, updateQuantity, removeFromCart, subtotal } = useCart();
+  const { cartItems, updateQuantity, subtotal, decreaseSubtotal } = useCart();
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
   const [tipPercentage, setTipPercentage] = useState(0.18);
   const [showCustomTip, setShowCustomTip] = useState(false);
@@ -26,12 +26,29 @@ export default function CheckoutPage() {
   const [splitCount, setSplitCount] = useState(1);
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const isSplitPayment = searchParams.get('split') === 'true';
+
+  useEffect(() => {
+    if (isSplitPayment) {
+        // If coming back from a split payment, re-open the sheet
+        // This is a simple way to keep context, a more robust solution might use state management
+        setSplitCount(Number(searchParams.get('count') || 2));
+    }
+  }, [isSplitPayment, searchParams]);
+  
 
   const handlePayment = () => {
+    const paymentAmount = splitCount > 1 ? splitAmount : total;
+    const returnUrl = splitCount > 1 
+      ? `/checkout?split=true&count=${splitCount}`
+      : '/';
+
     if (paymentMethod === 'card') {
-      router.push('/card-payment');
+      router.push(`/card-payment?amount=${paymentAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
     } else {
-      router.push('/cash-payment');
+      router.push(`/cash-payment?amount=${paymentAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
     }
   };
 
@@ -82,7 +99,7 @@ export default function CheckoutPage() {
         <div className="w-8"></div>
       </header>
 
-      {cartItems.length === 0 ? (
+      {cartItems.length === 0 && subtotal === 0 ? (
         <div className="flex-grow flex flex-col items-center justify-center text-center p-8">
           <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
           <h2 className="text-2xl font-headline font-bold">Your Cart is Empty</h2>
@@ -240,7 +257,7 @@ export default function CheckoutPage() {
                 </Button>
               </div>
               <Button onClick={handlePayment} className="w-full h-12 bg-accent text-accent-foreground text-lg hover:bg-accent/90 shadow-md">
-                 {splitCount > 1 ? `Pay ${splitAmount.toFixed(2)}` : `Pay ${total.toFixed(2)}`}
+                 {splitCount > 1 ? `Pay $${splitAmount.toFixed(2)}` : `Pay $${total.toFixed(2)}`}
               </Button>
             </div>
           </footer>
@@ -249,3 +266,5 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+    

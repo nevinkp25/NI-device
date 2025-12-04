@@ -1,7 +1,8 @@
+
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { CreditCard, Wifi } from 'lucide-react';
@@ -9,14 +10,23 @@ import Link from 'next/link';
 
 const PAYMENT_TIMEOUT = 5; // 5 seconds
 
-export default function CardPaymentPage() {
-  const { subtotal } = useCart();
+function CardPaymentContent() {
+  const { subtotal, decreaseSubtotal } = useCart();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [countdown, setCountdown] = useState(PAYMENT_TIMEOUT);
+
+  const amountParam = searchParams.get('amount');
+  const returnUrl = searchParams.get('returnUrl') || '/success';
+  const paymentAmount = amountParam ? parseFloat(amountParam) : subtotal;
 
   useEffect(() => {
     if (countdown <= 0) {
-      router.push('/success');
+      // For split payments, we decrease the subtotal instead of clearing the cart
+      if (amountParam) {
+        decreaseSubtotal(paymentAmount);
+      }
+      router.push(`/success?returnUrl=${encodeURIComponent(returnUrl)}`);
       return;
     }
 
@@ -25,10 +35,11 @@ export default function CardPaymentPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [countdown, router]);
+  }, [countdown, router, amountParam, decreaseSubtotal, paymentAmount, returnUrl]);
 
-  const total = subtotal;
   const progressPercentage = ((PAYMENT_TIMEOUT - countdown) / PAYMENT_TIMEOUT) * 100;
+  
+  const cancelHref = returnUrl.includes('checkout') ? returnUrl : '/checkout';
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
@@ -44,7 +55,7 @@ export default function CardPaymentPage() {
         
         <div className="space-y-2">
           <h2 className="text-2xl font-headline font-semibold">Processing Payment...</h2>
-          <p className="text-6xl font-bold text-primary">${total.toFixed(2)}</p>
+          <p className="text-6xl font-bold text-primary">${paymentAmount.toFixed(2)}</p>
         </div>
 
         <div className="w-full max-w-sm space-y-4">
@@ -63,7 +74,7 @@ export default function CardPaymentPage() {
       </main>
 
       <footer className="p-4">
-        <Link href="/checkout" passHref>
+        <Link href={cancelHref} passHref>
           <Button variant="outline" className="w-full h-12">
             Cancel
           </Button>
@@ -72,3 +83,13 @@ export default function CardPaymentPage() {
     </div>
   );
 }
+
+export default function CardPaymentPage() {
+    return (
+        <Suspense fallback={<div>Loading payment details...</div>}>
+            <CardPaymentContent />
+        </Suspense>
+    )
+}
+
+    

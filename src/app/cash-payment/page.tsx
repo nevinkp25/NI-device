@@ -1,29 +1,41 @@
+
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-export default function CashPaymentPage() {
-  const { subtotal } = useCart();
+function CashPaymentContent() {
+  const { subtotal, decreaseSubtotal } = useCart();
   const [amountPaid, setAmountPaid] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const total = subtotal;
-  const change = Number(amountPaid) - total;
+  const amountParam = searchParams.get('amount');
+  const returnUrl = searchParams.get('returnUrl') || '/success';
+  const paymentAmount = amountParam ? parseFloat(amountParam) : subtotal;
+
+  const change = Number(amountPaid) - paymentAmount;
 
   const handleConfirm = () => {
-    router.push('/success');
+    // For split payments, we decrease the subtotal instead of clearing the cart
+    if (amountParam) {
+      decreaseSubtotal(paymentAmount);
+    }
+    router.push(`/success?returnUrl=${encodeURIComponent(returnUrl)}`);
   };
+  
+  const cancelHref = returnUrl.includes('checkout') ? returnUrl : '/checkout';
+
 
   return (
     <div className="flex flex-col h-screen bg-background">
       <header className="flex items-center p-4 border-b">
-        <Link href="/checkout" passHref>
+        <Link href={cancelHref} passHref>
           <Button variant="ghost" size="icon">
             <ArrowLeft />
           </Button>
@@ -35,7 +47,7 @@ export default function CashPaymentPage() {
       <main className="flex-grow flex flex-col items-center justify-center p-8 text-center space-y-6">
         <div>
           <p className="text-muted-foreground">Total Amount</p>
-          <h2 className="text-5xl font-bold text-primary">${total.toFixed(2)}</h2>
+          <h2 className="text-5xl font-bold text-primary">${paymentAmount.toFixed(2)}</h2>
         </div>
 
         <div className="w-full max-w-sm">
@@ -70,3 +82,14 @@ export default function CashPaymentPage() {
     </div>
   );
 }
+
+
+export default function CashPaymentPage() {
+    return (
+        <Suspense fallback={<div>Loading payment details...</div>}>
+            <CashPaymentContent />
+        </Suspense>
+    )
+}
+
+    

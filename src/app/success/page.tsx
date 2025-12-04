@@ -1,17 +1,22 @@
+
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2 } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 
-export default function SuccessPage() {
+function SuccessContent() {
   const { clearCart, cartItems, subtotal } = useCart();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const clearedCart = useRef(false);
   const [orderNumber, setOrderNumber] = useState<number | null>(null);
+
+  const returnUrl = searchParams.get('returnUrl') || '/';
+  const isSplitPayment = returnUrl.includes('checkout');
 
   // Keep a stable copy of cart data for the receipt
   const receiptItems = useRef(cartItems).current;
@@ -21,19 +26,43 @@ export default function SuccessPage() {
     // Generate order number only on the client
     setOrderNumber(Math.floor(Math.random() * 90000) + 10000);
     
-    if (receiptItems.length === 0) {
+    if (receiptItems.length === 0 && subtotal <= 0 && !isSplitPayment) {
       // If there's nothing to show, go to the start.
       router.replace('/');
+    } else if (isSplitPayment) {
+        // If it's a split payment, redirect back to checkout after a delay
+        const timer = setTimeout(() => {
+            router.push(returnUrl);
+        }, 2000); // 2 second delay
+        return () => clearTimeout(timer);
     }
-  }, [receiptItems.length, router]);
+  }, [receiptItems.length, router, isSplitPayment, returnUrl, subtotal]);
   
-  // Clear cart only once on mount
+  // Clear cart only once on mount IF it's the final payment
   useEffect(() => {
-    if (!clearedCart.current) {
+    if (!clearedCart.current && !isSplitPayment) {
       clearCart();
       clearedCart.current = true;
     }
-  }, [clearCart]);
+  }, [clearCart, isSplitPayment]);
+
+  if (isSplitPayment) {
+    return (
+        <div className="flex flex-col items-center justify-center text-center min-h-screen bg-muted/30 p-4">
+            <div className="relative w-full max-w-sm bg-card rounded-lg shadow-xl p-6 pt-12">
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2">
+                <div className="animate-in fade-in zoom-in-50 duration-1000">
+                    <CheckCircle2 className="h-16 w-16 text-green-500 bg-card rounded-full p-1" />
+                </div>
+                </div>
+                <h1 className="text-2xl font-headline font-bold mt-2 mb-2">Payment Successful!</h1>
+                <p className="text-muted-foreground mb-4">
+                    Returning to checkout for the next payment...
+                </p>
+            </div>
+        </div>
+    )
+  }
 
   return (
     <div className="flex flex-col items-center justify-center text-center min-h-screen bg-muted/30 p-4 overflow-hidden">
@@ -97,3 +126,13 @@ export default function SuccessPage() {
     </div>
   );
 }
+
+export default function SuccessPage() {
+    return (
+        <Suspense fallback={<div>Processing...</div>}>
+            <SuccessContent />
+        </Suspense>
+    )
+}
+
+    
