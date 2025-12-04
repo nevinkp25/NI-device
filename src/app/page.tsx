@@ -18,7 +18,7 @@ export default function Home() {
     setIsLoading(true);
     // Simulate API call
     setTimeout(() => {
-      router.push('/menu');
+      router.push('/navigation');
     }, 1500);
   };
 
