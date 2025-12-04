@@ -22,6 +22,7 @@ export default function CheckoutPage() {
   const [showCustomTip, setShowCustomTip] = useState(false);
   const [customTip, setCustomTip] = useState('');
   const [splitCount, setSplitCount] = useState(1);
+  const [splitMode, setSplitMode] = useState<'full' | 'split'>('full');
   const router = useRouter();
 
   const handlePayment = () => {
@@ -51,7 +52,8 @@ export default function CheckoutPage() {
 
   const tipAmount = showCustomTip ? parseFloat(customTip) || 0 : subtotal * tipPercentage;
   const total = subtotal + tipAmount;
-  const splitAmount = total / splitCount;
+  const currentSplitCount = splitMode === 'full' ? 1 : splitCount;
+  const splitAmount = total / currentSplitCount;
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -167,7 +169,12 @@ export default function CheckoutPage() {
             
             {/* Split Bill Section */}
             <div className='mb-4'>
-                 <h3 className="text-lg font-semibold mb-3">Split Bill</h3>
+              <SegmentedControl value={splitMode} onValueChange={(value) => setSplitMode(value as 'full' | 'split')} className="w-full mb-4">
+                <SegmentedControlItem value="full">Pay Full Amount</SegmentedControlItem>
+                <SegmentedControlItem value="split">Split Bill</SegmentedControlItem>
+              </SegmentedControl>
+              
+              {splitMode === 'split' && (
                  <div className="grid grid-cols-2 gap-4 items-center">
                     <Card className="flex items-center justify-between p-2">
                         <Button variant="ghost" size="icon" onClick={() => setSplitCount(Math.max(1, splitCount - 1))}>
@@ -188,6 +195,7 @@ export default function CheckoutPage() {
                         <p className="font-bold text-2xl">${splitAmount.toFixed(2)}</p>
                     </Card>
                  </div>
+              )}
             </div>
 
             <Separator className="my-4" />
