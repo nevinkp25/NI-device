@@ -19,7 +19,7 @@ export default function OrderByTablePage() {
         title: `Table ${tableNumber} Selected`,
         description: 'Loading menu for this table.',
       });
-      router.push('/menu');
+      router.push(`/menu?table=${tableNumber}`);
     } else {
       toast({
         variant: 'destructive',

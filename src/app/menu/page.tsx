@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { foodCategories, menuItems } from '@/lib/data';
 import { FoodCard } from '@/components/food-card';
 import { FloatingCartButton } from '@/components/floating-cart-button';
@@ -8,6 +9,26 @@ import { Utensils, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+
+function MenuHeader() {
+  const searchParams = useSearchParams();
+  const tableNumber = searchParams.get('table');
+
+  return (
+    <header className="flex items-center p-4 border-b">
+      <Link href="/navigation" passHref>
+        <Button variant="ghost" size="icon">
+          <ArrowLeft />
+        </Button>
+      </Link>
+      <h1 className="text-xl font-headline font-semibold mx-auto flex items-center gap-2">
+        <Utensils className="text-primary h-5 w-5" />
+        {tableNumber ? `Table ${tableNumber} Menu` : 'Food Menu'}
+      </h1>
+      <div className="w-8"></div>
+    </header>
+  );
+}
 
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState<string>(foodCategories[0].id);
@@ -49,18 +70,9 @@ export default function MenuPage() {
 
   return (
     <div className="bg-background min-h-screen">
-      <header className="flex items-center p-4 border-b">
-        <Link href="/navigation" passHref>
-          <Button variant="ghost" size="icon">
-            <ArrowLeft />
-          </Button>
-        </Link>
-        <h1 className="text-xl font-headline font-semibold mx-auto flex items-center gap-2">
-          <Utensils className="text-primary h-5 w-5" />
-          Food Menu
-        </h1>
-        <div className="w-8"></div>
-      </header>
+      <Suspense fallback={<div>Loading...</div>}>
+        <MenuHeader />
+      </Suspense>
 
       <nav className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-2 px-4 border-b">
         <div className="flex space-x-2 overflow-x-auto pb-2 -mb-2">
