@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState } from 'react';
@@ -78,7 +79,7 @@ export default function CheckoutPage() {
         </div>
       ) : (
         <div className="flex flex-col">
-          <main className="p-4 pb-52">
+          <main className="p-4 pb-56">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-semibold">Order Summary</h2>
               <Link href="/menu" passHref>
@@ -195,19 +196,19 @@ export default function CheckoutPage() {
           </main>
 
           <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 border-t bg-background/95 backdrop-blur-sm shadow-lg">
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Payment Method</h3>
-               <div className="grid grid-cols-2 gap-4 mb-4">
-                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-16 flex-col gap-1 shadow-sm hover:shadow-md transition-shadow">
+            <div className='space-y-3'>
+              <h3 className="text-base font-semibold">Payment Method</h3>
+               <div className="grid grid-cols-2 gap-3">
+                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-14 flex-col gap-1 shadow-sm">
                   <CreditCard />
                   <span>Card</span>
                 </Button>
-                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-16 flex-col gap-1 shadow-sm hover:shadow-md transition-shadow">
+                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-14 flex-col gap-1 shadow-sm">
                   <Landmark />
                   <span>Cash</span>
                 </Button>
               </div>
-              <Button onClick={handlePayment} className="w-full h-14 bg-accent text-accent-foreground text-lg hover:bg-accent/90 shadow-md hover:shadow-lg transition-shadow">
+              <Button onClick={handlePayment} className="w-full h-12 bg-accent text-accent-foreground text-lg hover:bg-accent/90 shadow-md">
                 Proceed to Payment
               </Button>
             </div>
