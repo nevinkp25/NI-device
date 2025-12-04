@@ -4,8 +4,10 @@ import { useRef, useEffect, useState } from 'react';
 import { foodCategories, menuItems } from '@/lib/data';
 import { FoodCard } from '@/components/food-card';
 import { FloatingCartButton } from '@/components/floating-cart-button';
-import { Utensils } from 'lucide-react';
+import { Utensils, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState<string>(foodCategories[0].id);
@@ -47,11 +49,17 @@ export default function MenuPage() {
 
   return (
     <div className="bg-background min-h-screen">
-      <header className="p-4 pt-6 text-center">
-        <h1 className="text-3xl font-headline font-bold flex items-center justify-center gap-2">
-          <Utensils className="text-primary" />
+      <header className="flex items-center p-4 border-b">
+        <Link href="/navigation" passHref>
+          <Button variant="ghost" size="icon">
+            <ArrowLeft />
+          </Button>
+        </Link>
+        <h1 className="text-xl font-headline font-semibold mx-auto flex items-center gap-2">
+          <Utensils className="text-primary h-5 w-5" />
           Food Menu
         </h1>
+        <div className="w-8"></div>
       </header>
 
       <nav className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-2 px-4 border-b">
