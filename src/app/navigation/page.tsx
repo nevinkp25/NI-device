@@ -14,10 +14,10 @@ export default function NavigationPage() {
 
   const navOptions = [
     { name: 'Open Menu', icon: BookOpen, path: '/menu' },
-    { name: 'Scan QR Code', icon: QrCode, path: '#' },
-    { name: 'Order by Table', icon: ClipboardList, path: '#' },
-    { name: 'Setting', icon: Settings, path: '#' },
-    { name: 'Wifi Settings', icon: Wifi, path: '#' },
+    { name: 'Scan QR Code', icon: QrCode, path: '/scan-qr' },
+    { name: 'Order by Table', icon: ClipboardList, path: '/order-by-table' },
+    { name: 'Settings', icon: Settings, path: '/settings' },
+    { name: 'Wifi Settings', icon: Wifi, path: '/wifi-settings' },
   ];
 
   return (
@@ -34,7 +34,6 @@ export default function NavigationPage() {
             onClick={() => handleNavigation(option.path)}
             variant="outline"
             className="w-full h-16 text-lg justify-start p-4 shadow-sm"
-            disabled={option.path === '#'}
           >
             <option.icon className="mr-4 h-6 w-6 text-primary" />
             <span>{option.name}</span>
