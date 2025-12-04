@@ -21,7 +21,7 @@ function MenuHeader() {
           <ArrowLeft />
         </Button>
       </Link>
-      <h1 className="text-xl font-headline font-semibold mx-auto flex items-center gap-2">
+      <h1 className="text-xl font-semibold mx-auto flex items-center gap-2">
         <Utensils className="text-primary h-5 w-5" />
         {tableNumber ? `Table ${tableNumber} Menu` : 'Food Menu'}
       </h1>
@@ -103,7 +103,7 @@ export default function MenuPage() {
               ref={(el) => (categoryRefs.current[category.id] = el)}
               className="pt-4"
             >
-              <h2 className="text-2xl font-headline font-bold mb-4">{category.name}</h2>
+              <h2 className="text-2xl font-bold mb-4">{category.name}</h2>
               <div className="grid grid-cols-2 gap-4">
                 {items.map((item) => (
                   <FoodCard key={item.id} item={item} />

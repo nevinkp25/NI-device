@@ -28,7 +28,7 @@ export default function Home() {
         <div className="inline-block p-4 bg-primary rounded-full mb-6 shadow-lg shadow-primary/20">
           <Utensils className="h-12 w-12 text-primary-foreground" />
         </div>
-        <h1 className="text-4xl font-headline font-bold text-foreground">SwiftBite</h1>
+        <h1 className="text-4xl font-bold text-foreground">SwiftBite</h1>
         <p className="text-muted-foreground mt-2 mb-10 text-lg">Fast, Fresh, Fuel for Your Day.</p>
       </div>
       

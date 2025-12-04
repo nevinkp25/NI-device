@@ -14,7 +14,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
   return (
     <Card className="flex flex-col overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="p-3">
-        <CardTitle className="text-base font-headline font-semibold leading-tight text-center h-10 flex items-center justify-center">{item.name}</CardTitle>
+        <CardTitle className="text-base font-semibold leading-tight text-center h-10 flex items-center justify-center">{item.name}</CardTitle>
       </CardHeader>
       <CardFooter className="p-3 pt-0 flex justify-between items-center mt-auto">
         <p className="font-bold text-primary text-lg">${item.price.toFixed(2)}</p>

@@ -75,9 +75,9 @@ export default function CheckoutPage() {
   };
 
   const tipOptions = [
-    { label: '15%', value: 0.15, emoji: '😊' },
-    { label: '18%', value: 0.18, emoji: '😄' },
-    { label: '20%', value: 0.20, emoji: '🤩' },
+    { label: '15%', value: 0.15 },
+    { label: '18%', value: 0.18 },
+    { label: '20%', value: 0.20 },
   ];
 
   const handleTipSelection = (value: number) => {
@@ -117,14 +117,14 @@ export default function CheckoutPage() {
             <ArrowLeft />
           </Button>
         </Link>
-        <h1 className="text-xl font-headline font-semibold mx-auto">Checkout</h1>
+        <h1 className="text-xl font-semibold mx-auto">Checkout</h1>
         <div className="w-8"></div>
       </header>
 
       {cartItems.length === 0 && subtotal <= 0 ? (
         <div className="flex-grow flex flex-col items-center justify-center text-center p-8">
           <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
-          <h2 className="text-2xl font-headline font-bold">Your Cart is Empty</h2>
+          <h2 className="text-2xl font-bold">Your Cart is Empty</h2>
           <p className="text-muted-foreground mt-2 mb-6">Looks like you haven't added anything to your cart yet.</p>
           <Link href="/menu" passHref>
             <Button className="bg-accent text-accent-foreground">Start Ordering</Button>
@@ -203,8 +203,7 @@ export default function CheckoutPage() {
                             onClick={() => handleTipSelection(opt.value)}
                             className="flex-col h-14"
                         >
-                           <span className="text-xl">{opt.emoji}</span>
-                           <span className="text-xs">{opt.label}</span>
+                           <span className="text-lg font-semibold">{opt.label}</span>
                         </Button>
                     ))}
                      <Button 
@@ -279,5 +278,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-
-    
