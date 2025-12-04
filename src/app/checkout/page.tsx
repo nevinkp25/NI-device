@@ -51,8 +51,10 @@ export default function CheckoutPage() {
       setTipPercentage(0);
   }
 
+  const vatRate = 0.05;
+  const vatAmount = subtotal * vatRate;
   const tipAmount = showCustomTip ? parseFloat(customTip) || 0 : subtotal * tipPercentage;
-  const total = subtotal + tipAmount;
+  const total = subtotal + vatAmount + tipAmount;
   const currentSplitCount = splitMode === 'full' ? 1 : splitCount;
   const splitAmount = total / currentSplitCount;
 
@@ -78,7 +80,7 @@ export default function CheckoutPage() {
           </Link>
         </div>
       ) : (
-        <div className="flex flex-col">
+        <>
           <main className="p-4 pb-56">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-semibold">Order Summary</h2>
@@ -115,6 +117,10 @@ export default function CheckoutPage() {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-semibold">${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">VAT (5%)</span>
+                <span className="font-semibold">${vatAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Tip</span>
@@ -171,7 +177,7 @@ export default function CheckoutPage() {
               </SegmentedControl>
               
               {splitMode === 'split' && (
-                 <div className="grid grid-cols-2 gap-4 items-center animate-in fade-in-0 duration-300">
+                 <div className="grid grid-cols-2 gap-4 items-center animate-in fade-in-0 slide-in-from-top-2 duration-300">
                     <Card className="flex items-center justify-between p-2">
                         <Button variant="ghost" size="icon" onClick={() => setSplitCount(Math.max(1, splitCount - 1))}>
                             <Minus />
@@ -199,11 +205,11 @@ export default function CheckoutPage() {
             <div className='space-y-3'>
               <h3 className="text-base font-semibold">Payment Method</h3>
                <div className="grid grid-cols-2 gap-3">
-                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-14 flex-col gap-1 shadow-sm">
+                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-12 flex-col gap-1 shadow-sm">
                   <CreditCard />
                   <span>Card</span>
                 </Button>
-                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-14 flex-col gap-1 shadow-sm">
+                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-12 flex-col gap-1 shadow-sm">
                   <Landmark />
                   <span>Cash</span>
                 </Button>
@@ -213,7 +219,7 @@ export default function CheckoutPage() {
               </Button>
             </div>
           </footer>
-        </div>
+        </>
       )}
     </div>
   );
