@@ -19,17 +19,24 @@ interface SplitBillSheetProps {
     onOpenChange: (isOpen: boolean) => void;
     totalAmount: number;
     onSplitsConfirmed: (splits: Split[]) => void;
+    initialSplits: Split[];
 }
 
-export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConfirmed }: SplitBillSheetProps) {
-    const [splits, setSplits] = useState<Split[]>([{ id: 1, amount: totalAmount, isPaid: false }]);
+export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConfirmed, initialSplits }: SplitBillSheetProps) {
+    const [splits, setSplits] = useState<Split[]>(initialSplits);
 
     useEffect(() => {
         if (isOpen) {
-           const initialSplitCount = 2;
-           distributeEqually(initialSplitCount);
+            // If the initial splits don't add up to the total, or there's only one, reset it.
+            const initialTotal = initialSplits.reduce((sum, s) => sum + s.amount, 0);
+            if (Math.abs(totalAmount - initialTotal) > 0.01 || initialSplits.length <= 1) {
+                // If opening for the first time or in an invalid state, default to 2 splits.
+                 distributeEqually(2);
+            } else {
+                setSplits(initialSplits);
+            }
         }
-    }, [isOpen, totalAmount]);
+    }, [isOpen, totalAmount, initialSplits]);
 
     const distributeEqually = (count: number) => {
         if (count < 1) return;
@@ -57,6 +64,8 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConf
         if (newSplits.length > 0) {
             const deficitPerSplit = deficit / newSplits.length;
             setSplits(newSplits.map(s => ({...s, amount: s.amount + deficitPerSplit})));
+        } else {
+             setSplits([]);
         }
     };
 
@@ -75,12 +84,13 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConf
 
     const handleConfirm = () => {
         onSplitsConfirmed(splits);
+        onOpenChange(false);
     }
     
     return (
         <Sheet open={isOpen} onOpenChange={onOpenChange}>
-            <SheetContent side="bottom" className="h-full flex flex-col">
-                <SheetHeader>
+            <SheetContent side="bottom" className="h-[90vh] flex flex-col rounded-t-lg">
+                <SheetHeader className="p-4 border-b">
                     <SheetTitle>Split Bill</SheetTitle>
                 </SheetHeader>
                 <div className="flex-grow flex flex-col items-center p-4 overflow-y-auto">
@@ -90,7 +100,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConf
                             <h2 className="text-5xl font-bold text-primary">${totalAmount.toFixed(2)}</h2>
                         </div>
                         <Card className="flex items-center justify-between p-2">
-                            <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => handleSplitCountChange(splits.length - 1)}>
+                            <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => handleSplitCountChange(splits.length - 1)} disabled={splits.length <= 1}>
                                 <Minus className="h-6 w-6" />
                             </Button>
                             <div className="text-center">
@@ -132,9 +142,9 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConf
                         </Card>
                     </div>
                 </div>
-                <SheetFooter className="p-4">
-                    <Button onClick={handleConfirm} disabled={!isFullyAllocated} className="w-full h-14 text-lg">
-                        Confirm Split
+                <SheetFooter className="p-4 border-t">
+                    <Button onClick={handleConfirm} disabled={!isFullyAllocated} className="w-full h-14 text-lg bg-accent text-accent-foreground">
+                        Done
                     </Button>
                 </SheetFooter>
             </SheetContent>

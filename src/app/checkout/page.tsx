@@ -39,6 +39,16 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (splitMode === 'full') {
       setSplits([{ id: 1, amount: total, isPaid: false }]);
+    } else {
+        // When switching to split mode, if there's only one split, re-initialize.
+        // This handles the case of switching from full to split.
+        if (splits.length <= 1) {
+            const equalAmount = total / 2;
+            setSplits([
+                { id: 1, amount: equalAmount, isPaid: false },
+                { id: 2, amount: equalAmount, isPaid: false }
+            ]);
+        }
     }
   }, [total, splitMode]);
   
@@ -55,7 +65,7 @@ export default function CheckoutPage() {
     // For now, we just proceed with the first unpaid amount
     const returnUrl = splitMode === 'split' 
       ? `/checkout?split=true`
-      : '/';
+      : '/success';
 
     if (paymentMethod === 'card') {
       router.push(`/card-payment?amount=${amountToPay}&returnUrl=${encodeURIComponent(returnUrl)}`);
@@ -233,6 +243,7 @@ export default function CheckoutPage() {
                 onOpenChange={setIsSplitSheetOpen}
                 totalAmount={total}
                 onSplitsConfirmed={handleSplitsConfirmed}
+                initialSplits={splits}
             />
 
           </main>
@@ -260,5 +271,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-
-    
