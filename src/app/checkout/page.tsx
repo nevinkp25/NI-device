@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { QuantitySelector } from '@/components/quantity-selector';
-import { CreditCard, Landmark, ArrowLeft, Trash2, ShoppingCart, Users, Minus, Plus } from 'lucide-react';
+import { CreditCard, Landmark, ArrowLeft, Trash2, ShoppingCart, Minus, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -56,7 +56,7 @@ export default function CheckoutPage() {
   const splitAmount = total / currentSplitCount;
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col bg-background min-h-screen">
       <header className="flex items-center p-4 border-b sticky top-0 bg-background/90 backdrop-blur-sm z-10">
         <Link href="/menu" passHref>
           <Button variant="ghost" size="icon">
@@ -77,8 +77,8 @@ export default function CheckoutPage() {
           </Link>
         </div>
       ) : (
-        <>
-          <main className="flex-grow overflow-y-auto p-4">
+        <div className="flex flex-col">
+          <main className="p-4">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-semibold">Order Summary</h2>
               <Link href="/menu" passHref>
@@ -116,7 +116,7 @@ export default function CheckoutPage() {
             </Card>
           </main>
 
-          <footer className="p-4 border-t bg-background shadow-lg">
+          <div className="p-4 border-t bg-background shadow-lg">
              <div className="space-y-3 mb-4">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
@@ -218,8 +218,8 @@ export default function CheckoutPage() {
                 Proceed to Payment
               </Button>
             </div>
-          </footer>
-        </>
+          </div>
+        </div>
       )}
     </div>
   );
