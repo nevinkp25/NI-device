@@ -40,6 +40,13 @@ function OrderStatusContent() {
     }
   }, [tableNumber, loadCart]);
 
+  useEffect(() => {
+    // This effect re-opens the split bill sheet when returning from payment
+    if(searchParams.has('paidGuest')){
+      setIsSplitSheetOpen(true);
+    }
+  }, [searchParams]);
+
   if (!tableNumber) {
     return (
        <div className="flex flex-col h-screen bg-background text-foreground">
@@ -205,7 +212,10 @@ function OrderStatusContent() {
             isOpen={isSplitSheetOpen}
             onOpenChange={setIsSplitSheetOpen}
             totalAmount={total}
-            onSplitByItem={() => setIsSplitByItemSheetOpen(true)}
+            onSplitByItem={() => {
+              setIsSplitSheetOpen(false);
+              setIsSplitByItemSheetOpen(true);
+            }}
             baseReturnUrl={`${pathname}?table=${tableNumber}`}
         />
         <SplitByItemSheet

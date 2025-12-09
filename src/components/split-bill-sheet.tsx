@@ -29,8 +29,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
     useEffect(() => {
         if (isOpen) {
             const paidGuestIndex = searchParams.get('paidGuest');
-            if (paidGuestIndex) {
-                setStep('byAmount');
+            if (paidGuestIndex && step === 'byAmount') {
                 const index = parseInt(paidGuestIndex, 10);
                 if (!paidGuests.includes(index)) {
                     setPaidGuests(prev => [...prev, index]);
@@ -40,7 +39,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                 window.history.replaceState({}, '', newUrl);
             }
         }
-    }, [isOpen, searchParams, paidGuests]);
+    }, [isOpen, searchParams, paidGuests, step]);
 
     const handleSplitByItemClick = () => {
         onOpenChange(false);
@@ -55,19 +54,25 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
 
     useEffect(() => {
         if (allGuestsPaid && isOpen) {
-            clearCart();
-            router.push('/navigation');
-            resetState();
-            onOpenChange(false);
+            // Short delay to allow user to see the "Paid" status on the last button
+            setTimeout(() => {
+                clearCart();
+                resetState();
+                onOpenChange(false);
+                router.push('/navigation');
+            }, 500);
         }
     }, [allGuestsPaid, isOpen, router, onOpenChange, clearCart]);
 
     const perPersonAmount = totalAmount / splitCount;
 
     const handlePayForSplit = (guestIndex: number) => {
-        const returnUrl = `${baseReturnUrl}?paidGuest=${guestIndex}`;
+        const remainingGuests = splitCount - paidGuests.length;
         const amountToPay = totalAmount - (paidGuests.length * perPersonAmount);
-        const currentSplitAmount = Math.min(perPersonAmount, amountToPay);
+        const currentSplitAmount = Math.min(perPersonAmount, amountToPay / remainingGuests);
+        
+        const returnUrl = `${baseReturnUrl}&paidGuest=${guestIndex}`;
+
         router.push(`/payment-method?amount=${currentSplitAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
         onOpenChange(false); 
     }
@@ -80,15 +85,16 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
 
     const handleSheetChange = (open: boolean) => {
         if (!open) {
-            const isPaying = window.location.search.includes('amount=');
-            if (!isPaying) {
-                resetState();
+            const isNavigatingForPayment = window.location.search.includes('amount=');
+            if (!isNavigatingForPayment) {
+                 resetState();
             }
         }
         onOpenChange(open);
     }
     
     useEffect(() => {
+        // Reset paid guests if the split count changes
         setPaidGuests([]);
     }, [splitCount]);
 
@@ -101,7 +107,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                         <Users className="h-6 w-6 text-primary"/>
                         <SheetTitle>Split the Bill</SheetTitle>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}><X className="h-5 w-5"/></Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleSheetChange(false)}><X className="h-5 w-5"/></Button>
                 </SheetHeader>
                 
                 <div className="p-4">

@@ -23,7 +23,7 @@ function SuccessContent() {
     table: string;
   }>({
     id: '',
-    date: null,
+    date: new Date(),
     amount: 0,
     table: '',
   });
@@ -32,7 +32,7 @@ function SuccessContent() {
   const amountPaid = searchParams.get('amount');
   const transactionId = searchParams.get('transactionId');
   const tableNumber = searchParams.get('table');
-  const isSplitPayment = returnUrl.includes('checkout') || returnUrl.includes('order-status');
+  const isSplitPayment = returnUrl.includes('checkout') || returnUrl.includes('order-status') || returnUrl.includes('paidGuest');
 
 
   useEffect(() => {
@@ -49,11 +49,9 @@ function SuccessContent() {
             router.push(returnUrl);
         }, 2000);
         return () => clearTimeout(timer);
-    }
-
-    // Clear the cart for full payments
-    if (!isSplitPayment) {
-      clearCart();
+    } else {
+        // Clear the cart only for non-split, full payments
+        clearCart();
     }
 
   }, [amountPaid, transactionId, tableNumber, isSplitPayment, returnUrl, router, clearCart]);

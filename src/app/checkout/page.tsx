@@ -171,7 +171,10 @@ export default function CheckoutPage() {
                 isOpen={isSplitSheetOpen}
                 onOpenChange={setIsSplitSheetOpen}
                 totalAmount={total}
-                onSplitByItem={() => setIsSplitByItemSheetOpen(true)}
+                onSplitByItem={() => {
+                  setIsSplitSheetOpen(false);
+                  setIsSplitByItemSheetOpen(true);
+                }}
                 baseReturnUrl={pathname}
            />
            <SplitByItemSheet
