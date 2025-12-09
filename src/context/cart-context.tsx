@@ -80,19 +80,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setSubtotal(0);
   }, []);
 
+  // This function is now simplified. It reduces the subtotal for display,
+  // but doesn't alter the cartItems. The cart will be re-evaluated on the checkout page.
   const decreaseSubtotal = useCallback((amount: number) => {
-    setSubtotal(prev => {
-        const newSubtotal = prev - amount;
-        if (newSubtotal <= 0.01) { // Use a small epsilon for float comparison
-            clearCart();
-            return 0;
-        }
-        return newSubtotal;
-    });
-     // In a real app, you might want to remove specific items paid for.
-     // For this simulation, we just reduce the total. We'll clear items
-     // once the subtotal is effectively zero.
-  }, [clearCart]);
+    setSubtotal(prev => Math.max(0, prev - amount));
+  }, []);
 
 
   const totalItems = useMemo(() => {

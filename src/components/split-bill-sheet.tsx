@@ -1,151 +1,130 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Minus, Plus, Trash2 } from 'lucide-react';
-
-export interface Split {
-    id: number;
-    amount: number;
-    isPaid: boolean;
-}
+import { Minus, Plus, Users, Equal, Box, X, User } from 'lucide-react';
+import { useCart } from '@/context/cart-context';
 
 interface SplitBillSheetProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     totalAmount: number;
-    onSplitsConfirmed: (splits: Split[]) => void;
-    initialSplits: Split[];
 }
 
-export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitsConfirmed, initialSplits }: SplitBillSheetProps) {
-    const [splits, setSplits] = useState<Split[]>(initialSplits);
+export function SplitBillSheet({ isOpen, onOpenChange, totalAmount }: SplitBillSheetProps) {
+    const [step, setStep] = useState<'initial' | 'byAmount' | 'byItem'>('initial');
+    const [splitCount, setSplitCount] = useState(2);
+    const router = useRouter();
 
-    useEffect(() => {
-        if (isOpen) {
-            // If the initial splits don't add up to the total, or there's only one, reset it.
-            const initialTotal = initialSplits.reduce((sum, s) => sum + s.amount, 0);
-            if (Math.abs(totalAmount - initialTotal) > 0.01 || initialSplits.length <= 1) {
-                // If opening for the first time or in an invalid state, default to 2 splits.
-                 distributeEqually(2);
-            } else {
-                setSplits(initialSplits);
-            }
-        }
-    }, [isOpen, totalAmount, initialSplits]);
-
-    const distributeEqually = (count: number) => {
-        if (count < 1) return;
-        const equalAmount = totalAmount / count;
-        const newSplits = Array.from({ length: count }, (_, i) => ({
-            id: Date.now() + i, // Use a more unique ID
-            amount: equalAmount,
-            isPaid: false
-        }));
-        setSplits(newSplits);
-    }
-    
-    const handleSplitCountChange = (newCount: number) => {
-        if (newCount < 1) return;
-        distributeEqually(newCount);
-    };
-
-    const handleRemoveSplit = (idToRemove: number) => {
-        if (splits.length <= 1) return;
-        const newSplits = splits.filter(s => s.id !== idToRemove);
-        const remainingTotal = newSplits.reduce((sum, s) => sum + s.amount, 0);
-        const deficit = totalAmount - remainingTotal;
-
-        // Distribute the deficit among remaining splits
-        if (newSplits.length > 0) {
-            const deficitPerSplit = deficit / newSplits.length;
-            setSplits(newSplits.map(s => ({...s, amount: s.amount + deficitPerSplit})));
-        } else {
-             setSplits([]);
-        }
-    };
-
-    const handleAmountChange = (id: number, newAmountStr: string) => {
-        const newAmount = parseFloat(newAmountStr) || 0;
-        setSplits(prevSplits => 
-            prevSplits.map(split => 
-                split.id === id ? { ...split, amount: newAmount } : split
-            )
-        );
-    };
-
-    const totalAllocated = useMemo(() => splits.reduce((sum, s) => sum + s.amount, 0), [splits]);
-    const remainingToPay = totalAmount - totalAllocated;
-    const isFullyAllocated = Math.abs(remainingToPay) < 0.01;
-
-    const handleConfirm = () => {
-        onSplitsConfirmed(splits);
+    const handleSplitByItem = () => {
+        router.push('/checkout');
         onOpenChange(false);
     }
     
-    return (
-        <Sheet open={isOpen} onOpenChange={onOpenChange}>
-            <SheetContent side="bottom" className="h-[90vh] flex flex-col rounded-t-lg">
-                <SheetHeader className="p-4 border-b">
-                    <SheetTitle>Split Bill</SheetTitle>
-                </SheetHeader>
-                <div className="flex-grow flex flex-col items-center p-4 overflow-y-auto">
-                    <div className='max-w-sm w-full space-y-4'>
-                        <div className="text-center">
-                            <p className="text-muted-foreground">Total Amount</p>
-                            <h2 className="text-5xl font-bold text-primary">${totalAmount.toFixed(2)}</h2>
-                        </div>
-                        <Card className="flex items-center justify-between p-2">
-                            <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => handleSplitCountChange(splits.length - 1)} disabled={splits.length <= 1}>
-                                <Minus className="h-6 w-6" />
-                            </Button>
-                            <div className="text-center">
-                                <p className="font-bold text-4xl">{splits.length}</p>
-                                <p className="text-sm text-muted-foreground">
-                                    Ways
-                                </p>
-                            </div>
-                            <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => handleSplitCountChange(splits.length + 1)}>
-                                <Plus className="h-6 w-6" />
-                            </Button>
-                        </Card>
-                        
-                        <div className='space-y-2'>
-                            {splits.map((split, index) => (
-                                <div key={split.id} className="flex items-center gap-2">
-                                    <span className="font-semibold text-muted-foreground w-20">Pay {index + 1}</span>
-                                    <div className='relative flex-grow'>
-                                      <span className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'>$</span>
-                                      <Input
-                                          type="number"
-                                          value={split.amount > 0 ? split.amount.toFixed(2) : ''}
-                                          onChange={(e) => handleAmountChange(split.id, e.target.value)}
-                                          className="text-right font-mono text-lg h-12 pr-4 pl-8"
-                                      />
-                                    </div>
-                                    <Button variant="ghost" size="icon" onClick={() => handleRemoveSplit(split.id)} disabled={splits.length <= 1}>
-                                        <Trash2 className="h-5 w-5 text-destructive" />
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
+    const handleSplitByAmount = () => {
+        setStep('byAmount');
+    }
 
-                         <Card className="p-3 text-center bg-muted">
-                            <p className="text-muted-foreground text-base">Remaining to pay</p>
-                            <p className={`font-bold text-3xl ${!isFullyAllocated ? 'text-destructive' : 'text-green-600'}`}>
-                                ${remainingToPay.toFixed(2)}
-                            </p>
-                        </Card>
+    const handlePayForSplit = (amount: number) => {
+        const returnUrl = '/checkout'; // Return to checkout to settle the rest
+        router.push(`/payment-method?amount=${amount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+        onOpenChange(false);
+    }
+
+    const resetState = () => {
+        setStep('initial');
+        setSplitCount(2);
+    }
+
+    const handleSheetChange = (open: boolean) => {
+        if (!open) {
+            resetState();
+        }
+        onOpenChange(open);
+    }
+
+    const perPersonAmount = totalAmount / splitCount;
+
+    return (
+        <Sheet open={isOpen} onOpenChange={handleSheetChange}>
+            <SheetContent side="bottom" className="h-auto flex flex-col rounded-t-lg p-0" hideCloseButton>
+                <SheetHeader className="p-4 border-b flex-row items-center justify-between">
+                    <div className='flex items-center gap-2'>
+                        <Users className="h-6 w-6 text-primary"/>
+                        <SheetTitle>Split the Bill</SheetTitle>
                     </div>
+                    <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}><X className="h-5 w-5"/></Button>
+                </SheetHeader>
+                
+                <div className="p-4">
+                    <div className="text-center mb-6">
+                        <p className="text-muted-foreground">Total Amount</p>
+                        <h2 className="text-5xl font-bold text-primary">AED {totalAmount.toFixed(2)}</h2>
+                    </div>
+
+                    {step === 'initial' && (
+                        <div className="grid grid-cols-2 gap-4 animate-in fade-in-0 duration-300">
+                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={handleSplitByItem}>
+                                <Box className="h-8 w-8 mb-1"/>
+                                Split by Item
+                            </Button>
+                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={handleSplitByAmount}>
+                                <Equal className="h-8 w-8 mb-1"/>
+                                Split Equally
+                            </Button>
+                        </div>
+                    )}
+
+                    {step === 'byAmount' && (
+                        <div className="space-y-4 animate-in fade-in-0 duration-300">
+                             <p className="text-center text-muted-foreground font-semibold">Split between how many people?</p>
+                            <Card className="flex items-center justify-between p-2">
+                                <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => setSplitCount(Math.max(2, splitCount - 1))} disabled={splitCount <= 2}>
+                                    <Minus className="h-6 w-6" />
+                                </Button>
+                                <div className="text-center">
+                                    <p className="font-bold text-4xl">{splitCount}</p>
+                                    <p className="text-sm text-muted-foreground">people</p>
+                                </div>
+                                <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => setSplitCount(splitCount + 1)}>
+                                    <Plus className="h-6 w-6" />
+                                </Button>
+                            </Card>
+                            <Card className="p-4 text-center bg-muted">
+                                <p className="text-muted-foreground">Each person pays</p>
+                                <p className="font-bold text-3xl text-primary">AED {perPersonAmount.toFixed(2)}</p>
+                            </Card>
+                            
+                            <div className="space-y-2 pt-4">
+                               <p className="text-center text-muted-foreground font-semibold">Select who is paying:</p>
+                                {Array.from({ length: splitCount }).map((_, index) => (
+                                    <Card key={index} className="flex items-center justify-between p-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className="bg-muted p-2 rounded-full"><User className="h-5 w-5 text-muted-foreground"/></div>
+                                            <div>
+                                                <p className="font-semibold">Guest {index + 1}</p>
+                                                <p className="text-sm text-muted-foreground">AED {perPersonAmount.toFixed(2)}</p>
+                                            </div>
+                                        </div>
+                                        <Button onClick={() => handlePayForSplit(perPersonAmount)}>Pay</Button>
+                                    </Card>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
+
                 <SheetFooter className="p-4 border-t">
-                    <Button onClick={handleConfirm} disabled={!isFullyAllocated} className="w-full h-14 text-lg bg-accent text-accent-foreground">
-                        Done
-                    </Button>
+                    {step === 'byAmount' && (
+                        <Button variant="outline" onClick={() => setStep('initial')} className="w-full">
+                           Back
+                        </Button>
+                    )}
                 </SheetFooter>
             </SheetContent>
         </Sheet>

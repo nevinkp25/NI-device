@@ -6,15 +6,17 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, UserPlus, HandCoins } from 'lucide-react';
+import { ArrowLeft, HandCoins } from 'lucide-react';
 import Link from 'next/link';
 import { TipSheet } from '@/components/tip-sheet';
 import { QuantitySelector } from '@/components/quantity-selector';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { SplitBillSheet } from '@/components/split-bill-sheet';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, loadCart } = useCart();
   const [isTipSheetOpen, setIsTipSheetOpen] = useState(false);
+  const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const router = useRouter();
 
   const vatRate = 0.05;
@@ -36,7 +38,7 @@ export default function CheckoutPage() {
       // Since checkout page now has cart items, we load them into the cart before navigating
       // This is a bit of a workaround for the demo flow.
       loadCart(cartItems);
-      router.push(`/order-status?table=1&fromCheckout=true`);
+      setIsSplitSheetOpen(true);
   }
 
   const handlePostPaid = () => {
@@ -132,18 +134,11 @@ export default function CheckoutPage() {
             </div>
           </main>
 
-          <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm shadow-lg space-y-2">
-            <div className="grid grid-cols-2 gap-2">
-                <Button onClick={handleSplitBill} variant="outline" className="w-full h-12 text-base">
-                    <UserPlus className="mr-2 h-5 w-5" />
-                    Split Bill
-                </Button>
-                 <Button onClick={handlePostPaid} variant="outline" className="w-full h-12 text-base">
-                    <HandCoins className="mr-2 h-5 w-5" />
-                    Post Paid
-                </Button>
-            </div>
-            <Button onClick={handleProceedToPayment} disabled={total <= 0} className="w-full h-12 bg-primary text-primary-foreground text-lg">
+          <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm shadow-lg grid grid-cols-2 gap-3">
+             <Button onClick={handleSplitBill} variant="outline" className="w-full h-14 text-base">
+                Split the Bill
+            </Button>
+            <Button onClick={handleProceedToPayment} disabled={total <= 0} className="w-full h-14 bg-primary text-primary-foreground text-lg">
                 Pay Full Amount
             </Button>
           </footer>
@@ -156,6 +151,11 @@ export default function CheckoutPage() {
                 const returnUrl = '/success';
                 router.push(`/payment-method?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
               }}
+           />
+           <SplitBillSheet 
+                isOpen={isSplitSheetOpen}
+                onOpenChange={setIsSplitSheetOpen}
+                totalAmount={total}
            />
         </>
       )}

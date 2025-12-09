@@ -6,13 +6,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { SegmentedControl, SegmentedControlItem } from '@/components/segmented-control';
-import { ArrowLeft, UserPlus, HandCoins } from 'lucide-react';
+import { ArrowLeft, HandCoins } from 'lucide-react';
 import Link from 'next/link';
 import { sampleOrder, type Order } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
 import { format } from 'date-fns';
 import { TipSheet } from '@/components/tip-sheet';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { SplitBillSheet } from '@/components/split-bill-sheet';
 
 
 function OrderStatusContent() {
@@ -21,6 +22,8 @@ function OrderStatusContent() {
   const { loadCart } = useCart();
   const [order, setOrder] = useState<Order | null>(null);
   const [isTipSheetOpen, setIsTipSheetOpen] = useState(false);
+  const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
+
 
   const tableNumber = searchParams.get('table');
 
@@ -84,7 +87,7 @@ function OrderStatusContent() {
   };
   
   const handleSplitBill = () => {
-      router.push(`/checkout?table=${tableNumber}`);
+      setIsSplitSheetOpen(true);
   }
 
   const handlePostPaid = () => {
@@ -103,7 +106,7 @@ function OrderStatusContent() {
         <div className="w-8"></div>
       </header>
 
-      <main className="p-4 flex-grow">
+      <main className="p-4 flex-grow pb-48">
         <div className="space-y-4">
           <SegmentedControl value={`order-${order.id}`} className="w-full">
             <SegmentedControlItem value={`order-${order.id}`} className="flex-1">Order # {order.id}</SegmentedControlItem>
@@ -162,18 +165,11 @@ function OrderStatusContent() {
         </div>
       </main>
 
-      <footer className="p-3 border-t bg-background space-y-2">
-        <div className="grid grid-cols-2 gap-2">
-             <Button onClick={handleSplitBill} variant="outline" className="w-full h-12 text-base">
-               <UserPlus className="mr-2 h-5 w-5" />
-               Split Bill
-            </Button>
-            <Button onClick={handlePostPaid} variant="outline" className="w-full h-12 text-base">
-               <HandCoins className="mr-2 h-5 w-5" />
-               Post Paid
-            </Button>
-        </div>
-        <Button onClick={handleProceedToPayment} className="w-full h-12 bg-primary text-primary-foreground text-lg">
+      <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm grid grid-cols-2 gap-3">
+        <Button onClick={handleSplitBill} variant="outline" className="w-full h-14 text-base">
+            Split the Bill
+        </Button>
+        <Button onClick={handleProceedToPayment} className="w-full h-14 bg-primary text-primary-foreground text-lg">
            Pay Full Amount
         </Button>
       </footer>
@@ -185,6 +181,11 @@ function OrderStatusContent() {
               const returnUrl = `/success`;
               router.push(`/payment-method?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}&table=${tableNumber}`);
             }}
+        />
+        <SplitBillSheet 
+            isOpen={isSplitSheetOpen}
+            onOpenChange={setIsSplitSheetOpen}
+            totalAmount={total}
         />
 
     </div>
