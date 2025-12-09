@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { CreditCard, X } from 'lucide-react';
+import { CreditCard, X, Pen } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 
@@ -102,7 +102,7 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                         <p className="text-4xl font-bold">AED {billAmount.toFixed(2)}</p>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-2 mb-2">
+                    <div className="grid grid-cols-5 gap-2 mb-4">
                         {tipOptions.map(opt => (
                             <Button 
                                 key={opt.value}
@@ -113,16 +113,15 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                                {opt.label}
                             </Button>
                         ))}
-                    </div>
-                     <div className="grid grid-cols-1 gap-2 mb-4">
-                        <Button 
+                         <Button 
                             variant={showCustomTip ? 'default' : 'outline'}
                             onClick={handleCustomTipClick}
                             className="h-12 text-base"
+                            size="icon"
                         >
-                           Custom
+                           <Pen className="h-6 w-6"/>
                         </Button>
-                     </div>
+                    </div>
 
                     {showCustomTip && (
                         <div className="animate-in fade-in-0 duration-300 mb-4">
