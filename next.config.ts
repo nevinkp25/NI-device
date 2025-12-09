@@ -31,6 +31,8 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
+    // allowedDevOrigins is placed here as per Next.js docs for specific versions.
+    // If you encounter errors, it might need to be at the top level.
     allowedDevOrigins: [
       '*.cloudworkstations.dev',
     ]
