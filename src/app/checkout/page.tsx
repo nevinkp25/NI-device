@@ -61,8 +61,11 @@ export default function CheckoutPage() {
       if (splitMode === 'split') {
         setIsSplitSheetOpen(true);
       }
+    } else if (searchParams.get('split') === 'true') {
+        setSplitMode('split');
+        setIsSplitSheetOpen(true);
     }
-  }, [isReturningFromSplit, splitMode]);
+  }, [isReturningFromSplit, splitMode, searchParams]);
   
   const handleProceedToPayment = () => {
     if (splitMode === 'split') {

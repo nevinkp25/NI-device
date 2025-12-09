@@ -11,12 +11,15 @@ import Link from 'next/link';
 import { sampleOrder, type Order } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
 import { format } from 'date-fns';
+import { TipSheet } from '@/components/tip-sheet';
+
 
 function OrderStatusContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { loadCart } = useCart();
   const [order, setOrder] = useState<Order | null>(null);
+  const [isTipSheetOpen, setIsTipSheetOpen] = useState(false);
 
   const tableNumber = searchParams.get('table');
 
@@ -77,11 +80,11 @@ function OrderStatusContent() {
   const totalItems = order.items.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleProceedToPayment = () => {
-    router.push('/checkout');
+    setIsTipSheetOpen(true);
   };
   
   const handleSplitBill = () => {
-      router.push('/checkout?split=true');
+      router.push('/checkout');
   }
 
   return (
@@ -153,6 +156,20 @@ function OrderStatusContent() {
            Split the Bill
         </Button>
       </footer>
+        <TipSheet
+            isOpen={isTipSheetOpen}
+            onOpenChange={setIsTipSheetOpen}
+            billAmount={total}
+            onPaymentConfirmed={(finalAmount, paymentMethod) => {
+            const returnUrl = '/success';
+                if (paymentMethod === 'card') {
+                router.push(`/card-payment?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+            } else {
+                router.push(`/cash-payment?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+            }
+            }}
+        />
+
     </div>
   );
 }
