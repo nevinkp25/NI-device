@@ -15,7 +15,7 @@ interface SplitBillSheetProps {
     onOpenChange: (isOpen: boolean) => void;
     totalAmount: number;
     onSplitByItem: () => void;
-    baseReturnUrl: string; // e.g., /checkout or /order-status
+    baseReturnUrl: string; // e.g., /checkout or /order-status?table=3
 }
 
 export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByItem, baseReturnUrl }: SplitBillSheetProps) {
@@ -27,34 +27,29 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
     const { clearCart } = useCart();
 
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && step === 'byAmount') {
             const paidGuestIndex = searchParams.get('paidGuest');
-            if (paidGuestIndex && step === 'byAmount') {
+            if (paidGuestIndex) {
                 const index = parseInt(paidGuestIndex, 10);
                 if (!paidGuests.includes(index)) {
                     setPaidGuests(prev => [...prev, index]);
                 }
+                
+                // Clean up URL params after processing them
                 const newUrl = new URL(window.location.href);
                 newUrl.searchParams.delete('paidGuest');
-                window.history.replaceState({}, '', newUrl);
+                newUrl.searchParams.delete('amount');
+                newUrl.searchParams.delete('returnUrl');
+                newUrl.searchParams.delete('transactionId');
+                window.history.replaceState({}, '', newUrl.toString());
             }
         }
     }, [isOpen, searchParams, paidGuests, step]);
-
-    const handleSplitByItemClick = () => {
-        onOpenChange(false);
-        onSplitByItem();
-    }
-    
-    const handleSplitByAmount = () => {
-        setStep('byAmount');
-    }
     
     const allGuestsPaid = paidGuests.length > 0 && paidGuests.length === splitCount;
 
     useEffect(() => {
         if (allGuestsPaid && isOpen) {
-            // Short delay to allow user to see the "Paid" status on the last button
             setTimeout(() => {
                 clearCart();
                 resetState();
@@ -71,10 +66,11 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
         const amountToPay = totalAmount - (paidGuests.length * perPersonAmount);
         const currentSplitAmount = Math.min(perPersonAmount, amountToPay / remainingGuests);
         
-        const returnUrl = `${baseReturnUrl}&paidGuest=${guestIndex}`;
+        // Construct the return URL to bring the user back to the current page with a parameter
+        const returnUrl = `${baseReturnUrl}${baseReturnUrl.includes('?') ? '&' : '?'}paidGuest=${guestIndex}`;
 
         router.push(`/payment-method?amount=${currentSplitAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
-        onOpenChange(false); 
+        onOpenChange(false);
     }
 
     const resetState = () => {
@@ -94,7 +90,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
     }
     
     useEffect(() => {
-        // Reset paid guests if the split count changes
         setPaidGuests([]);
     }, [splitCount]);
 
@@ -118,11 +113,11 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
 
                     {step === 'initial' && (
                         <div className="grid grid-cols-2 gap-4 animate-in fade-in-0 duration-300">
-                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={handleSplitByItemClick}>
+                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={onSplitByItem}>
                                 <Box className="h-8 w-8 mb-1"/>
                                 Split by Item
                             </Button>
-                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={handleSplitByAmount}>
+                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={() => setStep('byAmount')}>
                                 <Equal className="h-8 w-8 mb-1"/>
                                 Split Equally
                             </Button>
