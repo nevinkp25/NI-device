@@ -11,7 +11,6 @@ import Link from 'next/link';
 import { QuantitySelector } from '@/components/quantity-selector';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { SplitBillSheet } from '@/components/split-bill-sheet';
-import { SplitByItemSheet } from '@/components/split-by-item-sheet';
 import { TipSheet } from '@/components/tip-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -22,7 +21,6 @@ export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, loadCart, getDisplayPrice } = useCart();
   const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
-  const [isSplitByItemSheetOpen, setIsSplitByItemSheetOpen] = useState(false);
   const [isWaiterProfileOpen, setIsWaiterProfileOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -206,19 +204,11 @@ export default function CheckoutPage() {
                   isOpen={isSplitSheetOpen}
                   onOpenChange={setIsSplitSheetOpen}
                   totalAmount={total}
-                  onSplitByItem={() => {
-                    setIsSplitSheetOpen(false);
-                    setIsSplitByItemSheetOpen(true);
-                  }}
-                  baseReturnUrl={pathname}
-             />
-             <SplitByItemSheet
-                  isOpen={isSplitByItemSheetOpen}
-                  onOpenChange={setIsSplitByItemSheetOpen}
                   onProceedToPayment={(amount) => {
-                    setIsSplitByItemSheetOpen(false);
+                    setIsSplitSheetOpen(false);
                     setTipDetails({ isOpen: true, amount: amount });
                   }}
+                  baseReturnUrl={pathname}
              />
           </>
         )}

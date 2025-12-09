@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -10,32 +10,81 @@ import { Card } from '@/components/ui/card';
 import { Minus, Plus, Users, Equal, Box, X, User } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { TipSheet } from './tip-sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Checkbox } from './ui/checkbox';
+import { Label } from './ui/label';
+import { Separator } from './ui/separator';
+import Link from 'next/link';
 
 interface SplitBillSheetProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     totalAmount: number;
-    onSplitByItem: () => void;
     baseReturnUrl: string; // e.g., /checkout or /order-status?table=3
+    onProceedToPayment: (amount: number) => void;
 }
 
-export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByItem, baseReturnUrl }: SplitBillSheetProps) {
-    const [step, setStep] = useState<'initial' | 'byAmount'>('initial');
+export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, baseReturnUrl, onProceedToPayment }: SplitBillSheetProps) {
     const [splitCount, setSplitCount] = useState(2);
     const [paidGuests, setPaidGuests] = useState<number[]>([]);
     const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number, guestIndex: number | null}>({isOpen: false, amount: 0, guestIndex: null});
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { clearCart } = useCart();
+    const { cartItems, removeFromCart, getDisplayPrice, clearCart, loadCart } = useCart();
+    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const [activeTab, setActiveTab] = useState('equally');
 
     const perPersonAmount = totalAmount > 0 && splitCount > 0 ? totalAmount / splitCount : 0;
-    const allGuestsPaid = paidGuests.length >= splitCount;
+    
+    // START: Split by item logic
+    const itemsToPay = useMemo(() => {
+        return cartItems.filter(item => selectedItems.includes(item.cartItemId));
+    }, [cartItems, selectedItems]);
+
+    const paymentSubtotal = useMemo(() => {
+        return itemsToPay.reduce((acc, item) => acc + getDisplayPrice(item) * item.quantity, 0);
+    }, [itemsToPay, getDisplayPrice]);
+    
+    const vatAmount = paymentSubtotal * 0.05;
+    const itemSplitTotal = paymentSubtotal + vatAmount;
+
+    const handleItemSelect = (cartItemId: string) => {
+        setSelectedItems(prev =>
+        prev.includes(cartItemId)
+            ? prev.filter(id => id !== cartItemId)
+            : [...prev, cartItemId]
+        );
+    };
+
+    const handlePayForItemsClick = () => {
+        if (itemsToPay.length === 0) return;
+        onProceedToPayment(itemSplitTotal);
+        // Remove items from cart after initiating payment process
+        itemsToPay.forEach(item => removeFromCart(item.cartItemId));
+        onOpenChange(false);
+    };
+
+    const getVariationString = (item: (typeof cartItems)[0]) => {
+        const variationValues = Object.values(item.selectedVariations);
+        if (variationValues.length === 0) return null;
+        return variationValues.join(', ');
+    }
+    // END: Split by item logic
+
 
     const resetState = useCallback(() => {
-        setStep('initial');
         setSplitCount(2);
         setPaidGuests([]);
-    }, []);
+        setSelectedItems([]);
+        setActiveTab('equally');
+        // When resetting, ensure the cart is reloaded to its original state if items were virtually removed
+        if(baseReturnUrl.includes('order-status')){
+            //This is a bit of a hack, would be better to pass the order items in
+        } else {
+             loadCart(cartItems);
+        }
+
+    }, [baseReturnUrl, cartItems, loadCart]);
 
     useEffect(() => {
         if (!isOpen) {
@@ -49,29 +98,27 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                 window.history.replaceState({}, '', newUrl.toString());
             }
             resetState();
+        } else {
+            // Reset selections when opening
+            setSelectedItems([]);
         }
     }, [isOpen, searchParams, resetState]);
     
     useEffect(() => {
-        if (isOpen && searchParams.has('paidGuest')) {
-            setStep('byAmount');
+        if (isOpen && searchParams.has('paidGuest') && activeTab === 'equally') {
             const paidGuestIndex = searchParams.get('paidGuest');
             if (paidGuestIndex) {
                 const index = parseInt(paidGuestIndex, 10);
                 if (!paidGuests.includes(index)) {
-                     // The new count of paid guests
-                    const newPaidCount = [...paidGuests, index].length;
-                    setPaidGuests(prev => [...prev, index]);
+                    const newPaidGuests = [...paidGuests, index];
+                    setPaidGuests(newPaidGuests);
 
-                    // Check if all guests will have paid *after* this state update
-                    if (newPaidCount >= splitCount) {
-                        // Mark all as paid for UI feedback, then navigate
-                        setPaidGuests(Array.from({ length: splitCount }, (_, i) => i));
+                    if (newPaidGuests.length >= splitCount) {
                         setTimeout(() => {
                             clearCart();
                             onOpenChange(false);
                             router.push('/navigation');
-                        }, 800); // give a moment to see all are paid
+                        }, 800);
                     }
                 }
             }
@@ -79,7 +126,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
             newUrl.searchParams.delete('paidGuest');
             window.history.replaceState({}, '', newUrl.toString());
         }
-    }, [isOpen, searchParams, paidGuests, splitCount, clearCart, onOpenChange, router]);
+    }, [isOpen, searchParams, paidGuests, splitCount, clearCart, onOpenChange, router, activeTab]);
 
     const handlePayForSplit = (guestIndex: number) => {
         const remainingGuests = splitCount - paidGuests.length;
@@ -123,7 +170,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
 
     return (
         <Sheet open={isOpen} onOpenChange={handleSheetChange}>
-            <SheetContent side="bottom" className="h-auto flex flex-col rounded-t-lg p-0" hideCloseButton>
+            <SheetContent side="bottom" className="h-[90dvh] flex flex-col rounded-t-lg p-0" hideCloseButton>
                 <SheetHeader className="p-4 border-b flex-row items-center justify-between">
                     <div className='flex items-center gap-2'>
                         <Users className="h-6 w-6 text-primary"/>
@@ -132,27 +179,18 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                     <Button variant="ghost" size="icon" onClick={() => handleSheetChange(false)}><X className="h-5 w-5"/></Button>
                 </SheetHeader>
                 
-                <div className="p-4">
-                    <div className="text-center mb-6">
-                        <p className="text-muted-foreground">Total Amount</p>
-                        <h2 className="text-5xl font-bold text-primary">${totalAmount.toFixed(2)}</h2>
-                    </div>
+                 <div className="text-center pt-4">
+                    <p className="text-muted-foreground">Total Amount</p>
+                    <h2 className="text-5xl font-bold text-primary">${totalAmount.toFixed(2)}</h2>
+                </div>
 
-                    {step === 'initial' && (
-                        <div className="grid grid-cols-2 gap-4 animate-in fade-in-0 duration-300">
-                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={onSplitByItem}>
-                                <Box className="h-8 w-8 mb-1"/>
-                                Split by Item
-                            </Button>
-                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={() => setStep('byAmount')}>
-                                <Equal className="h-8 w-8 mb-1"/>
-                                Split Equally
-                            </Button>
-                        </div>
-                    )}
-
-                    {step === 'byAmount' && (
-                        <div className="space-y-4 animate-in fade-in-0 duration-300">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col">
+                    <TabsList className="grid w-full grid-cols-2 mt-4 mx-auto max-w-[90%]">
+                        <TabsTrigger value="equally"><Equal className="h-4 w-4 mr-2"/>Split Equally</TabsTrigger>
+                        <TabsTrigger value="by-item"><Box className="h-4 w-4 mr-2"/>Split by Item</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="equally" className="flex-grow overflow-y-auto p-4">
+                       <div className="space-y-4 animate-in fade-in-0 duration-300">
                              <p className="text-center text-muted-foreground font-semibold">Split between how many people?</p>
                             <Card className="flex items-center justify-between p-2">
                                 <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => setSplitCount(Math.max(2, splitCount - 1))} disabled={splitCount <= 2 || paidGuests.length > 0}>
@@ -192,16 +230,81 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                                 })}
                             </div>
                         </div>
-                    )}
-                </div>
+                    </TabsContent>
+                    <TabsContent value="by-item" className="flex-grow overflow-y-auto p-4">
+                       {cartItems.length === 0 ? (
+                            <div className="flex-grow flex flex-col items-center justify-center text-center p-8">
+                                <h2 className="text-2xl font-bold">Bill Settled!</h2>
+                                <p className="text-muted-foreground mt-2 mb-6">All items have been paid for.</p>
+                                <Link href="/navigation" passHref>
+                                    <Button className="bg-accent text-accent-foreground">Back to Home</Button>
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                            <Card className="p-4 shadow-sm">
+                                <p className='text-sm text-muted-foreground mb-4'>Select one or more items to pay for now. The remaining items can be paid for by the next person.</p>
+                                <ul className="divide-y">
+                                {cartItems.map(item => {
+                                    const displayPrice = getDisplayPrice(item);
+                                    const variationString = getVariationString(item);
+                                    return (
+                                    <li key={item.cartItemId} className="py-2">
+                                        <div className="flex items-center gap-4 p-2 rounded-lg">
+                                            <Checkbox 
+                                                id={`sheet-item-${item.cartItemId}`} 
+                                                checked={selectedItems.includes(item.cartItemId)}
+                                                onCheckedChange={() => handleItemSelect(item.cartItemId)}
+                                                className="h-6 w-6"
+                                            />
+                                            <Label 
+                                                htmlFor={`sheet-item-${item.cartItemId}`}
+                                                className="flex-grow flex justify-between items-center cursor-pointer"
+                                            >
+                                                <div>
+                                                    <p className="font-medium">{item.name} <span className="text-muted-foreground text-sm">x{item.quantity}</span></p>
+                                                    {variationString && <p className="text-xs text-muted-foreground">{variationString}</p>}
+                                                </div>
+                                                <span className="font-mono font-semibold">${(displayPrice * item.quantity).toFixed(2)}</span>
+                                            </Label>
+                                        </div>
+                                    </li>
+                                    );
+                                })}
+                                </ul>
+                            </Card>
+                            </div>
+                        )}
+                    </TabsContent>
+                </Tabs>
 
-                <SheetFooter className="p-4 border-t">
-                    {step === 'byAmount' && (
-                        <Button variant="outline" onClick={() => setStep('initial')} className="w-full" disabled={paidGuests.length > 0}>
-                           Back
-                        </Button>
-                    )}
-                </SheetFooter>
+                {activeTab === 'by-item' && cartItems.length > 0 && (
+                    <SheetFooter className="p-4 border-t bg-background/95 backdrop-blur-sm shadow-lg">
+                        <div className='w-full space-y-3'>
+                            <div className='p-2 space-y-1'>
+                                <div className="flex justify-between text-muted-foreground">
+                                    <span>Subtotal</span>
+                                    <span className="font-mono">${paymentSubtotal.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-muted-foreground">
+                                    <span>VAT (5%)</span>
+                                    <span className="font-mono">${vatAmount.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between font-bold text-lg pt-1 border-t mt-1">
+                                    <span>Total for Selected Items</span>
+                                    <span className="font-mono">${itemSplitTotal.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <Button 
+                                onClick={handlePayForItemsClick}
+                                disabled={itemsToPay.length === 0} 
+                                className="w-full h-14 bg-primary text-primary-foreground text-lg"
+                            >
+                                Pay for Selected Items (${itemSplitTotal.toFixed(2)})
+                            </Button>
+                        </div>
+                    </SheetFooter>
+                )}
                 
                  <TipSheet
                     isOpen={tipDetails.isOpen}
