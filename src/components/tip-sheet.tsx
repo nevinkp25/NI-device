@@ -3,11 +3,12 @@
 
 import * as React from "react";
 import { useState, useMemo } from 'react';
+import { useRouter } from "next/navigation";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { CreditCard, X, Pen } from 'lucide-react';
+import { CreditCard, X, Pen, Landmark } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 
@@ -23,7 +24,7 @@ interface TipSheetProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     billAmount: number;
-    onPaymentConfirmed: (finalAmount: number) => void;
+    onPaymentConfirmed: (finalAmount: number, method: 'card' | 'cash') => void;
 }
 
 export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed }: TipSheetProps) {
@@ -73,8 +74,8 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
         setCustomTip('');
     }
 
-    const handlePayNow = () => {
-        onPaymentConfirmed(totalAmount);
+    const handlePayment = (method: 'card' | 'cash') => {
+        onPaymentConfirmed(totalAmount, method);
         onOpenChange(false);
     };
 
@@ -153,10 +154,14 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                     </Card>
 
                 </div>
-                <SheetFooter className="p-4 border-t bg-background space-y-3">
-                    <Button onClick={handlePayNow} className="w-full h-14 text-lg bg-primary text-primary-foreground hover:bg-primary/90">
+                <SheetFooter className="p-4 border-t bg-background grid grid-cols-2 gap-3">
+                    <Button onClick={() => handlePayment('cash')} className="w-full h-14 text-lg bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                        <Landmark className="mr-2"/>
+                        Pay by Cash
+                    </Button>
+                    <Button onClick={() => handlePayment('card')} className="w-full h-14 text-lg bg-primary text-primary-foreground hover:bg-primary/90">
                         <CreditCard className="mr-2"/>
-                        Pay Now (AED {totalAmount.toFixed(2)})
+                        Pay by Card
                     </Button>
                 </SheetFooter>
             </SheetContent>

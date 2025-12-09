@@ -89,7 +89,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
         setTipDetails({ isOpen: true, amount: currentSplitAmount, guestIndex });
     }
     
-    const handlePaymentConfirmed = (finalAmount: number, guestIndex: number | null) => {
+    const handlePaymentConfirmed = (finalAmount: number, method: 'card' | 'cash', guestIndex: number | null) => {
         if (guestIndex === null) return;
         
         const returnUrl = new URL(baseReturnUrl, window.location.origin);
@@ -105,7 +105,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
             paymentParams.set('table', baseParams.get('table')!);
         }
 
-        router.push(`/payment-method?${paymentParams.toString()}`);
+        router.push(`/${method}-payment?${paymentParams.toString()}`);
         onOpenChange(false);
     }
 
@@ -207,7 +207,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                     isOpen={tipDetails.isOpen}
                     onOpenChange={(isOpen) => setTipDetails(prev => ({...prev, isOpen}))}
                     billAmount={tipDetails.amount}
-                    onPaymentConfirmed={(finalAmount) => handlePaymentConfirmed(finalAmount, tipDetails.guestIndex)}
+                    onPaymentConfirmed={(finalAmount, method) => handlePaymentConfirmed(finalAmount, method, tipDetails.guestIndex)}
                  />
 
             </SheetContent>

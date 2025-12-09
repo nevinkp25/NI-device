@@ -59,7 +59,7 @@ export default function CheckoutPage() {
     router.push(`/post-paid?orderId=cart`);
   };
 
-  const handlePaymentConfirmed = (finalAmount: number, returnUrl: string = '/success', table?: string) => {
+  const handlePaymentConfirmed = (finalAmount: number, method: 'card' | 'cash', returnUrl: string = '/success', table?: string) => {
     const params = new URLSearchParams({
         amount: finalAmount.toString(),
         returnUrl: encodeURIComponent(returnUrl),
@@ -67,7 +67,7 @@ export default function CheckoutPage() {
     if (table) {
         params.set('table', table);
     }
-    router.push(`/payment-method?${params.toString()}`);
+    router.push(`/${method}-payment?${params.toString()}`);
   }
   
   const getVariationString = (item: (typeof cartItems)[0]) => {
@@ -195,7 +195,7 @@ export default function CheckoutPage() {
               isOpen={tipDetails.isOpen}
               onOpenChange={(isOpen) => setTipDetails(prev => ({...prev, isOpen}))}
               billAmount={tipDetails.amount}
-              onPaymentConfirmed={(finalAmount) => handlePaymentConfirmed(finalAmount)}
+              onPaymentConfirmed={(finalAmount, method) => handlePaymentConfirmed(finalAmount, method)}
            />
            <SplitBillSheet 
                 isOpen={isSplitSheetOpen}
