@@ -32,7 +32,7 @@ function SuccessContent() {
   const amountPaid = searchParams.get('amount');
   const transactionId = searchParams.get('transactionId');
   const tableNumber = searchParams.get('table');
-  const isSplitPayment = returnUrl.includes('checkout') || returnUrl.includes('order-status') || returnUrl.includes('paidGuest');
+  const isSplitPayment = returnUrl.includes('paidGuest');
 
 
   useEffect(() => {
@@ -50,8 +50,10 @@ function SuccessContent() {
         }, 2000);
         return () => clearTimeout(timer);
     } else {
-        // Clear the cart only for non-split, full payments
-        clearCart();
+        // Clear the cart only for non-split, full payments that are not post-paid
+        if (!returnUrl.includes('post-paid')) {
+          clearCart();
+        }
     }
 
   }, [amountPaid, transactionId, tableNumber, isSplitPayment, returnUrl, router, clearCart]);

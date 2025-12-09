@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -26,17 +26,19 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
     const searchParams = useSearchParams();
     const { clearCart } = useCart();
 
-    useEffect(() => {
-        // This effect re-triggers the sheet to open when returning from a partial payment
-        if (isOpen && searchParams.has('paidGuest')) {
-            const paidGuestIndex = searchParams.get('paidGuest');
-            if (paidGuestIndex) {
-                const index = parseInt(paidGuestIndex, 10);
-                if (!paidGuests.includes(index)) {
-                    setPaidGuests(prev => [...prev, index]);
-                }
+    const perPersonAmount = totalAmount / splitCount;
+    const allGuestsPaid = paidGuests.length >= splitCount;
 
-                // Clean up URL params after processing them
+    const resetState = useCallback(() => {
+        setStep('initial');
+        setSplitCount(2);
+        setPaidGuests([]);
+    }, []);
+
+    useEffect(() => {
+        if (!isOpen) {
+            // Clean up URL when the sheet is closed manually or by navigation
+            if (searchParams.has('paidGuest')) {
                 const newUrl = new URL(window.location.href);
                 newUrl.searchParams.delete('paidGuest');
                 newUrl.searchParams.delete('amount');
@@ -45,64 +47,73 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                 newUrl.searchParams.delete('table');
                 window.history.replaceState({}, '', newUrl.toString());
             }
+            resetState();
         }
-    }, [isOpen, searchParams, paidGuests]);
-
-    const allGuestsPaid = paidGuests.length > 0 && paidGuests.length === splitCount;
-
+    }, [isOpen, searchParams, resetState]);
+    
     useEffect(() => {
-        if (allGuestsPaid && isOpen) {
-            setTimeout(() => {
-                clearCart();
-                resetState();
-                onOpenChange(false);
-                router.push('/navigation');
-            }, 500);
-        }
-    }, [allGuestsPaid, isOpen, router, onOpenChange, clearCart]);
+        if (isOpen && searchParams.has('paidGuest')) {
+            setStep('byAmount');
+            const paidGuestIndex = searchParams.get('paidGuest');
+            if (paidGuestIndex) {
+                const index = parseInt(paidGuestIndex, 10);
+                if (!paidGuests.includes(index)) {
+                     // The new count of paid guests
+                    const newPaidCount = paidGuests.length + 1;
+                    setPaidGuests(prev => [...prev, index]);
 
-    const perPersonAmount = totalAmount / splitCount;
+                    // Check if all guests will have paid *after* this state update
+                    if (newPaidCount >= splitCount) {
+                        // Mark all as paid for UI feedback, then navigate
+                        setPaidGuests(Array.from({ length: splitCount }, (_, i) => i));
+                        setTimeout(() => {
+                            clearCart();
+                            onOpenChange(false);
+                            router.push('/navigation');
+                        }, 800); // give a moment to see all are paid
+                    }
+                }
+            }
+             // Clean up URL param after processing it
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete('paidGuest');
+            window.history.replaceState({}, '', newUrl.toString());
+        }
+    }, [isOpen, searchParams, paidGuests, splitCount, clearCart, onOpenChange, router]);
 
     const handlePayForSplit = (guestIndex: number) => {
         const remainingGuests = splitCount - paidGuests.length;
         const amountToPay = totalAmount - (paidGuests.length * perPersonAmount);
         const currentSplitAmount = Math.min(perPersonAmount, amountToPay / (remainingGuests > 0 ? remainingGuests : 1));
         
-        // Construct the return URL to bring the user back to the current page with a parameter
         const returnUrl = new URL(baseReturnUrl, window.location.origin);
         returnUrl.searchParams.set('paidGuest', guestIndex.toString());
 
-        router.push(`/payment-method?amount=${currentSplitAmount.toFixed(4)}&returnUrl=${encodeURIComponent(returnUrl.pathname + returnUrl.search)}`);
-        onOpenChange(false);
-    }
+        const paymentParams = new URLSearchParams({
+            amount: currentSplitAmount.toFixed(4),
+            returnUrl: returnUrl.pathname + returnUrl.search,
+        });
 
-    const resetState = () => {
-        setStep('initial');
-        setSplitCount(2);
-        setPaidGuests([]);
+        // This handles if the baseReturnUrl has its own params (like `table`)
+        const baseParams = new URLSearchParams(new URL(baseReturnUrl, window.location.origin).search);
+        if (baseParams.get('table')) {
+            paymentParams.set('table', baseParams.get('table')!);
+        }
+
+        router.push(`/payment-method?${paymentParams.toString()}`);
+        onOpenChange(false);
     }
 
     const handleSheetChange = (open: boolean) => {
         if (!open) {
-             resetState();
-        }
-        onOpenChange(open);
-    }
-    
-    useEffect(() => {
-        if (isOpen) {
-            if (searchParams.has('paidGuest')) {
-                setStep('byAmount');
-            }
-        } else {
             resetState();
         }
-    }, [isOpen, searchParams]);
+        onOpenChange(open);
+    };
 
     useEffect(() => {
         setPaidGuests([]);
     }, [splitCount]);
-
 
     return (
         <Sheet open={isOpen} onOpenChange={handleSheetChange}>
@@ -138,14 +149,14 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                         <div className="space-y-4 animate-in fade-in-0 duration-300">
                              <p className="text-center text-muted-foreground font-semibold">Split between how many people?</p>
                             <Card className="flex items-center justify-between p-2">
-                                <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => setSplitCount(Math.max(2, splitCount - 1))} disabled={splitCount <= 2}>
+                                <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => setSplitCount(Math.max(2, splitCount - 1))} disabled={splitCount <= 2 || paidGuests.length > 0}>
                                     <Minus className="h-6 w-6" />
                                 </Button>
                                 <div className="text-center">
                                     <p className="font-bold text-4xl">{splitCount}</p>
                                     <p className="text-sm text-muted-foreground">people</p>
                                 </div>
-                                <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => setSplitCount(splitCount + 1)}>
+                                <Button variant="ghost" size="icon" className="h-12 w-12" onClick={() => setSplitCount(splitCount + 1)} disabled={paidGuests.length > 0}>
                                     <Plus className="h-6 w-6" />
                                 </Button>
                             </Card>
@@ -180,7 +191,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
 
                 <SheetFooter className="p-4 border-t">
                     {step === 'byAmount' && (
-                        <Button variant="outline" onClick={() => setStep('initial')} className="w-full">
+                        <Button variant="outline" onClick={() => setStep('initial')} className="w-full" disabled={paidGuests.length > 0}>
                            Back
                         </Button>
                     )}
