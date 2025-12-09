@@ -1,6 +1,7 @@
 
 "use client";
 
+import * as React from "react";
 import { useState, useMemo } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -68,6 +69,12 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
         onPaymentConfirmed(totalAmount, paymentMethod);
         onOpenChange(false);
     };
+
+    React.useEffect(() => {
+        if(isOpen) {
+            handleNoTipClick();
+        }
+    }, [isOpen]);
 
     return (
         <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -191,4 +198,5 @@ React.useEffect(() => {
         return React.createElement(original.type, rest, newChildren);
     }
 }, [])
+
 
