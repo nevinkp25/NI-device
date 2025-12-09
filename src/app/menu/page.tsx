@@ -9,10 +9,13 @@ import { Utensils, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 function MenuHeader() {
   const searchParams = useSearchParams();
   const tableNumber = searchParams.get('table');
+  const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
 
   return (
     <header className="flex items-center p-4 border-b">
@@ -25,7 +28,10 @@ function MenuHeader() {
         <Utensils className="text-primary h-5 w-5" />
         {tableNumber ? `Table ${tableNumber} Menu` : 'Food Menu'}
       </h1>
-      <div className="w-8"></div>
+      <Avatar className="h-10 w-10">
+        {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
+        <AvatarFallback>W</AvatarFallback>
+      </Avatar>
     </header>
   );
 }
