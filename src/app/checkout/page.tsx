@@ -6,12 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, HandCoins } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { TipSheet } from '@/components/tip-sheet';
 import { QuantitySelector } from '@/components/quantity-selector';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { SplitBillSheet } from '@/components/split-bill-sheet';
+import { TipSheet } from '@/components/tip-sheet';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, loadCart } = useCart();
@@ -40,11 +40,6 @@ export default function CheckoutPage() {
       loadCart(cartItems);
       setIsSplitSheetOpen(true);
   }
-
-  const handlePostPaid = () => {
-    const orderId = '2536'; // Using sample order ID for demo
-    router.push(`/post-paid?orderId=${orderId}`);
-  };
 
   return (
     <div className="flex flex-col bg-background min-h-screen">

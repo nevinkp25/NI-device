@@ -22,7 +22,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount }: SplitBillS
     const router = useRouter();
 
     const handleSplitByItem = () => {
-        router.push('/checkout');
+        router.push('/split-by-item');
         onOpenChange(false);
     }
     
@@ -64,7 +64,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount }: SplitBillS
                 <div className="p-4">
                     <div className="text-center mb-6">
                         <p className="text-muted-foreground">Total Amount</p>
-                        <h2 className="text-5xl font-bold text-primary">AED {totalAmount.toFixed(2)}</h2>
+                        <h2 className="text-5xl font-bold text-primary">${totalAmount.toFixed(2)}</h2>
                     </div>
 
                     {step === 'initial' && (
@@ -97,7 +97,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount }: SplitBillS
                             </Card>
                             <Card className="p-4 text-center bg-muted">
                                 <p className="text-muted-foreground">Each person pays</p>
-                                <p className="font-bold text-3xl text-primary">AED {perPersonAmount.toFixed(2)}</p>
+                                <p className="font-bold text-3xl text-primary">${perPersonAmount.toFixed(2)}</p>
                             </Card>
                             
                             <div className="space-y-2 pt-4">
@@ -108,7 +108,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount }: SplitBillS
                                             <div className="bg-muted p-2 rounded-full"><User className="h-5 w-5 text-muted-foreground"/></div>
                                             <div>
                                                 <p className="font-semibold">Guest {index + 1}</p>
-                                                <p className="text-sm text-muted-foreground">AED {perPersonAmount.toFixed(2)}</p>
+                                                <p className="text-sm text-muted-foreground">${perPersonAmount.toFixed(2)}</p>
                                             </div>
                                         </div>
                                         <Button onClick={() => handlePayForSplit(perPersonAmount)}>Pay</Button>
