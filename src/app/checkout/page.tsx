@@ -15,6 +15,7 @@ import { SplitByItemSheet } from '@/components/split-by-item-sheet';
 import { TipSheet } from '@/components/tip-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Separator } from '@/components/ui/separator';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, loadCart, getDisplayPrice } = useCart();
@@ -174,19 +175,20 @@ export default function CheckoutPage() {
             </div>
           </main>
 
-          <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm shadow-lg space-y-2">
-            <div className="grid grid-cols-2 gap-3">
-              <Button onClick={handleSplitBill} variant="outline" className="w-full h-14 text-base">
+          <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm shadow-lg space-y-3">
+             <Button onClick={handleProceedToPayment} disabled={total <= 0} className="w-full h-14 bg-primary text-primary-foreground text-lg">
+                  Pay Full Amount (${total.toFixed(2)})
+              </Button>
+            <div className="flex justify-around items-center">
+                 <Button onClick={handleSplitBill} variant="link" className="text-base text-primary">
                   Split the Bill
               </Button>
-              <Button onClick={handleProceedToPayment} disabled={total <= 0} className="w-full h-14 bg-primary text-primary-foreground text-lg">
-                  Pay Full Amount
-              </Button>
-            </div>
-             <Button onClick={handlePostPaid} variant="secondary" className="w-full h-12 text-base">
+              <Separator orientation="vertical" className="h-6"/>
+               <Button onClick={handlePostPaid} variant="link" className="text-base text-primary">
                 <HandCoins className="mr-2 h-5 w-5" />
                 Mark as Post-Paid
             </Button>
+            </div>
           </footer>
 
            <TipSheet
