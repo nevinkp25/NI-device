@@ -1,45 +1,55 @@
 
 "use client";
 
-import { useEffect, useRef, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Download, Mail, Home } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
+import { format } from 'date-fns';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 function SuccessContent() {
   const { clearCart } = useCart();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const clearedCart = useRef(false);
-  const [orderNumber, setOrderNumber] = useState<number | null>(null);
+  
+  const [transactionDetails, setTransactionDetails] = useState({
+    id: '',
+    date: new Date(),
+    amount: 0,
+    table: '',
+  });
 
   const returnUrl = searchParams.get('returnUrl') || '/';
   const amountPaid = searchParams.get('amount');
+  const transactionId = searchParams.get('transactionId');
+  const tableNumber = searchParams.get('table');
   const isSplitPayment = returnUrl.includes('checkout');
 
 
   useEffect(() => {
-    // Generate order number only on the client
-    setOrderNumber(Math.floor(Math.random() * 90000) + 10000);
+    // In a real app, you might fetch final details or just use what's passed
+    setTransactionDetails({
+      id: transactionId || `TXN-${Date.now()}`.slice(-10),
+      date: new Date(),
+      amount: parseFloat(amountPaid || '0'),
+      table: tableNumber || 'N/A',
+    });
     
-    if (!amountPaid && !isSplitPayment) {
-      router.replace('/');
-    } else if (isSplitPayment) {
+    if (isSplitPayment) {
         const timer = setTimeout(() => {
             router.push(returnUrl);
         }, 2000);
         return () => clearTimeout(timer);
     }
-  }, [router, isSplitPayment, returnUrl, amountPaid]);
-  
-  useEffect(() => {
-    if (!clearedCart.current && !isSplitPayment) {
-      clearCart();
-      clearedCart.current = true;
-    }
-  }, [clearCart, isSplitPayment]);
+
+    // Clear the cart for full payments
+    clearCart();
+
+  }, [amountPaid, transactionId, tableNumber, isSplitPayment, returnUrl, router, clearCart]);
 
   if (isSplitPayment) {
     return (
@@ -56,30 +66,56 @@ function SuccessContent() {
         </div>
     )
   }
+  
+  const DetailRow = ({ label, value }: { label: string, value: string | number }) => (
+    <div className="flex justify-between items-center py-3">
+        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="font-semibold text-right">{value}</p>
+    </div>
+  );
+
 
   return (
-    <div className="flex flex-col items-center justify-center text-center min-h-screen bg-background p-4">
-      <div className="w-full max-w-sm">
-        <div className="flex justify-center mb-6">
-            <div className="animate-in fade-in zoom-in-50 duration-1000">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-muted/30 p-4">
+      <div className="w-full max-w-sm text-center">
+        <div className="flex justify-center mb-4">
+            <div className="animate-in fade-in zoom-in-50 duration-500">
                 <CheckCircle2 className="h-20 w-20 text-green-500" />
             </div>
         </div>
         
-        <h1 className="text-3xl font-bold mt-2 mb-3">Payment Successful!</h1>
+        <h1 className="text-2xl font-bold">Payment Successful!</h1>
         <p className="text-muted-foreground mb-6">
-            Thank you for your order! Your payment of <span className="font-bold text-foreground">${parseFloat(amountPaid!).toFixed(2)}</span> has been processed.
+            Your order has been placed
         </p>
 
-        <div className="bg-muted rounded-lg p-4 text-center my-6">
-            <p className="text-sm text-muted-foreground">Your order number is</p>
-            <p className="text-2xl font-bold tracking-widest">{orderNumber ? `#${orderNumber}` : '...'}</p>
-        </div>
+        <Card className="text-left shadow-sm">
+            <CardContent className="p-4">
+                <DetailRow label="Transaction ID" value={transactionDetails.id} />
+                <Separator />
+                <DetailRow label="Date & Time" value={format(transactionDetails.date, "M/d/yyyy, h:mm:ss a")} />
+                <Separator />
+                <DetailRow label="Amount Paid" value={`$${transactionDetails.amount.toFixed(2)}`} />
+                 <Separator />
+                <DetailRow label="Payment Method" value="Credit Card ending in 4242" />
+                 <Separator />
+                <DetailRow label="Table Number" value={transactionDetails.table} />
+            </CardContent>
+        </Card>
         
-        <div className="mt-10">
-            <Link href="/" passHref>
-            <Button className="w-full h-12 px-8 text-lg bg-accent text-accent-foreground hover:bg-accent/90">
-                New Order
+        <div className="mt-6 space-y-3">
+            <Button variant="outline" className="w-full h-12 justify-between px-4">
+                <span>Print Merchant Receipt</span>
+                <Download />
+            </Button>
+            <Button variant="outline" className="w-full h-12 justify-between px-4">
+                <span>Print Customer Receipt</span>
+                <Mail />
+            </Button>
+            <Link href="/navigation" passHref>
+            <Button className="w-full h-12 px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90">
+                <Home className="mr-2"/>
+                Back to Home
             </Button>
             </Link>
         </div>

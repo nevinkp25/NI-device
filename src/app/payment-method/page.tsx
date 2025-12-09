@@ -13,24 +13,23 @@ function PaymentMethodContent() {
 
   const amount = searchParams.get('amount');
   const returnUrl = searchParams.get('returnUrl');
+  const table = searchParams.get('table');
 
   if (!amount || !returnUrl) {
     return <div>Missing payment details. Please go back.</div>;
   }
 
   const handlePaymentMethod = (method: 'card' | 'cash') => {
+    const params = new URLSearchParams({
+        amount,
+        returnUrl,
+        table: table || '',
+    });
+
     if (method === 'card') {
-      router.push(
-        `/card-payment?amount=${amount}&returnUrl=${encodeURIComponent(
-          returnUrl
-        )}`
-      );
+      router.push(`/card-payment?${params.toString()}`);
     } else {
-      router.push(
-        `/cash-payment?amount=${amount}&returnUrl=${encodeURIComponent(
-          returnUrl
-        )}`
-      );
+      router.push(`/cash-payment?${params.toString()}`);
     }
   };
 
@@ -82,4 +81,3 @@ export default function PaymentMethodPage() {
     </Suspense>
   );
 }
-

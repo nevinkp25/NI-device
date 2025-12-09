@@ -19,17 +19,20 @@ function CardPaymentContent() {
 
   const amountParam = searchParams.get('amount');
   const returnUrl = searchParams.get('returnUrl') || '/success';
+  const table = searchParams.get('table') || '3'; // Defaulting for demo
   const paymentAmount = amountParam ? parseFloat(amountParam) : subtotal;
 
   useEffect(() => {
-    // Generate a random transaction ID
-    setTransactionId(`TXN-${new Date().getFullYear()}-${Math.floor(Math.random() * 900) + 100}`);
+    const newTransactionId = `TXN-${new Date().getFullYear()}-${Math.floor(Math.random() * 900000) + 100000}`;
+    setTransactionId(newTransactionId);
     
     if (countdown <= 0) {
       if (amountParam) {
         decreaseSubtotal(paymentAmount);
       }
-      router.push(`/success?returnUrl=${encodeURIComponent(returnUrl)}&amount=${paymentAmount}`);
+      
+      const successUrl = `/success?returnUrl=${encodeURIComponent(returnUrl)}&amount=${paymentAmount}&transactionId=${newTransactionId}&table=${table}`;
+      router.push(successUrl);
       return;
     }
 
@@ -38,7 +41,7 @@ function CardPaymentContent() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [countdown, router, amountParam, decreaseSubtotal, paymentAmount, returnUrl]);
+  }, [countdown, router, amountParam, decreaseSubtotal, paymentAmount, returnUrl, table]);
 
   const cancelHref = returnUrl.includes('checkout') ? returnUrl : '/checkout';
 
@@ -62,7 +65,7 @@ function CardPaymentContent() {
         <div className="space-y-2">
           <h2 className="text-2xl font-headline font-semibold">Processing Payment</h2>
           <p className="text-6xl font-bold text-primary">${paymentAmount.toFixed(2)}</p>
-          <p className="text-muted-foreground">Transaction ID: #{transactionId}</p>
+          <p className="text-muted-foreground">Transaction ID: {transactionId}</p>
         </div>
         
         <div className="w-full max-w-sm bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg flex items-center gap-3">

@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
@@ -85,7 +84,7 @@ function OrderStatusContent() {
   };
   
   const handleSplitBill = () => {
-      router.push('/checkout');
+      router.push(`/checkout?table=${tableNumber}`);
   }
 
   return (
@@ -162,8 +161,8 @@ function OrderStatusContent() {
             onOpenChange={setIsTipSheetOpen}
             billAmount={total}
             onPaymentConfirmed={(finalAmount) => {
-              const returnUrl = '/success';
-              router.push(`/payment-method?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+              const returnUrl = `/order-status?table=${tableNumber}`;
+              router.push(`/payment-method?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}&table=${tableNumber}`);
             }}
         />
 

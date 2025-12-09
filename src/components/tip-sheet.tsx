@@ -116,10 +116,10 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                          <Button 
                             variant={showCustomTip ? 'default' : 'outline'}
                             onClick={handleCustomTipClick}
-                            className="h-12 text-base"
+                            className="h-12"
                             size="icon"
                         >
-                           <Pen className="h-6 w-6"/>
+                           <Pen className="h-5 w-5"/>
                         </Button>
                     </div>
 
