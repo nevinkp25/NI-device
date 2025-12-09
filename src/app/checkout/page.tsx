@@ -74,15 +74,15 @@ export default function CheckoutPage() {
               </div>
 
               <Card className="p-4 shadow-sm">
-                <div className="grid grid-cols-5 gap-2 text-sm text-muted-foreground mb-2">
-                    <span className="font-semibold col-span-1 text-center">QTY</span>
+                <div className="grid grid-cols-6 gap-4 text-sm text-muted-foreground mb-2">
+                    <span className="font-semibold col-span-2 text-left">QTY</span>
                     <span className="font-semibold col-span-3">Product</span>
                     <span className="font-semibold text-right col-span-1">Price</span>
                 </div>
                 <ul className="divide-y">
                     {cartItems.map(item => (
-                        <li key={item.id} className="grid grid-cols-5 gap-2 py-3 items-center">
-                            <div className="col-span-1 flex justify-center">
+                        <li key={item.id} className="grid grid-cols-6 gap-4 py-3 items-center">
+                            <div className="col-span-2 flex justify-start">
                                 <QuantitySelector
                                     quantity={item.quantity}
                                     onIncrease={() => handleQuantityChange(item.id, item.quantity + 1)}
