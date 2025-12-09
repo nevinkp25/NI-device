@@ -35,6 +35,25 @@ function OrderStatusContent() {
     }
   }, [tableNumber, loadCart]);
 
+  if (!tableNumber) {
+    return (
+       <div className="flex flex-col h-screen bg-background text-foreground">
+         <header className="flex items-center p-4 border-b">
+          <Link href="/order-by-table" passHref>
+            <Button variant="ghost" size="icon">
+              <ArrowLeft />
+            </Button>
+          </Link>
+          <h1 className="text-xl font-semibold mx-auto">Order Status</h1>
+          <div className="w-8"></div>
+        </header>
+        <div className="flex-grow flex items-center justify-center">
+            <p>Please go back and enter a table number.</p>
+        </div>
+      </div>
+    )
+  }
+
   if (!order) {
     return (
       <div className="flex flex-col h-screen bg-background text-foreground">
@@ -47,8 +66,13 @@ function OrderStatusContent() {
           <h1 className="text-xl font-semibold mx-auto">Order Status</h1>
           <div className="w-8"></div>
         </header>
-        <div className="flex-grow flex items-center justify-center">
-            <p>No order found for table {tableNumber}.</p>
+        <div className="flex-grow flex items-center justify-center p-4 text-center">
+            <div>
+              <p className="text-lg">No active order found for table <span className='font-bold'>{tableNumber}</span>.</p>
+              <Link href="/menu" passHref>
+                <Button className="mt-4">Start a New Order</Button>
+              </Link>
+            </div>
         </div>
       </div>
     )

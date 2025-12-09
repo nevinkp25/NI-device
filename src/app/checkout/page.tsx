@@ -37,32 +37,39 @@ export default function CheckoutPage() {
   const total = subtotal + vatAmount + tipAmount;
 
   useEffect(() => {
-    if (splitMode === 'full') {
+    if (splitMode === 'full' || total <= 0) {
       setSplits([{ id: 1, amount: total, isPaid: false }]);
     } else {
-        // When switching to split mode, if there's only one split, re-initialize.
-        // This handles the case of switching from full to split.
-        if (splits.length <= 1) {
+        // When switching to split mode, or when total changes, re-initialize if needed.
+        if (splits.length <= 1 && total > 0) {
             const equalAmount = total / 2;
-            setSplits([
+            const newSplits = [
                 { id: 1, amount: equalAmount, isPaid: false },
                 { id: 2, amount: equalAmount, isPaid: false }
-            ]);
+            ];
+            setSplits(newSplits);
+            // This is a good place to pass the splits to the sheet
+        } else {
+            // If splits already exist, we could try to rebalance them
+            // For now, let's stick to a simpler logic. The user can edit in the sheet.
         }
     }
   }, [total, splitMode]);
   
   useEffect(() => {
     if (isReturningFromSplit) {
-      // Re-open sheet or handle state if needed
+      // Logic to handle the state after returning from a partial payment
+      // For instance, you might want to automatically open the split sheet
+      // or highlight the next payment to be made.
+      if (splitMode === 'split') {
+        setIsSplitSheetOpen(true);
+      }
     }
-  }, [isReturningFromSplit]);
+  }, [isReturningFromSplit, splitMode]);
   
   const handlePayment = () => {
     const amountToPay = splits.find(s => !s.isPaid)?.amount || 0;
     
-    // A more robust implementation would mark one split as paid and return
-    // For now, we just proceed with the first unpaid amount
     const returnUrl = splitMode === 'split' 
       ? `/checkout?split=true`
       : '/success';
