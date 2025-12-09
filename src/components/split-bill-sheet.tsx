@@ -1,8 +1,9 @@
 
+
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -13,12 +14,35 @@ interface SplitBillSheetProps {
     onOpenChange: (isOpen: boolean) => void;
     totalAmount: number;
     onSplitByItem: () => void;
+    baseReturnUrl: string; // e.g., /checkout or /order-status
 }
 
-export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByItem }: SplitBillSheetProps) {
+export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByItem, baseReturnUrl }: SplitBillSheetProps) {
     const [step, setStep] = useState<'initial' | 'byAmount'>('initial');
     const [splitCount, setSplitCount] = useState(2);
+    const [paidGuests, setPaidGuests] = useState<number[]>([]);
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        if (isOpen) {
+            const paidGuestIndex = searchParams.get('paidGuest');
+            if (paidGuestIndex) {
+                const index = parseInt(paidGuestIndex, 10);
+                if (!paidGuests.includes(index)) {
+                    setPaidGuests(prev => [...prev, index]);
+                }
+                // Open the split by amount view directly
+                setStep('byAmount');
+
+                // Remove the query param from URL without reloading
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.delete('paidGuest');
+                window.history.replaceState({}, '', newUrl);
+            }
+        }
+    }, [isOpen, searchParams, paidGuests]);
+
 
     const handleSplitByItemClick = () => {
         onOpenChange(false);
@@ -28,26 +52,48 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
     const handleSplitByAmount = () => {
         setStep('byAmount');
     }
+    
+    const allGuestsPaid = paidGuests.length === splitCount;
 
-    const handlePayForSplit = (amount: number) => {
-        const returnUrl = '/checkout'; // Return to checkout to settle the rest
-        router.push(`/payment-method?amount=${amount}&returnUrl=${encodeURIComponent(returnUrl)}`);
-        onOpenChange(false);
+    useEffect(() => {
+        if (allGuestsPaid && isOpen) {
+            // If all guests have paid, redirect to menu
+            router.push('/menu');
+            resetState();
+            onOpenChange(false);
+        }
+    }, [allGuestsPaid, isOpen, router, onOpenChange]);
+
+    const perPersonAmount = totalAmount / splitCount;
+
+    const handlePayForSplit = (guestIndex: number) => {
+        // The URL to return to after successful payment
+        const returnUrl = `${baseReturnUrl}?paidGuest=${guestIndex}`;
+        router.push(`/payment-method?amount=${perPersonAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+        onOpenChange(false); // Close sheet to navigate
     }
 
     const resetState = () => {
         setStep('initial');
         setSplitCount(2);
+        setPaidGuests([]);
     }
 
     const handleSheetChange = (open: boolean) => {
         if (!open) {
-            resetState();
+            // Don't reset if we are in the middle of a payment flow
+            const isPaying = window.location.search.includes('amount=');
+            if (!isPaying) {
+                resetState();
+            }
         }
         onOpenChange(open);
     }
+    
+    useEffect(() => {
+        setPaidGuests([]);
+    }, [splitCount]);
 
-    const perPersonAmount = totalAmount / splitCount;
 
     return (
         <Sheet open={isOpen} onOpenChange={handleSheetChange}>
@@ -101,18 +147,23 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                             
                             <div className="space-y-2 pt-4">
                                <p className="text-center text-muted-foreground font-semibold">Select who is paying:</p>
-                                {Array.from({ length: splitCount }).map((_, index) => (
-                                    <Card key={index} className="flex items-center justify-between p-3">
-                                        <div className="flex items-center gap-3">
-                                            <div className="bg-muted p-2 rounded-full"><User className="h-5 w-5 text-muted-foreground"/></div>
-                                            <div>
-                                                <p className="font-semibold">Guest {index + 1}</p>
-                                                <p className="text-sm text-muted-foreground">${perPersonAmount.toFixed(2)}</p>
+                                {Array.from({ length: splitCount }).map((_, index) => {
+                                    const isPaid = paidGuests.includes(index);
+                                    return (
+                                        <Card key={index} className="flex items-center justify-between p-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="bg-muted p-2 rounded-full"><User className="h-5 w-5 text-muted-foreground"/></div>
+                                                <div>
+                                                    <p className="font-semibold">Guest {index + 1}</p>
+                                                    <p className="text-sm text-muted-foreground">${perPersonAmount.toFixed(2)}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <Button onClick={() => handlePayForSplit(perPersonAmount)}>Pay</Button>
-                                    </Card>
-                                ))}
+                                            <Button onClick={() => handlePayForSplit(index)} disabled={isPaid}>
+                                                {isPaid ? "Paid" : "Pay"}
+                                            </Button>
+                                        </Card>
+                                    )
+                                })}
                             </div>
                         </div>
                     )}

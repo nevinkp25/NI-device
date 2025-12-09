@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -20,6 +20,8 @@ export default function CheckoutPage() {
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const [isSplitByItemSheetOpen, setIsSplitByItemSheetOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
 
   const vatRate = 0.05;
   const vatAmount = subtotal * vatRate;
@@ -170,6 +172,7 @@ export default function CheckoutPage() {
                 onOpenChange={setIsSplitSheetOpen}
                 totalAmount={total}
                 onSplitByItem={() => setIsSplitByItemSheetOpen(true)}
+                baseReturnUrl={pathname}
            />
            <SplitByItemSheet
                 isOpen={isSplitByItemSheetOpen}

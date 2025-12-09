@@ -1,8 +1,9 @@
 
+
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { SegmentedControl, SegmentedControlItem } from '@/components/segmented-control';
@@ -20,6 +21,7 @@ import { SplitByItemSheet } from '@/components/split-by-item-sheet';
 function OrderStatusContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const { loadCart } = useCart();
   const [order, setOrder] = useState<Order | null>(null);
   const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
@@ -204,6 +206,7 @@ function OrderStatusContent() {
             onOpenChange={setIsSplitSheetOpen}
             totalAmount={total}
             onSplitByItem={() => setIsSplitByItemSheetOpen(true)}
+            baseReturnUrl={`${pathname}?table=${tableNumber}`}
         />
         <SplitByItemSheet
             isOpen={isSplitByItemSheetOpen}
