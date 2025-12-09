@@ -5,25 +5,24 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Minus, Plus, Users, Equal, Box, X, User } from 'lucide-react';
-import { useCart } from '@/context/cart-context';
 
 interface SplitBillSheetProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     totalAmount: number;
+    onSplitByItem: () => void;
 }
 
-export function SplitBillSheet({ isOpen, onOpenChange, totalAmount }: SplitBillSheetProps) {
-    const [step, setStep] = useState<'initial' | 'byAmount' | 'byItem'>('initial');
+export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByItem }: SplitBillSheetProps) {
+    const [step, setStep] = useState<'initial' | 'byAmount'>('initial');
     const [splitCount, setSplitCount] = useState(2);
     const router = useRouter();
 
-    const handleSplitByItem = () => {
-        router.push('/split-by-item');
+    const handleSplitByItemClick = () => {
         onOpenChange(false);
+        onSplitByItem();
     }
     
     const handleSplitByAmount = () => {
@@ -69,7 +68,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount }: SplitBillS
 
                     {step === 'initial' && (
                         <div className="grid grid-cols-2 gap-4 animate-in fade-in-0 duration-300">
-                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={handleSplitByItem}>
+                            <Button variant="outline" className="h-24 flex-col text-lg" onClick={handleSplitByItemClick}>
                                 <Box className="h-8 w-8 mb-1"/>
                                 Split by Item
                             </Button>

@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { TipSheet } from '@/components/tip-sheet';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { SplitBillSheet } from '@/components/split-bill-sheet';
+import { SplitByItemSheet } from '@/components/split-by-item-sheet';
 
 
 function OrderStatusContent() {
@@ -21,8 +22,9 @@ function OrderStatusContent() {
   const searchParams = useSearchParams();
   const { loadCart } = useCart();
   const [order, setOrder] = useState<Order | null>(null);
-  const [isTipSheetOpen, setIsTipSheetOpen] = useState(false);
+  const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
+  const [isSplitByItemSheetOpen, setIsSplitByItemSheetOpen] = useState(false);
 
 
   const tableNumber = searchParams.get('table');
@@ -83,7 +85,7 @@ function OrderStatusContent() {
   const total = subtotal + vatAmount + tips;
 
   const handleProceedToPayment = () => {
-    setIsTipSheetOpen(true);
+    setTipDetails({isOpen: true, amount: total});
   };
   
   const handleSplitBill = () => {
@@ -93,6 +95,18 @@ function OrderStatusContent() {
   const handlePostPaid = () => {
     router.push(`/post-paid?orderId=${order.id}`);
   };
+
+  const handlePaymentConfirmed = (finalAmount: number, returnUrl: string = '/success', table?: string) => {
+    const params = new URLSearchParams({
+        amount: finalAmount.toString(),
+        returnUrl: encodeURIComponent(returnUrl),
+    });
+    if (table) {
+        params.set('table', table);
+    }
+    router.push(`/payment-method?${params.toString()}`);
+  }
+
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -106,7 +120,7 @@ function OrderStatusContent() {
         <div className="w-8"></div>
       </header>
 
-      <main className="p-4 flex-grow pb-48">
+      <main className="p-4 flex-grow pb-56">
         <div className="space-y-4">
           <SegmentedControl value={`order-${order.id}`} className="w-full">
             <SegmentedControlItem value={`order-${order.id}`} className="flex-1">Order # {order.id}</SegmentedControlItem>
@@ -165,27 +179,40 @@ function OrderStatusContent() {
         </div>
       </main>
 
-      <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm grid grid-cols-2 gap-3">
-        <Button onClick={handleSplitBill} variant="outline" className="w-full h-14 text-base">
-            Split the Bill
-        </Button>
-        <Button onClick={handleProceedToPayment} className="w-full h-14 bg-primary text-primary-foreground text-lg">
-           Pay Full Amount
+      <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm space-y-2">
+        <div className="grid grid-cols-2 gap-3">
+          <Button onClick={handleSplitBill} variant="outline" className="w-full h-14 text-base">
+              Split the Bill
+          </Button>
+          <Button onClick={handleProceedToPayment} className="w-full h-14 bg-primary text-primary-foreground text-lg">
+            Pay Full Amount
+          </Button>
+        </div>
+         <Button onClick={handlePostPaid} variant="secondary" className="w-full h-12 text-base">
+            <HandCoins className="mr-2 h-5 w-5" />
+            Mark as Post-Paid
         </Button>
       </footer>
         <TipSheet
-            isOpen={isTipSheetOpen}
-            onOpenChange={setIsTipSheetOpen}
-            billAmount={total}
-            onPaymentConfirmed={(finalAmount) => {
-              const returnUrl = `/success`;
-              router.push(`/payment-method?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}&table=${tableNumber}`);
-            }}
+            isOpen={tipDetails.isOpen}
+            onOpenChange={(isOpen) => setTipDetails(prev => ({...prev, isOpen}))}
+            billAmount={tipDetails.amount}
+            onPaymentConfirmed={(finalAmount) => handlePaymentConfirmed(finalAmount, '/success', tableNumber || undefined)}
         />
         <SplitBillSheet 
             isOpen={isSplitSheetOpen}
             onOpenChange={setIsSplitSheetOpen}
             totalAmount={total}
+            onSplitByItem={() => setIsSplitByItemSheetOpen(true)}
+        />
+        <SplitByItemSheet
+            isOpen={isSplitByItemSheetOpen}
+            onOpenChange={setIsSplitByItemSheetOpen}
+            onProceedToPayment={(amount) => {
+              setIsSplitByItemSheetOpen(false);
+              // Open tip sheet for the selected items' total
+              setTipDetails({ isOpen: true, amount: amount });
+            }}
         />
 
     </div>

@@ -6,17 +6,19 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, HandCoins } from 'lucide-react';
 import Link from 'next/link';
 import { QuantitySelector } from '@/components/quantity-selector';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { SplitBillSheet } from '@/components/split-bill-sheet';
+import { SplitByItemSheet } from '@/components/split-by-item-sheet';
 import { TipSheet } from '@/components/tip-sheet';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, loadCart } = useCart();
-  const [isTipSheetOpen, setIsTipSheetOpen] = useState(false);
+  const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
+  const [isSplitByItemSheetOpen, setIsSplitByItemSheetOpen] = useState(false);
   const router = useRouter();
 
   const vatRate = 0.05;
@@ -31,14 +33,27 @@ export default function CheckoutPage() {
   };
   
   const handleProceedToPayment = () => {
-    setIsTipSheetOpen(true);
+    setTipDetails({isOpen: true, amount: total});
   };
   
   const handleSplitBill = () => {
-      // Since checkout page now has cart items, we load them into the cart before navigating
-      // This is a bit of a workaround for the demo flow.
       loadCart(cartItems);
       setIsSplitSheetOpen(true);
+  }
+
+  const handlePostPaid = () => {
+    router.push(`/post-paid?orderId=cart`);
+  };
+
+  const handlePaymentConfirmed = (finalAmount: number, returnUrl: string = '/success', table?: string) => {
+    const params = new URLSearchParams({
+        amount: finalAmount.toString(),
+        returnUrl: encodeURIComponent(returnUrl),
+    });
+    if (table) {
+        params.set('table', table);
+    }
+    router.push(`/payment-method?${params.toString()}`);
   }
 
   return (
@@ -64,7 +79,7 @@ export default function CheckoutPage() {
         </div>
       ) : (
         <>
-          <main className="p-4 flex-grow pb-48">
+          <main className="p-4 flex-grow pb-56">
             <div className="space-y-4">
               <div className="flex justify-between items-center mb-2">
                 <h2 className="text-lg font-semibold">Order Summary</h2>
@@ -113,7 +128,7 @@ export default function CheckoutPage() {
                         <span className="font-mono">${subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
-                        <span>VAT</span>
+                        <span>VAT (5%)</span>
                         <span className="font-mono">${vatAmount.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
@@ -129,28 +144,40 @@ export default function CheckoutPage() {
             </div>
           </main>
 
-          <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm shadow-lg grid grid-cols-2 gap-3">
-             <Button onClick={handleSplitBill} variant="outline" className="w-full h-14 text-base">
-                Split the Bill
-            </Button>
-            <Button onClick={handleProceedToPayment} disabled={total <= 0} className="w-full h-14 bg-primary text-primary-foreground text-lg">
-                Pay Full Amount
+          <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm shadow-lg space-y-2">
+            <div className="grid grid-cols-2 gap-3">
+              <Button onClick={handleSplitBill} variant="outline" className="w-full h-14 text-base">
+                  Split the Bill
+              </Button>
+              <Button onClick={handleProceedToPayment} disabled={total <= 0} className="w-full h-14 bg-primary text-primary-foreground text-lg">
+                  Pay Full Amount
+              </Button>
+            </div>
+             <Button onClick={handlePostPaid} variant="secondary" className="w-full h-12 text-base">
+                <HandCoins className="mr-2 h-5 w-5" />
+                Mark as Post-Paid
             </Button>
           </footer>
 
            <TipSheet
-              isOpen={isTipSheetOpen}
-              onOpenChange={setIsTipSheetOpen}
-              billAmount={total}
-              onPaymentConfirmed={(finalAmount) => {
-                const returnUrl = '/success';
-                router.push(`/payment-method?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
-              }}
+              isOpen={tipDetails.isOpen}
+              onOpenChange={(isOpen) => setTipDetails(prev => ({...prev, isOpen}))}
+              billAmount={tipDetails.amount}
+              onPaymentConfirmed={(finalAmount) => handlePaymentConfirmed(finalAmount)}
            />
            <SplitBillSheet 
                 isOpen={isSplitSheetOpen}
                 onOpenChange={setIsSplitSheetOpen}
                 totalAmount={total}
+                onSplitByItem={() => setIsSplitByItemSheetOpen(true)}
+           />
+           <SplitByItemSheet
+                isOpen={isSplitByItemSheetOpen}
+                onOpenChange={setIsSplitByItemSheetOpen}
+                onProceedToPayment={(amount) => {
+                  setIsSplitByItemSheetOpen(false);
+                  setTipDetails({ isOpen: true, amount: amount });
+                }}
            />
         </>
       )}
