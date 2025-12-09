@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Minus, Plus, Users, Equal, Box, X, User } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
+import { TipSheet } from './tip-sheet';
 
 interface SplitBillSheetProps {
     isOpen: boolean;
@@ -22,11 +23,12 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
     const [step, setStep] = useState<'initial' | 'byAmount'>('initial');
     const [splitCount, setSplitCount] = useState(2);
     const [paidGuests, setPaidGuests] = useState<number[]>([]);
+    const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number, guestIndex: number | null}>({isOpen: false, amount: 0, guestIndex: null});
     const router = useRouter();
     const searchParams = useSearchParams();
     const { clearCart } = useCart();
 
-    const perPersonAmount = totalAmount / splitCount;
+    const perPersonAmount = totalAmount > 0 && splitCount > 0 ? totalAmount / splitCount : 0;
     const allGuestsPaid = paidGuests.length >= splitCount;
 
     const resetState = useCallback(() => {
@@ -37,8 +39,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
 
     useEffect(() => {
         if (!isOpen) {
-            // Clean up URL when the sheet is closed manually or by navigation
-            if (searchParams.has('paidGuest')) {
+             if (searchParams.has('paidGuest')) {
                 const newUrl = new URL(window.location.href);
                 newUrl.searchParams.delete('paidGuest');
                 newUrl.searchParams.delete('amount');
@@ -59,7 +60,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                 const index = parseInt(paidGuestIndex, 10);
                 if (!paidGuests.includes(index)) {
                      // The new count of paid guests
-                    const newPaidCount = paidGuests.length + 1;
+                    const newPaidCount = [...paidGuests, index].length;
                     setPaidGuests(prev => [...prev, index]);
 
                     // Check if all guests will have paid *after* this state update
@@ -74,7 +75,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                     }
                 }
             }
-             // Clean up URL param after processing it
             const newUrl = new URL(window.location.href);
             newUrl.searchParams.delete('paidGuest');
             window.history.replaceState({}, '', newUrl.toString());
@@ -86,15 +86,20 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
         const amountToPay = totalAmount - (paidGuests.length * perPersonAmount);
         const currentSplitAmount = Math.min(perPersonAmount, amountToPay / (remainingGuests > 0 ? remainingGuests : 1));
         
+        setTipDetails({ isOpen: true, amount: currentSplitAmount, guestIndex });
+    }
+    
+    const handlePaymentConfirmed = (finalAmount: number, guestIndex: number | null) => {
+        if (guestIndex === null) return;
+        
         const returnUrl = new URL(baseReturnUrl, window.location.origin);
         returnUrl.searchParams.set('paidGuest', guestIndex.toString());
 
         const paymentParams = new URLSearchParams({
-            amount: currentSplitAmount.toFixed(4),
+            amount: finalAmount.toFixed(4),
             returnUrl: returnUrl.pathname + returnUrl.search,
         });
 
-        // This handles if the baseReturnUrl has its own params (like `table`)
         const baseParams = new URLSearchParams(new URL(baseReturnUrl, window.location.origin).search);
         if (baseParams.get('table')) {
             paymentParams.set('table', baseParams.get('table')!);
@@ -103,6 +108,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
         router.push(`/payment-method?${paymentParams.toString()}`);
         onOpenChange(false);
     }
+
 
     const handleSheetChange = (open: boolean) => {
         if (!open) {
@@ -196,6 +202,14 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
                         </Button>
                     )}
                 </SheetFooter>
+                
+                 <TipSheet
+                    isOpen={tipDetails.isOpen}
+                    onOpenChange={(isOpen) => setTipDetails(prev => ({...prev, isOpen}))}
+                    billAmount={tipDetails.amount}
+                    onPaymentConfirmed={(finalAmount) => handlePaymentConfirmed(finalAmount, tipDetails.guestIndex)}
+                 />
+
             </SheetContent>
         </Sheet>
     );
