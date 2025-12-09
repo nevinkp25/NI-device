@@ -13,11 +13,17 @@ import { QuantitySelector } from './quantity-selector';
 import { Separator } from './ui/separator';
 
 export function FloatingCartButton() {
-  const { cartItems, totalItems, subtotal, updateQuantity } = useCart();
+  const { cartItems, totalItems, subtotal, updateQuantity, getDisplayPrice } = useCart();
   const [isOpen, setIsOpen] = useState(false);
 
   if (totalItems === 0) {
     return null;
+  }
+  
+  const getVariationString = (item: (typeof cartItems)[0]) => {
+    const variationValues = Object.values(item.selectedVariations);
+    if (variationValues.length === 0) return null;
+    return variationValues.join(', ');
   }
 
   return (
@@ -28,21 +34,26 @@ export function FloatingCartButton() {
         <CollapsibleContent className="p-4 space-y-3 max-h-60 overflow-y-auto">
             <h3 className="text-lg font-headline font-semibold">Your Order</h3>
             <ul className="divide-y">
-                {cartItems.map(item => (
-                    <li key={item.id} className="flex items-center py-3 gap-3">
-                    <div className="flex-grow">
-                        <p className="font-semibold">{item.name}</p>
-                        <p className="text-sm text-primary font-bold">${item.price.toFixed(2)}</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <QuantitySelector
-                        quantity={item.quantity}
-                        onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
-                        onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
-                        />
-                    </div>
-                    </li>
-                ))}
+                {cartItems.map(item => {
+                    const displayPrice = getDisplayPrice(item);
+                    const variationString = getVariationString(item);
+                    return (
+                        <li key={item.cartItemId} className="flex items-center py-3 gap-3">
+                            <div className="flex-grow">
+                                <p className="font-semibold">{item.name}</p>
+                                {variationString && <p className="text-sm text-muted-foreground">{variationString}</p>}
+                                <p className="text-sm text-primary font-bold">${displayPrice.toFixed(2)}</p>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <QuantitySelector
+                                quantity={item.quantity}
+                                onIncrease={() => updateQuantity(item.cartItemId, item.quantity + 1)}
+                                onDecrease={() => updateQuantity(item.cartItemId, item.quantity - 1)}
+                                />
+                            </div>
+                        </li>
+                    )
+                })}
             </ul>
         </CollapsibleContent>
         <Separator />

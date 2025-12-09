@@ -18,7 +18,7 @@ interface SplitByItemSheetProps {
 }
 
 export function SplitByItemSheet({ isOpen, onOpenChange, onProceedToPayment }: SplitByItemSheetProps) {
-  const { cartItems, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, getDisplayPrice } = useCart();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   
   // Reset selected items when sheet is opened
@@ -28,35 +28,38 @@ export function SplitByItemSheet({ isOpen, onOpenChange, onProceedToPayment }: S
     }
   }, [isOpen]);
 
-  const handleItemSelect = (itemId: string) => {
+  const handleItemSelect = (cartItemId: string) => {
     setSelectedItems(prev =>
-      prev.includes(itemId)
-        ? prev.filter(id => id !== itemId)
-        : [...prev, itemId]
+      prev.includes(cartItemId)
+        ? prev.filter(id => id !== cartItemId)
+        : [...prev, cartItemId]
     );
   };
 
   const itemsToPay = useMemo(() => {
-    return cartItems.filter(item => selectedItems.includes(item.id));
+    return cartItems.filter(item => selectedItems.includes(item.cartItemId));
   }, [cartItems, selectedItems]);
 
   const paymentSubtotal = useMemo(() => {
-    return itemsToPay.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  }, [itemsToPay]);
+    return itemsToPay.reduce((acc, item) => acc + getDisplayPrice(item) * item.quantity, 0);
+  }, [itemsToPay, getDisplayPrice]);
   
   const vatAmount = paymentSubtotal * 0.05;
   const total = paymentSubtotal + vatAmount;
 
   const handlePayClick = () => {
     if (itemsToPay.length === 0) return;
-    
-    // This is a temporary solution for the demo. In a real app, you'd want a more robust
-    // way to handle which items have been paid for, likely on the backend after payment success.
-    const paidItemIds = itemsToPay.map(item => item.id);
-    paidItemIds.forEach(id => removeFromCart(id));
-
     onProceedToPayment(total);
+    // Remove items from cart after initiating payment process
+    itemsToPay.forEach(item => removeFromCart(item.cartItemId));
+    onOpenChange(false);
   };
+
+  const getVariationString = (item: (typeof cartItems)[0]) => {
+    const variationValues = Object.values(item.selectedVariations);
+    if (variationValues.length === 0) return null;
+    return variationValues.join(', ');
+  }
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -85,29 +88,32 @@ export function SplitByItemSheet({ isOpen, onOpenChange, onProceedToPayment }: S
               <Card className="p-4 shadow-sm">
                 <p className='text-sm text-muted-foreground mb-4'>Select one or more items to pay for now. The remaining items can be paid for by the next person.</p>
                 <ul className="divide-y">
-                  {cartItems.map(item => (
-                    <li key={item.id} className="py-2">
-                        <div 
-                            className="flex items-center gap-4 p-2 rounded-lg"
-                        >
-                            <Checkbox 
-                                id={`sheet-item-${item.id}`} 
-                                checked={selectedItems.includes(item.id)}
-                                onCheckedChange={() => handleItemSelect(item.id)}
-                                className="h-6 w-6"
-                            />
-                            <Label 
-                                htmlFor={`sheet-item-${item.id}`}
-                                className="flex-grow flex justify-between items-center cursor-pointer"
-                            >
-                                <div>
-                                    <p className="font-medium">{item.name} <span className="text-muted-foreground text-sm">x{item.quantity}</span></p>
-                                </div>
-                                <span className="font-mono font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
-                            </Label>
-                        </div>
-                    </li>
-                  ))}
+                  {cartItems.map(item => {
+                    const displayPrice = getDisplayPrice(item);
+                    const variationString = getVariationString(item);
+                    return (
+                      <li key={item.cartItemId} className="py-2">
+                          <div className="flex items-center gap-4 p-2 rounded-lg">
+                              <Checkbox 
+                                  id={`sheet-item-${item.cartItemId}`} 
+                                  checked={selectedItems.includes(item.cartItemId)}
+                                  onCheckedChange={() => handleItemSelect(item.cartItemId)}
+                                  className="h-6 w-6"
+                              />
+                              <Label 
+                                  htmlFor={`sheet-item-${item.cartItemId}`}
+                                  className="flex-grow flex justify-between items-center cursor-pointer"
+                              >
+                                  <div>
+                                      <p className="font-medium">{item.name} <span className="text-muted-foreground text-sm">x{item.quantity}</span></p>
+                                       {variationString && <p className="text-xs text-muted-foreground">{variationString}</p>}
+                                  </div>
+                                  <span className="font-mono font-semibold">${(displayPrice * item.quantity).toFixed(2)}</span>
+                              </Label>
+                          </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               </Card>
             </div>

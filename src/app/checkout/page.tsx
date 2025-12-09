@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function CheckoutPage() {
-  const { cartItems, updateQuantity, subtotal, loadCart } = useCart();
+  const { cartItems, updateQuantity, subtotal, loadCart, getDisplayPrice } = useCart();
   const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const [isSplitByItemSheetOpen, setIsSplitByItemSheetOpen] = useState(false);
@@ -39,9 +39,9 @@ export default function CheckoutPage() {
   const tips = 0.00;
   const total = subtotal + vatAmount + tips;
 
-  const handleQuantityChange = (itemId: string, newQuantity: number) => {
+  const handleQuantityChange = (cartItemId: string, newQuantity: number) => {
     if (newQuantity >= 0) {
-      updateQuantity(itemId, newQuantity);
+      updateQuantity(cartItemId, newQuantity);
     }
   };
   
@@ -67,6 +67,12 @@ export default function CheckoutPage() {
         params.set('table', table);
     }
     router.push(`/payment-method?${params.toString()}`);
+  }
+  
+  const getVariationString = (item: (typeof cartItems)[0]) => {
+    const variationValues = Object.values(item.selectedVariations);
+    if (variationValues.length === 0) return null;
+    return variationValues.join(', ');
   }
 
   return (
@@ -114,28 +120,36 @@ export default function CheckoutPage() {
                 </div>
                 <TooltipProvider>
                     <ul className="divide-y">
-                        {cartItems.map(item => (
-                            <li key={item.id} className="grid grid-cols-6 gap-4 py-3 items-center">
-                                <div className="col-span-2 flex justify-start">
-                                    <QuantitySelector
-                                        quantity={item.quantity}
-                                        onIncrease={() => handleQuantityChange(item.id, item.quantity + 1)}
-                                        onDecrease={() => handleQuantityChange(item.id, item.quantity - 1)}
-                                    />
-                                </div>
-                                <div className="col-span-3 font-medium truncate">
-                                  <Tooltip>
-                                      <TooltipTrigger asChild>
-                                          <span className="truncate block">{item.name}</span>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                          <p>{item.name}</p>
-                                      </TooltipContent>
-                                  </Tooltip>
-                                </div>
-                                <span className="text-right font-mono col-span-1">${(item.price * item.quantity).toFixed(2)}</span>
-                            </li>
-                        ))}
+                        {cartItems.map(item => {
+                            const displayPrice = getDisplayPrice(item);
+                            const variationString = getVariationString(item);
+                            return (
+                                <li key={item.cartItemId} className="grid grid-cols-6 gap-4 py-3 items-center">
+                                    <div className="col-span-2 flex justify-start">
+                                        <QuantitySelector
+                                            quantity={item.quantity}
+                                            onIncrease={() => handleQuantityChange(item.cartItemId, item.quantity + 1)}
+                                            onDecrease={() => handleQuantityChange(item.cartItemId, item.quantity - 1)}
+                                        />
+                                    </div>
+                                    <div className="col-span-3 font-medium truncate">
+                                      <Tooltip>
+                                          <TooltipTrigger asChild>
+                                              <div>
+                                                <span className="truncate block">{item.name}</span>
+                                                {variationString && <span className="text-xs text-muted-foreground truncate block">{variationString}</span>}
+                                              </div>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                              <p>{item.name}</p>
+                                              {variationString && <p className="text-xs text-muted-foreground">{variationString}</p>}
+                                          </TooltipContent>
+                                      </Tooltip>
+                                    </div>
+                                    <span className="text-right font-mono col-span-1">${(displayPrice * item.quantity).toFixed(2)}</span>
+                                </li>
+                            )
+                        })}
                     </ul>
                 </TooltipProvider>
                 <div className="mt-4 pt-4 border-t space-y-2">
