@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { CartProvider } from '@/context/cart-context';
 import { MobileContainer } from '@/components/mobile-container';
-import { Inter } from 'next/font/google';
+import { Lexend } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: 'Fast, Fresh, Fuel for Your Day.',
 };
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const lexend = Lexend({ subsets: ['latin'], variable: '--font-sans' });
 
 export default function RootLayout({
   children,
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("font-sans antialiased bg-gray-100", inter.variable)}>
+      <body className={cn("font-sans antialiased bg-gray-100", lexend.variable)}>
         <CartProvider>
           <MobileContainer>
             {children}

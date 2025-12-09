@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { QuantitySelector } from '@/components/quantity-selector';
-import { CreditCard, Landmark, ArrowLeft, ShoppingCart, X } from 'lucide-react';
+import { CreditCard, Landmark, ArrowLeft, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { SegmentedControl, SegmentedControlItem } from '@/components/segmented-control';
@@ -132,7 +132,7 @@ export default function CheckoutPage() {
         </div>
       ) : (
         <>
-          <main className="p-4 pb-56">
+          <main className="p-4 pb-48">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-semibold">Order Summary</h2>
               <Link href="/menu" passHref>
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
                 </Button>
               </Link>
             </div>
-            <Card className="shadow-md">
+            <Card className="shadow-sm">
               <CardContent className="p-0">
                 <ul className="divide-y">
                   {cartItems.map(item => (
@@ -191,19 +191,18 @@ export default function CheckoutPage() {
                     <Button 
                         variant={tipPercentage === 0 && !showCustomTip ? 'default' : 'outline'}
                         onClick={() => handleTipSelection(0)}
-                        className="flex-col h-14"
+                        className="h-14"
                     >
-                       <X className="w-6 h-6 mb-1"/>
-                       <span className="text-xs">No Tip</span>
+                       No Tip
                     </Button>
                     {tipOptions.map(opt => (
                         <Button 
                             key={opt.value}
                             variant={tipPercentage === opt.value && !showCustomTip ? 'default' : 'outline'}
                             onClick={() => handleTipSelection(opt.value)}
-                            className="flex-col h-14"
+                            className="h-14 text-lg"
                         >
-                           <span className="text-lg font-semibold">{opt.label}</span>
+                           {opt.label}
                         </Button>
                     ))}
                      <Button 
@@ -255,20 +254,20 @@ export default function CheckoutPage() {
 
           </main>
 
-          <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 border-t bg-background/95 backdrop-blur-sm shadow-lg">
-            <div className='space-y-3'>
-              <h3 className="text-base font-semibold">Payment Method</h3>
-               <div className="grid grid-cols-2 gap-3">
-                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-12 flex-col gap-1 shadow-sm">
+          <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm shadow-lg">
+            <div className='space-y-2'>
+              <h3 className="text-sm font-semibold px-1">Payment Method</h3>
+               <div className="grid grid-cols-2 gap-2">
+                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-12 flex-col gap-1">
                   <CreditCard />
                   <span>Card</span>
                 </Button>
-                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-12 flex-col gap-1 shadow-sm">
+                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-12 flex-col gap-1">
                   <Landmark />
                   <span>Cash</span>
                 </Button>
               </div>
-              <Button onClick={handlePayment} disabled={amountToPay <= 0} className="w-full h-12 bg-accent text-accent-foreground text-lg hover:bg-accent/90 shadow-md">
+              <Button onClick={handlePayment} disabled={amountToPay <= 0} className="w-full h-12 bg-accent text-accent-foreground text-lg hover:bg-accent/90">
                  Pay ${amountToPay.toFixed(2)}
               </Button>
             </div>
