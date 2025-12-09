@@ -48,17 +48,26 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
     ];
     
     const handleTipSelection = (value: number) => {
-        setTipPercentage(value);
+        if (tipPercentage === value && !showCustomTip) {
+            // If the same tip button is clicked again, deselect it.
+            setTipPercentage(0);
+        } else {
+            setTipPercentage(value);
+        }
         setShowCustomTip(false);
         setCustomTip('');
     };
 
     const handleCustomTipClick = () => {
-        setTipPercentage(0);
-        setShowCustomTip(true);
+        // If custom tip is already active, clicking it again does nothing special yet.
+        // If switching from a percentage tip, reset it.
+        if (!showCustomTip) {
+            setTipPercentage(0);
+            setShowCustomTip(true);
+        }
     };
     
-    const handleNoTipClick = () => {
+    const resetTips = () => {
         setTipPercentage(0);
         setShowCustomTip(false);
         setCustomTip('');
@@ -71,7 +80,7 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
 
     React.useEffect(() => {
         if(isOpen) {
-            handleNoTipClick();
+            resetTips();
         }
     }, [isOpen]);
 
