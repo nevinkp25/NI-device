@@ -23,7 +23,7 @@ interface TipSheetProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     billAmount: number;
-    onPaymentConfirmed: (finalAmount: number, paymentMethod: 'card' | 'cash') => void;
+    onPaymentConfirmed: (finalAmount: number) => void;
 }
 
 export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed }: TipSheetProps) {
@@ -65,7 +65,7 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
     }
 
     const handlePayNow = () => {
-        onPaymentConfirmed(totalAmount, 'card'); // Defaulting to 'card', will be chosen on next screen
+        onPaymentConfirmed(totalAmount);
         onOpenChange(false);
     };
 
@@ -105,20 +105,13 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                             </Button>
                         ))}
                     </div>
-                     <div className="grid grid-cols-2 gap-2 mb-4">
+                     <div className="grid grid-cols-1 gap-2 mb-4">
                         <Button 
                             variant={showCustomTip ? 'default' : 'outline'}
                             onClick={handleCustomTipClick}
                             className="h-12 text-base"
                         >
                            Custom
-                        </Button>
-                        <Button 
-                            variant={tipPercentage === 0 && !showCustomTip ? 'default' : 'outline'}
-                            onClick={handleNoTipClick}
-                            className="h-12"
-                        >
-                           No Tip
                         </Button>
                      </div>
 
