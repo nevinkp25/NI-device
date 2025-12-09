@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, ShoppingCart, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { TipSheet } from '@/components/tip-sheet';
-import { Input } from '@/components/ui/input';
+import { QuantitySelector } from '@/components/quantity-selector';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, loadCart } = useCart();
@@ -83,11 +83,10 @@ export default function CheckoutPage() {
                     {cartItems.map(item => (
                         <li key={item.id} className="grid grid-cols-5 gap-2 py-3 items-center">
                             <div className="col-span-1 flex justify-center">
-                                <Input 
-                                    type="number"
-                                    value={item.quantity}
-                                    onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value, 10))}
-                                    className="w-14 h-9 text-center"
+                                <QuantitySelector
+                                    quantity={item.quantity}
+                                    onIncrease={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                    onDecrease={() => handleQuantityChange(item.id, item.quantity - 1)}
                                 />
                             </div>
                             <span className="col-span-3 font-medium">{item.name}</span>
