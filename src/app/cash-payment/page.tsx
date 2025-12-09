@@ -57,6 +57,7 @@ function CashPaymentContent() {
         <div className="w-full max-w-sm">
           <Input
             type="number"
+            step="0.01"
             placeholder="Enter Amount Paid"
             value={amountPaid}
             onChange={(e) => setAmountPaid(e.target.value)}
