@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
@@ -160,13 +161,9 @@ function OrderStatusContent() {
             isOpen={isTipSheetOpen}
             onOpenChange={setIsTipSheetOpen}
             billAmount={total}
-            onPaymentConfirmed={(finalAmount, paymentMethod) => {
-            const returnUrl = '/success';
-                if (paymentMethod === 'card') {
-                router.push(`/card-payment?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
-            } else {
-                router.push(`/cash-payment?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
-            }
+            onPaymentConfirmed={(finalAmount) => {
+              const returnUrl = '/success';
+              router.push(`/payment-method?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
             }}
         />
 

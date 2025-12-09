@@ -7,8 +7,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { CreditCard, Landmark, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { CreditCard, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 
@@ -31,7 +30,6 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
     const [tipPercentage, setTipPercentage] = useState(0);
     const [customTip, setCustomTip] = useState('');
     const [showCustomTip, setShowCustomTip] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
     
     const tipAmount = useMemo(() => {
         if (showCustomTip) {
@@ -67,7 +65,7 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
     }
 
     const handlePayNow = () => {
-        onPaymentConfirmed(totalAmount, paymentMethod);
+        onPaymentConfirmed(totalAmount, 'card'); // Defaulting to 'card', will be chosen on next screen
         onOpenChange(false);
     };
 
@@ -155,16 +153,6 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
 
                 </div>
                 <SheetFooter className="p-4 border-t bg-background space-y-3">
-                     <div className="grid grid-cols-2 gap-2">
-                         <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-12 flex-col gap-1">
-                          <CreditCard />
-                          <span>Card</span>
-                        </Button>
-                        <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-12 flex-col gap-1">
-                          <Landmark />
-                          <span>Cash</span>
-                        </Button>
-                      </div>
                     <Button onClick={handlePayNow} className="w-full h-14 text-lg bg-primary text-primary-foreground hover:bg-primary/90">
                         <CreditCard className="mr-2"/>
                         Pay Now (AED {totalAmount.toFixed(2)})

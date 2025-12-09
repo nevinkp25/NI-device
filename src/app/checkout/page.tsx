@@ -187,13 +187,9 @@ export default function CheckoutPage() {
               isOpen={isTipSheetOpen}
               onOpenChange={setIsTipSheetOpen}
               billAmount={total}
-              onPaymentConfirmed={(finalAmount, paymentMethod) => {
+              onPaymentConfirmed={(finalAmount) => {
                 const returnUrl = '/success';
-                 if (paymentMethod === 'card') {
-                    router.push(`/card-payment?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
-                } else {
-                    router.push(`/cash-payment?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
-                }
+                router.push(`/payment-method?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
               }}
            />
         </>
@@ -201,3 +197,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
