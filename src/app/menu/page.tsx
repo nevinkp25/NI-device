@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRef, useEffect, useState, Suspense } from 'react';
@@ -11,13 +12,16 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
 
 function MenuHeader() {
   const searchParams = useSearchParams();
   const tableNumber = searchParams.get('table');
   const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
+  const [isWaiterProfileOpen, setIsWaiterProfileOpen] = useState(false);
 
   return (
+    <>
     <header className="flex items-center p-4 border-b">
       <Link href="/navigation" passHref>
         <Button variant="ghost" size="icon">
@@ -28,11 +32,18 @@ function MenuHeader() {
         <Utensils className="text-primary h-5 w-5" />
         {tableNumber ? `Table ${tableNumber} Menu` : 'Food Menu'}
       </h1>
-      <Avatar className="h-10 w-10">
-        {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
-        <AvatarFallback>W</AvatarFallback>
-      </Avatar>
+      <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
+        <Avatar className="h-10 w-10">
+          {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
+          <AvatarFallback>W</AvatarFallback>
+        </Avatar>
+      </button>
     </header>
+    <WaiterProfileDialog
+        isOpen={isWaiterProfileOpen}
+        onOpenChange={setIsWaiterProfileOpen}
+    />
+    </>
   );
 }
 
