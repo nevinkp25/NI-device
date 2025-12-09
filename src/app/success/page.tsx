@@ -16,9 +16,14 @@ function SuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const [transactionDetails, setTransactionDetails] = useState({
+  const [transactionDetails, setTransactionDetails] = useState<{
+    id: string;
+    date: Date | null;
+    amount: number;
+    table: string;
+  }>({
     id: '',
-    date: new Date(),
+    date: null,
     amount: 0,
     table: '',
   });
@@ -47,7 +52,9 @@ function SuccessContent() {
     }
 
     // Clear the cart for full payments
-    clearCart();
+    if (!isSplitPayment) {
+      clearCart();
+    }
 
   }, [amountPaid, transactionId, tableNumber, isSplitPayment, returnUrl, router, clearCart]);
 
@@ -93,7 +100,7 @@ function SuccessContent() {
             <CardContent className="p-4">
                 <DetailRow label="Transaction ID" value={transactionDetails.id} />
                 <Separator />
-                <DetailRow label="Date & Time" value={format(transactionDetails.date, "M/d/yyyy, h:mm:ss a")} />
+                <DetailRow label="Date & Time" value={transactionDetails.date ? format(transactionDetails.date, "M/d/yyyy, h:mm:ss a") : '...'} />
                 <Separator />
                 <DetailRow label="Amount Paid" value={`$${transactionDetails.amount.toFixed(2)}`} />
                  <Separator />
