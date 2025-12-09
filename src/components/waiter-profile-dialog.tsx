@@ -23,8 +23,9 @@ export function WaiterProfileDialog({ isOpen, onOpenChange }: WaiterProfileDialo
   const [staffId, setStaffId] = useState('');
 
   useEffect(() => {
-    if (isOpen && typeof window !== 'undefined') {
-      setStaffId(localStorage.getItem('staffId') || '');
+    if (isOpen) {
+      const id = localStorage.getItem('staffId') || '';
+      setStaffId(id);
     }
   }, [isOpen]);
 
@@ -37,7 +38,7 @@ export function WaiterProfileDialog({ isOpen, onOpenChange }: WaiterProfileDialo
                 <AvatarFallback>W</AvatarFallback>
             </Avatar>
           <DialogTitle className="text-2xl">David R.</DialogTitle>
-          {staffId && <p className="text-muted-foreground">Employee ID: {staffId}</p>}
+          {staffId && <p className="text-sm text-muted-foreground">Employee ID: {staffId}</p>}
         </DialogHeader>
         <div className="grid gap-4 py-4">
             <div className="flex justify-center items-center gap-2">

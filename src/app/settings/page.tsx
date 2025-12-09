@@ -1,18 +1,28 @@
+
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Bell, ChevronRight, Palette, Lock } from 'lucide-react';
+import { ArrowLeft, Bell, ChevronRight, Palette, Lock, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
+  const router = useRouter();
   const settingsOptions = [
     { name: 'Appearance', icon: Palette, path: '#' },
     { name: 'Notifications', icon: Bell, path: '#' },
     { name: 'Account & Security', icon: Lock, path: '#' },
   ];
+
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('staffId');
+    }
+    router.push('/');
+  };
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -68,10 +78,12 @@ export default function SettingsPage() {
         </div>
       </main>
       <footer className="p-4">
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
               Log Out
           </Button>
       </footer>
     </div>
   );
 }
+
