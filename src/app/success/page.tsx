@@ -32,7 +32,7 @@ function SuccessContent() {
   const amountPaid = searchParams.get('amount');
   const transactionId = searchParams.get('transactionId');
   const tableNumber = searchParams.get('table');
-  const isSplitPayment = returnUrl.includes('checkout');
+  const isSplitPayment = returnUrl.includes('checkout') || returnUrl.includes('order-status');
 
 
   useEffect(() => {
@@ -67,7 +67,7 @@ function SuccessContent() {
                 </div>
                 <h1 className="text-2xl font-headline font-bold mt-2 mb-2">Payment Successful!</h1>
                 <p className="text-muted-foreground mb-4">
-                    Returning to checkout for the next payment...
+                    Returning to the bill...
                 </p>
             </div>
         </div>

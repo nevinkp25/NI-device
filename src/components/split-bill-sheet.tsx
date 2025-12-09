@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/com
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Minus, Plus, Users, Equal, Box, X, User } from 'lucide-react';
+import { useCart } from '@/context/cart-context';
 
 interface SplitBillSheetProps {
     isOpen: boolean;
@@ -23,26 +24,23 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
     const [paidGuests, setPaidGuests] = useState<number[]>([]);
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { clearCart } = useCart();
 
     useEffect(() => {
         if (isOpen) {
             const paidGuestIndex = searchParams.get('paidGuest');
             if (paidGuestIndex) {
+                setStep('byAmount');
                 const index = parseInt(paidGuestIndex, 10);
                 if (!paidGuests.includes(index)) {
                     setPaidGuests(prev => [...prev, index]);
                 }
-                // Open the split by amount view directly
-                setStep('byAmount');
-
-                // Remove the query param from URL without reloading
                 const newUrl = new URL(window.location.href);
                 newUrl.searchParams.delete('paidGuest');
                 window.history.replaceState({}, '', newUrl);
             }
         }
     }, [isOpen, searchParams, paidGuests]);
-
 
     const handleSplitByItemClick = () => {
         onOpenChange(false);
@@ -53,24 +51,25 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
         setStep('byAmount');
     }
     
-    const allGuestsPaid = paidGuests.length === splitCount;
+    const allGuestsPaid = paidGuests.length > 0 && paidGuests.length === splitCount;
 
     useEffect(() => {
         if (allGuestsPaid && isOpen) {
-            // If all guests have paid, redirect to menu
-            router.push('/menu');
+            clearCart();
+            router.push('/navigation');
             resetState();
             onOpenChange(false);
         }
-    }, [allGuestsPaid, isOpen, router, onOpenChange]);
+    }, [allGuestsPaid, isOpen, router, onOpenChange, clearCart]);
 
     const perPersonAmount = totalAmount / splitCount;
 
     const handlePayForSplit = (guestIndex: number) => {
-        // The URL to return to after successful payment
         const returnUrl = `${baseReturnUrl}?paidGuest=${guestIndex}`;
-        router.push(`/payment-method?amount=${perPersonAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
-        onOpenChange(false); // Close sheet to navigate
+        const amountToPay = totalAmount - (paidGuests.length * perPersonAmount);
+        const currentSplitAmount = Math.min(perPersonAmount, amountToPay);
+        router.push(`/payment-method?amount=${currentSplitAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+        onOpenChange(false); 
     }
 
     const resetState = () => {
@@ -81,7 +80,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
 
     const handleSheetChange = (open: boolean) => {
         if (!open) {
-            // Don't reset if we are in the middle of a payment flow
             const isPaying = window.location.search.includes('amount=');
             if (!isPaying) {
                 resetState();
