@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { SegmentedControl, SegmentedControlItem } from '@/components/segmented-control';
-import { ArrowLeft, UserPlus } from 'lucide-react';
+import { ArrowLeft, UserPlus, HandCoins } from 'lucide-react';
 import Link from 'next/link';
 import { sampleOrder, type Order } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
@@ -78,7 +78,6 @@ function OrderStatusContent() {
   const vatAmount = subtotal * 0.05;
   const tips = 0.00;
   const total = subtotal + vatAmount + tips;
-  const totalItems = order.items.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleProceedToPayment = () => {
     setIsTipSheetOpen(true);
@@ -87,6 +86,10 @@ function OrderStatusContent() {
   const handleSplitBill = () => {
       router.push(`/checkout?table=${tableNumber}`);
   }
+
+  const handlePostPaid = () => {
+    router.push(`/post-paid?orderId=${order.id}`);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -139,7 +142,7 @@ function OrderStatusContent() {
             </TooltipProvider>
              <div className="mt-4 pt-4 border-t space-y-2">
                 <div className="flex justify-between text-muted-foreground">
-                    <span>Subtotal ({totalItems} items)</span>
+                    <span>Subtotal</span>
                     <span className="font-mono">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
@@ -160,12 +163,18 @@ function OrderStatusContent() {
       </main>
 
       <footer className="p-3 border-t bg-background space-y-2">
+        <div className="grid grid-cols-2 gap-2">
+             <Button onClick={handleSplitBill} variant="outline" className="w-full h-12 text-base">
+               <UserPlus className="mr-2 h-5 w-5" />
+               Split Bill
+            </Button>
+            <Button onClick={handlePostPaid} variant="outline" className="w-full h-12 text-base">
+               <HandCoins className="mr-2 h-5 w-5" />
+               Post Paid
+            </Button>
+        </div>
         <Button onClick={handleProceedToPayment} className="w-full h-12 bg-primary text-primary-foreground text-lg">
            Pay Full Amount
-        </Button>
-         <Button onClick={handleSplitBill} variant="outline" className="w-full h-12 text-lg">
-           <UserPlus className="mr-2 h-5 w-5" />
-           Split the Bill
         </Button>
       </footer>
         <TipSheet
@@ -173,7 +182,7 @@ function OrderStatusContent() {
             onOpenChange={setIsTipSheetOpen}
             billAmount={total}
             onPaymentConfirmed={(finalAmount) => {
-              const returnUrl = `/order-status?table=${tableNumber}`;
+              const returnUrl = `/success`;
               router.push(`/payment-method?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}&table=${tableNumber}`);
             }}
         />
