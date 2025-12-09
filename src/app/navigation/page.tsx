@@ -41,7 +41,7 @@ export default function NavigationPage() {
   ];
   
   const secondaryOptions = [
-      { name: 'Transaction History', icon: History, path: '#' },
+      { name: 'Transaction History', icon: History, path: '/transaction-history' },
       { name: 'Settings', icon: Settings, path: '/settings' },
   ]
 
