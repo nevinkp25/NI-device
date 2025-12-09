@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, ClipboardList } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Hash } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 
@@ -30,36 +30,39 @@ export default function OrderByTablePage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      <header className="flex items-center p-4 border-b">
-        <Link href="/navigation" passHref>
-          <Button variant="ghost" size="icon">
-            <ArrowLeft />
-          </Button>
-        </Link>
-        <h1 className="text-xl font-headline font-semibold mx-auto">Order by Table</h1>
-        <div className="w-8"></div>
-      </header>
+    <div className="flex flex-col h-screen bg-background p-6">
+      <main className="flex-grow flex flex-col items-center justify-center text-center">
+        <div className="flex flex-col items-center space-y-8 w-full max-w-sm">
+          
+          <div className="flex items-center justify-center h-24 w-24 rounded-full bg-muted mb-4">
+              <Hash className="h-12 w-12 text-primary" />
+          </div>
 
-      <main className="flex-grow flex flex-col items-center justify-center p-8 text-center space-y-6">
-        <ClipboardList className="h-16 w-16 text-primary" />
-        <div className="space-y-2">
-            <h2 className="text-2xl font-headline font-semibold">Enter Table Number</h2>
-            <p className="text-muted-foreground">Please enter the table number to start an order.</p>
+          <p className="text-muted-foreground text-lg">
+            Please enter your table number <br /> to continue
+          </p>
+          
+          <form action={handleConfirm} className="w-full space-y-4">
+              <Input
+                type="number"
+                placeholder=""
+                value={tableNumber}
+                onChange={(e) => setTableNumber(e.target.value)}
+                className="text-center text-4xl h-20"
+              />
+              <Button type="submit" className="w-full h-14 text-lg bg-primary text-primary-foreground hover:bg-primary/90">
+                  <span>Go to Order</span>
+                  <ArrowRight />
+              </Button>
+          </form>
+          
+          <Link href="/navigation" passHref>
+              <Button variant="outline" className="w-48 h-12">
+                  <ArrowLeft />
+                  <span>Back to Home</span>
+              </Button>
+          </Link>
         </div>
-        
-        <form action={handleConfirm} className="w-full max-w-xs space-y-4">
-            <Input
-            type="number"
-            placeholder="e.g., 14"
-            value={tableNumber}
-            onChange={(e) => setTableNumber(e.target.value)}
-            className="text-center text-4xl h-20"
-            />
-            <Button type="submit" className="w-full h-12 text-lg bg-accent text-accent-foreground">
-                Confirm Table
-            </Button>
-        </form>
       </main>
     </div>
   );
