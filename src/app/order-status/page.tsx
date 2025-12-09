@@ -23,15 +23,9 @@ function OrderStatusContent() {
   useEffect(() => {
     // In a real app, you'd fetch this data based on tableNumber
     if (tableNumber) {
-      // For now, we use sample data. We check if the sample order matches the table.
-      if (sampleOrder.tableNumber === tableNumber) {
-        setOrder(sampleOrder);
-        loadCart(sampleOrder.items);
-      } else {
-         // Handle case where no order is found for the table
-         setOrder(null);
-         loadCart([]);
-      }
+      // For this demo, we'll always load the sample order regardless of the table number.
+      setOrder(sampleOrder);
+      loadCart(sampleOrder.items);
     }
   }, [tableNumber, loadCart]);
 
@@ -55,6 +49,7 @@ function OrderStatusContent() {
   }
 
   if (!order) {
+    // This state will briefly appear while the order is being loaded.
     return (
       <div className="flex flex-col h-screen bg-background text-foreground">
          <header className="flex items-center p-4 border-b">
@@ -68,10 +63,7 @@ function OrderStatusContent() {
         </header>
         <div className="flex-grow flex items-center justify-center p-4 text-center">
             <div>
-              <p className="text-lg">No active order found for table <span className='font-bold'>{tableNumber}</span>.</p>
-              <Link href="/menu" passHref>
-                <Button className="mt-4">Start a New Order</Button>
-              </Link>
+              <p className="text-lg">Loading order for table <span className='font-bold'>{tableNumber}</span>...</p>
             </div>
         </div>
       </div>
@@ -104,7 +96,7 @@ function OrderStatusContent() {
         <div className="space-y-4">
           <SegmentedControl value={`order-${order.id}`} className="w-full">
             <SegmentedControlItem value={`order-${order.id}`} className="flex-1">Order # {order.id}</SegmentedControlItem>
-            <SegmentedControlItem value={`table-${order.tableNumber}`} className="flex-1">Table # {order.tableNumber}</SegmentedControlItem>
+            <SegmentedControlItem value={`table-${tableNumber}`} className="flex-1">Table # {tableNumber}</SegmentedControlItem>
           </SegmentedControl>
           
           <p className="text-center text-primary font-semibold">
