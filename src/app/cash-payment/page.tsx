@@ -31,6 +31,9 @@ function CashPaymentContent() {
   
   const cancelHref = returnUrl.includes('checkout') ? returnUrl : '/checkout';
 
+  // Floating point precision can be tricky. Use a small epsilon for comparison.
+  const isPaymentSufficient = change >= -0.001;
+
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -63,8 +66,8 @@ function CashPaymentContent() {
         {Number(amountPaid) > 0 && (
           <div className="animate-in fade-in-0 duration-500">
             <p className="text-muted-foreground">Change Due</p>
-            <h3 className={`text-4xl font-bold ${change < 0 ? 'text-destructive' : 'text-green-600'}`}>
-              {change >= 0 ? `$${change.toFixed(2)}` : `-$${Math.abs(change).toFixed(2)}`}
+            <h3 className={`text-4xl font-bold ${!isPaymentSufficient ? 'text-destructive' : 'text-green-600'}`}>
+              {isPaymentSufficient ? `$${change.toFixed(2)}` : `-$${Math.abs(change).toFixed(2)}`}
             </h3>
           </div>
         )}
@@ -73,7 +76,7 @@ function CashPaymentContent() {
       <footer className="p-4 border-t bg-background">
         <Button
           onClick={handleConfirm}
-          disabled={change < 0 || !amountPaid}
+          disabled={!isPaymentSufficient || !amountPaid}
           className="w-full h-14 bg-accent text-accent-foreground text-lg hover:bg-accent/90"
         >
           Confirm Payment
