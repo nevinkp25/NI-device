@@ -17,9 +17,9 @@ export default function OrderByTablePage() {
     if (tableNumber.trim()) {
       toast({
         title: `Table ${tableNumber} Selected`,
-        description: 'Loading menu for this table.',
+        description: 'Fetching order details for this table.',
       });
-      router.push(`/menu?table=${tableNumber}`);
+      router.push(`/order-status?table=${tableNumber}`);
     } else {
       toast({
         variant: 'destructive',

@@ -10,6 +10,7 @@ interface CartContextType {
   addToCart: (item: MenuItem) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   removeFromCart: (itemId: string) => void;
+  loadCart: (items: CartItem[]) => void;
   clearCart: () => void;
   decreaseSubtotal: (amount: number) => void;
   totalItems: number;
@@ -69,6 +70,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const loadCart = useCallback((items: CartItem[]) => {
+    setCartItems(items);
+    updateTotal(items);
+  }, []);
+
   const clearCart = useCallback(() => {
     setCartItems([]);
     setSubtotal(0);
@@ -104,6 +110,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     addToCart,
     updateQuantity,
     removeFromCart,
+    loadCart,
     clearCart,
     decreaseSubtotal,
     totalItems,
