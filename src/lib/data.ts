@@ -41,11 +41,11 @@ export const menuItems: MenuItem[] = [
   { id: 'item-5', name: 'Caesar Salad', price: 9.50, category: 'starters', image: PlaceHolderImages.find(p => p.id === 'salad')! },
   { id: 'item-6', name: 'Sushi Platter', price: 12.00, category: 'starters', image: PlaceHolderImages.find(p => p.id === 'sushi')! },
   { id: 'item-7', name: 'Crispy Calamaris', price: 29.28, category: 'starters', image: PlaceHolderImages.find(p => p.id === 'sushi')! },
-  { id: 'item-11', name: 'Roasted Tomato', price: 29.28, category: 'starters', image: PlaceHolderImages.find(p => p.id === 'salad')! },
+  { id: 'item-11', name: 'Roasted Tomato', price: 19.00, category: 'starters', image: PlaceHolderImages.find(p => p.id === 'salad')! },
 
 
-  { id: 'item-12', name: 'Grilled Salmon', price: 29.28, category: 'mains', image: PlaceHolderImages.find(p => p.id === 'steak')! },
-  { id: 'item-13', name: 'Chicken Alfredo', price: 29.28, category: 'mains', image: PlaceHolderImages.find(p => p.id === 'pasta')! },
+  { id: 'item-12', name: 'Grilled Salmon', price: 32.00, category: 'mains', image: PlaceHolderImages.find(p => p.id === 'steak')! },
+  { id: 'item-13', name: 'Chicken Alfredo', price: 26.56, category: 'mains', image: PlaceHolderImages.find(p => p.id === 'pasta')! },
 
   { id: 'item-8', name: 'Chocolate Lava Cake', price: 8.00, category: 'desserts', image: PlaceHolderImages.find(p => p.id === 'cake')! },
   
