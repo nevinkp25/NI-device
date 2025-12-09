@@ -12,6 +12,7 @@ import { sampleOrder, type Order } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
 import { format } from 'date-fns';
 import { TipSheet } from '@/components/tip-sheet';
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 
 function OrderStatusContent() {
@@ -111,20 +112,31 @@ function OrderStatusContent() {
           </p>
 
           <Card className="p-4 shadow-sm">
-            <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground mb-2">
-                <span className="font-semibold">Qty</span>
-                <span className="font-semibold col-span-1">Product</span>
-                <span className="font-semibold text-right">Price (AED)</span>
+            <div className="grid grid-cols-5 gap-2 text-sm text-muted-foreground mb-2">
+                <span className="font-semibold col-span-1">Qty</span>
+                <span className="font-semibold col-span-3">Product</span>
+                <span className="font-semibold text-right col-span-1">Price</span>
             </div>
-             <ul className="divide-y">
-                {order.items.map(item => (
-                    <li key={item.id} className="grid grid-cols-3 gap-2 py-3">
-                        <span>{item.quantity}</span>
-                        <span className="col-span-1 font-medium">{item.name}</span>
-                        <span className="text-right font-mono">${(item.price * item.quantity).toFixed(2)}</span>
-                    </li>
-                ))}
-             </ul>
+             <TooltipProvider>
+              <ul className="divide-y">
+                  {order.items.map(item => (
+                      <li key={item.id} className="grid grid-cols-5 gap-2 py-3 items-center">
+                          <span className='col-span-1'>{item.quantity}</span>
+                          <div className="col-span-3 font-medium truncate">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <span className="truncate block">{item.name}</span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{item.name}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          <span className="text-right font-mono col-span-1">${(item.price * item.quantity).toFixed(2)}</span>
+                      </li>
+                  ))}
+              </ul>
+            </TooltipProvider>
              <div className="mt-4 pt-4 border-t space-y-2">
                 <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal ({totalItems} items)</span>

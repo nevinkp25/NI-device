@@ -10,6 +10,7 @@ import { ArrowLeft, ShoppingCart, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { TipSheet } from '@/components/tip-sheet';
 import { QuantitySelector } from '@/components/quantity-selector';
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, loadCart } = useCart();
@@ -79,21 +80,32 @@ export default function CheckoutPage() {
                     <span className="font-semibold col-span-3">Product</span>
                     <span className="font-semibold text-right col-span-1">Price</span>
                 </div>
-                <ul className="divide-y">
-                    {cartItems.map(item => (
-                        <li key={item.id} className="grid grid-cols-6 gap-4 py-3 items-center">
-                            <div className="col-span-2 flex justify-start">
-                                <QuantitySelector
-                                    quantity={item.quantity}
-                                    onIncrease={() => handleQuantityChange(item.id, item.quantity + 1)}
-                                    onDecrease={() => handleQuantityChange(item.id, item.quantity - 1)}
-                                />
-                            </div>
-                            <span className="col-span-3 font-medium">{item.name}</span>
-                            <span className="text-right font-mono col-span-1">${(item.price * item.quantity).toFixed(2)}</span>
-                        </li>
-                    ))}
-                </ul>
+                <TooltipProvider>
+                    <ul className="divide-y">
+                        {cartItems.map(item => (
+                            <li key={item.id} className="grid grid-cols-6 gap-4 py-3 items-center">
+                                <div className="col-span-2 flex justify-start">
+                                    <QuantitySelector
+                                        quantity={item.quantity}
+                                        onIncrease={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                        onDecrease={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                    />
+                                </div>
+                                <div className="col-span-3 font-medium truncate">
+                                  <Tooltip>
+                                      <TooltipTrigger asChild>
+                                          <span className="truncate block">{item.name}</span>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                          <p>{item.name}</p>
+                                      </TooltipContent>
+                                  </Tooltip>
+                                </div>
+                                <span className="text-right font-mono col-span-1">${(item.price * item.quantity).toFixed(2)}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </TooltipProvider>
                 <div className="mt-4 pt-4 border-t space-y-2">
                     <div className="flex justify-between text-muted-foreground">
                         <span>Subtotal ({totalItems} items)</span>
