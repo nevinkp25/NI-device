@@ -5,28 +5,31 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
-import { CreditCard, Wifi } from 'lucide-react';
+import { ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 
-const PAYMENT_TIMEOUT = 5; // 5 seconds
+const PAYMENT_TIMEOUT = 3; // 3 seconds
 
 function CardPaymentContent() {
-  const { subtotal, decreaseSubtotal } = useCart();
+  const { decreaseSubtotal, subtotal } = useCart();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [countdown, setCountdown] = useState(PAYMENT_TIMEOUT);
+  const [transactionId, setTransactionId] = useState('');
 
   const amountParam = searchParams.get('amount');
   const returnUrl = searchParams.get('returnUrl') || '/success';
   const paymentAmount = amountParam ? parseFloat(amountParam) : subtotal;
 
   useEffect(() => {
+    // Generate a random transaction ID
+    setTransactionId(`TXN-${new Date().getFullYear()}-${Math.floor(Math.random() * 900) + 100}`);
+    
     if (countdown <= 0) {
-      // For split payments, we decrease the subtotal instead of clearing the cart
       if (amountParam) {
         decreaseSubtotal(paymentAmount);
       }
-      router.push(`/success?returnUrl=${encodeURIComponent(returnUrl)}`);
+      router.push(`/success?returnUrl=${encodeURIComponent(returnUrl)}&amount=${paymentAmount}`);
       return;
     }
 
@@ -37,48 +40,49 @@ function CardPaymentContent() {
     return () => clearInterval(timer);
   }, [countdown, router, amountParam, decreaseSubtotal, paymentAmount, returnUrl]);
 
-  const progressPercentage = ((PAYMENT_TIMEOUT - countdown) / PAYMENT_TIMEOUT) * 100;
-  
   const cancelHref = returnUrl.includes('checkout') ? returnUrl : '/checkout';
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
-      <header className="flex items-center p-4">
-        <h1 className="text-xl font-semibold mx-auto">Card Payment</h1>
+      <header className="flex items-center p-4 border-b">
+         <Link href={cancelHref} passHref>
+          <Button variant="ghost" size="icon">
+            <ArrowLeft />
+          </Button>
+        </Link>
+        <h1 className="text-xl font-semibold mx-auto">Payment</h1>
+        <div className="w-8"></div>
       </header>
 
       <main className="flex-grow flex flex-col items-center justify-center p-8 text-center space-y-8">
-        <div className="relative">
-          <CreditCard className="h-32 w-32 text-muted-foreground animate-pulse" />
-          <Wifi className="h-10 w-10 text-muted-foreground/70 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        <div className="relative h-32 w-32 flex items-center justify-center">
+            <Loader2 className="h-28 w-28 text-primary animate-spin" />
         </div>
         
         <div className="space-y-2">
-          <h2 className="text-2xl font-headline font-semibold">Processing Payment...</h2>
+          <h2 className="text-2xl font-headline font-semibold">Processing Payment</h2>
           <p className="text-6xl font-bold text-primary">${paymentAmount.toFixed(2)}</p>
+          <p className="text-muted-foreground">Transaction ID: #{transactionId}</p>
         </div>
-
-        <div className="w-full max-w-sm space-y-4">
-            <p className="text-muted-foreground">Please wait</p>
-            <div className="w-full bg-muted rounded-full h-2.5">
-                <div 
-                    className="bg-primary h-2.5 rounded-full transition-all duration-1000 ease-linear" 
-                    style={{ width: `${progressPercentage}%`}}
-                ></div>
+        
+        <div className="w-full max-w-sm bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg flex items-center gap-3">
+            <ShieldCheck className="h-6 w-6 text-green-600"/>
+            <div>
+                <h3 className="font-semibold">Secure Payment</h3>
+                <p className="text-sm">Your payment is protected with 256-bit SSL encryption</p>
             </div>
-            <p className="text-lg font-mono">
-              {String(Math.floor(countdown / 60)).padStart(2, '0')}:
-              {String(countdown % 60).padStart(2, '0')}
-            </p>
         </div>
       </main>
 
-      <footer className="p-4">
+      <footer className="p-4 space-y-2">
         <Link href={cancelHref} passHref>
           <Button variant="outline" className="w-full h-12">
-            Cancel
+            Cancel Payment
           </Button>
         </Link>
+        <p className="text-center text-sm text-muted-foreground">
+            Please wait while we process your payment
+        </p>
       </footer>
     </div>
   );
@@ -91,5 +95,3 @@ export default function CardPaymentPage() {
         </Suspense>
     )
 }
-
-    
