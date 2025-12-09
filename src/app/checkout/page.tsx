@@ -13,6 +13,8 @@ import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/comp
 import { SplitBillSheet } from '@/components/split-bill-sheet';
 import { SplitByItemSheet } from '@/components/split-by-item-sheet';
 import { TipSheet } from '@/components/tip-sheet';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, loadCart } = useCart();
@@ -22,6 +24,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
 
   useEffect(() => {
     // This effect re-opens the split bill sheet when returning from payment
@@ -75,7 +78,10 @@ export default function CheckoutPage() {
           </Button>
         </Link>
         <h1 className="text-xl font-semibold mx-auto">Checkout</h1>
-        <div className="w-8"></div>
+        <Avatar className="h-10 w-10">
+          {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
+          <AvatarFallback>W</AvatarFallback>
+        </Avatar>
       </header>
 
       {cartItems.length === 0 ? (

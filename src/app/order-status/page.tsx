@@ -16,6 +16,8 @@ import { TipSheet } from '@/components/tip-sheet';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { SplitBillSheet } from '@/components/split-bill-sheet';
 import { SplitByItemSheet } from '@/components/split-by-item-sheet';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 function OrderStatusContent() {
@@ -27,6 +29,7 @@ function OrderStatusContent() {
   const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const [isSplitByItemSheetOpen, setIsSplitByItemSheetOpen] = useState(false);
+  const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
 
 
   const tableNumber = searchParams.get('table');
@@ -57,7 +60,7 @@ function OrderStatusContent() {
             </Button>
           </Link>
           <h1 className="text-xl font-semibold mx-auto">Order Status</h1>
-          <div className="w-8"></div>
+          <div className="w-10"></div>
         </header>
         <div className="flex-grow flex items-center justify-center">
             <p>Please go back and enter a table number.</p>
@@ -77,7 +80,7 @@ function OrderStatusContent() {
             </Button>
           </Link>
           <h1 className="text-xl font-semibold mx-auto">Order Status</h1>
-          <div className="w-8"></div>
+          <div className="w-10"></div>
         </header>
         <div className="flex-grow flex items-center justify-center p-4 text-center">
             <div>
@@ -126,7 +129,10 @@ function OrderStatusContent() {
           </Button>
         </Link>
         <h1 className="text-xl font-semibold mx-auto">Order Status</h1>
-        <div className="w-8"></div>
+        <Avatar className="h-10 w-10">
+          {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
+          <AvatarFallback>W</AvatarFallback>
+        </Avatar>
       </header>
 
       <main className="p-4 flex-grow pb-56">
