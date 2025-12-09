@@ -9,20 +9,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { QuantitySelector } from '@/components/quantity-selector';
-import { CreditCard, Landmark, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { CreditCard, Landmark, ArrowLeft, ShoppingCart, UserPlus } from 'lucide-react';
 import Link from 'next/link';
-import { Input } from '@/components/ui/input';
 import { SegmentedControl, SegmentedControlItem } from '@/components/segmented-control';
 import { SplitBillSheet } from '@/components/split-bill-sheet';
 import type { Split } from '@/components/split-bill-sheet';
+import { TipSheet } from '@/components/tip-sheet';
 
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal } = useCart();
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
-  const [tipPercentage, setTipPercentage] = useState(0);
-  const [showCustomTip, setShowCustomTip] = useState(false);
-  const [customTip, setCustomTip] = useState('');
+  const [isTipSheetOpen, setIsTipSheetOpen] = useState(false);
+  const [tipAmount, setTipAmount] = useState(0);
   const [splitMode, setSplitMode] = useState<'full' | 'split'>('full');
   const [splits, setSplits] = useState<Split[]>([{ id: 1, amount: 0, isPaid: false }]);
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
@@ -33,8 +31,7 @@ export default function CheckoutPage() {
 
   const vatRate = 0.05;
   const vatAmount = subtotal * vatRate;
-  const tipAmount = showCustomTip ? parseFloat(customTip) || 0 : subtotal * tipPercentage;
-  const total = subtotal + vatAmount + tipAmount;
+  const total = subtotal + vatAmount;
 
   useEffect(() => {
     if (splitMode === 'full' || total <= 0) {
@@ -67,36 +64,14 @@ export default function CheckoutPage() {
     }
   }, [isReturningFromSplit, splitMode]);
   
-  const handlePayment = () => {
-    const amountToPay = splits.find(s => !s.isPaid)?.amount || 0;
-    
-    const returnUrl = splitMode === 'split' 
-      ? `/checkout?split=true`
-      : '/success';
-
-    if (paymentMethod === 'card') {
-      router.push(`/card-payment?amount=${amountToPay}&returnUrl=${encodeURIComponent(returnUrl)}`);
+  const handleProceedToPayment = () => {
+    if (splitMode === 'split') {
+        setIsSplitSheetOpen(true);
     } else {
-      router.push(`/cash-payment?amount=${amountToPay}&returnUrl=${encodeURIComponent(returnUrl)}`);
+        setIsTipSheetOpen(true);
     }
-  };
-
-  const tipOptions = [
-    { label: '15%', value: 0.15 },
-    { label: '18%', value: 0.18 },
-    { label: '20%', value: 0.20 },
-  ];
-
-  const handleTipSelection = (value: number) => {
-    setTipPercentage(value);
-    setShowCustomTip(false);
-    setCustomTip('');
-  };
-  
-  const handleCustomTipClick = () => {
-      setShowCustomTip(true);
-      setTipPercentage(0);
   }
+
 
   const handleSplitModeChange = (value: string) => {
     const newMode = value as 'full' | 'split';
@@ -180,76 +155,12 @@ export default function CheckoutPage() {
                 <span className="text-muted-foreground">VAT (5%)</span>
                 <span className="font-semibold">${vatAmount.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Tip</span>
-                <span className="font-semibold">${tipAmount.toFixed(2)}</span>
-              </div>
               <Separator />
               <div className="flex justify-between text-2xl font-bold">
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>
               </div>
             </div>
-            
-            {/* Tip Section */}
-            <div className="mb-4">
-                 <h3 className="text-lg font-semibold mb-3">Add a Tip</h3>
-                 <div className="grid grid-cols-4 gap-2 mb-2">
-                    <Button 
-                        variant={tipPercentage === 0 && !showCustomTip ? 'default' : 'outline'}
-                        onClick={() => handleTipSelection(0)}
-                        className="h-14"
-                    >
-                       No Tip
-                    </Button>
-                    {tipOptions.map(opt => (
-                        <Button 
-                            key={opt.value}
-                            variant={tipPercentage === opt.value && !showCustomTip ? 'default' : 'outline'}
-                            onClick={() => handleTipSelection(opt.value)}
-                            className="h-14 text-lg"
-                        >
-                           {opt.label}
-                        </Button>
-                    ))}
-                     <Button 
-                        variant={showCustomTip ? 'default' : 'outline'}
-                        onClick={handleCustomTipClick}
-                        className="h-14"
-                    >
-                       Custom
-                    </Button>
-                 </div>
-                 {showCustomTip && (
-                     <div className="animate-in fade-in-0 duration-300">
-                        <Input 
-                            type="number"
-                            placeholder="Enter custom tip amount"
-                            value={customTip}
-                            onChange={(e) => setCustomTip(e.target.value)}
-                            className="h-12 text-center"
-                        />
-                     </div>
-                 )}
-            </div>
-            
-            {/* Split Bill Section */}
-            <SegmentedControl onValueChange={handleSplitModeChange} value={splitMode} className="mb-4">
-                <SegmentedControlItem value="full" className="flex-1">Pay Full Amount</SegmentedControlItem>
-                <SegmentedControlItem value="split" className="flex-1">Split Bill</SegmentedControlItem>
-            </SegmentedControl>
-            
-            {splitMode === 'split' && (
-                <Card className="p-4 bg-muted">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <p className="text-muted-foreground">{splits.filter(s => !s.isPaid).length} of {splits.length} payments remaining</p>
-                            <p className="font-bold text-2xl">${amountToPay.toFixed(2)} / person</p>
-                        </div>
-                        <Button variant="secondary" onClick={() => setIsSplitSheetOpen(true)}>Edit Split</Button>
-                    </div>
-                </Card>
-            )}
 
             <SplitBillSheet 
                 isOpen={isSplitSheetOpen}
@@ -263,22 +174,25 @@ export default function CheckoutPage() {
 
           <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-3 border-t bg-background/95 backdrop-blur-sm shadow-lg">
             <div className='space-y-2'>
-              <h3 className="text-sm font-semibold px-1">Payment Method</h3>
-               <div className="grid grid-cols-2 gap-2">
-                 <Button variant={paymentMethod === 'card' ? 'default' : 'outline'} onClick={() => setPaymentMethod('card')} className="h-12 flex-col gap-1">
-                  <CreditCard />
-                  <span>Card</span>
-                </Button>
-                <Button variant={paymentMethod === 'cash' ? 'default' : 'outline'} onClick={() => setPaymentMethod('cash')} className="h-12 flex-col gap-1">
-                  <Landmark />
-                  <span>Cash</span>
-                </Button>
-              </div>
-              <Button onClick={handlePayment} disabled={amountToPay <= 0} className="w-full h-12 bg-accent text-accent-foreground text-lg hover:bg-accent/90">
-                 Pay ${amountToPay.toFixed(2)}
+              <Button onClick={handleProceedToPayment} disabled={total <= 0} className="w-full h-12 bg-accent text-accent-foreground text-lg hover:bg-accent/90">
+                 Proceed to Payment
               </Button>
             </div>
           </footer>
+
+           <TipSheet
+              isOpen={isTipSheetOpen}
+              onOpenChange={setIsTipSheetOpen}
+              billAmount={total}
+              onPaymentConfirmed={(finalAmount, paymentMethod) => {
+                const returnUrl = '/success';
+                 if (paymentMethod === 'card') {
+                    router.push(`/card-payment?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+                } else {
+                    router.push(`/cash-payment?amount=${finalAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+                }
+              }}
+           />
         </>
       )}
     </div>

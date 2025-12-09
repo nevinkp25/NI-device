@@ -79,6 +79,10 @@ function OrderStatusContent() {
   const handleProceedToPayment = () => {
     router.push('/checkout');
   };
+  
+  const handleSplitBill = () => {
+      router.push('/checkout?split=true');
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -144,7 +148,7 @@ function OrderStatusContent() {
         <Button onClick={handleProceedToPayment} className="w-full h-12 bg-primary text-primary-foreground text-lg">
            Pay Full Amount
         </Button>
-         <Button onClick={handleProceedToPayment} variant="outline" className="w-full h-12 text-lg">
+         <Button onClick={handleSplitBill} variant="outline" className="w-full h-12 text-lg">
            <UserPlus className="mr-2 h-5 w-5" />
            Split the Bill
         </Button>
