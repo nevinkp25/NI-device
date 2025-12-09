@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -19,6 +20,13 @@ interface WaiterProfileDialogProps {
 
 export function WaiterProfileDialog({ isOpen, onOpenChange }: WaiterProfileDialogProps) {
   const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
+  const [staffId, setStaffId] = useState('');
+
+  useEffect(() => {
+    if (isOpen && typeof window !== 'undefined') {
+      setStaffId(localStorage.getItem('staffId') || '');
+    }
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -29,7 +37,7 @@ export function WaiterProfileDialog({ isOpen, onOpenChange }: WaiterProfileDialo
                 <AvatarFallback>W</AvatarFallback>
             </Avatar>
           <DialogTitle className="text-2xl">David R.</DialogTitle>
-          <p className="text-muted-foreground">Your server for today</p>
+          {staffId && <p className="text-muted-foreground">Employee ID: {staffId}</p>}
         </DialogHeader>
         <div className="grid gap-4 py-4">
             <div className="flex justify-center items-center gap-2">

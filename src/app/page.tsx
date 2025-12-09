@@ -29,7 +29,11 @@ export default function Home() {
     if (!staffId) return;
 
     setIsLoading(true);
-    // Simulate API call
+    // Simulate API call and store staffId
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('staffId', staffId);
+    }
+    
     setTimeout(() => {
       router.push('/navigation');
     }, 1500);
