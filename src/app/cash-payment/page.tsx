@@ -31,8 +31,9 @@ function CashPaymentContent() {
   
   const cancelHref = returnUrl.includes('checkout') ? returnUrl : '/checkout';
 
-  // Floating point precision can be tricky. Use a small epsilon for comparison.
-  const isPaymentSufficient = change >= -0.001;
+  // Rounding to a safe number of decimal places before comparison
+  // to avoid floating-point inaccuracies.
+  const isPaymentSufficient = Number(amountPaid) >= paymentAmount || Math.abs(change) < 0.001;
 
 
   return (
