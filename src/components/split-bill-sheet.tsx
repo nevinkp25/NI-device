@@ -185,9 +185,9 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, baseReturnUr
                 </div>
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col">
-                    <TabsList className="grid w-full grid-cols-2 mt-4 mx-auto max-w-[90%]">
-                        <TabsTrigger value="equally"><Equal className="h-4 w-4 mr-2"/>Split Equally</TabsTrigger>
-                        <TabsTrigger value="by-item"><Box className="h-4 w-4 mr-2"/>Split by Item</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-2 mt-4 mx-auto max-w-[95%] h-12">
+                        <TabsTrigger value="equally" className="text-base"><Equal className="h-5 w-5 mr-2"/>Split Equally</TabsTrigger>
+                        <TabsTrigger value="by-item" className="text-base"><Box className="h-5 w-5 mr-2"/>Split by Item</TabsTrigger>
                     </TabsList>
                     <TabsContent value="equally" className="flex-grow overflow-y-auto p-4">
                        <div className="space-y-4 animate-in fade-in-0 duration-300">
@@ -317,3 +317,5 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, baseReturnUr
         </Sheet>
     );
 }
+
+    
