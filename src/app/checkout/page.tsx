@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -21,6 +21,14 @@ export default function CheckoutPage() {
   const [isSplitByItemSheetOpen, setIsSplitByItemSheetOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // This effect re-opens the split bill sheet when returning from payment
+    if(searchParams.has('paidGuest')){
+      setIsSplitSheetOpen(true);
+    }
+  }, [searchParams]);
 
 
   const vatRate = 0.05;

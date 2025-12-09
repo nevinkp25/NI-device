@@ -27,25 +27,27 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
     const { clearCart } = useCart();
 
     useEffect(() => {
-        if (isOpen && step === 'byAmount') {
+        // This effect re-triggers the sheet to open when returning from a partial payment
+        if (isOpen && searchParams.has('paidGuest')) {
             const paidGuestIndex = searchParams.get('paidGuest');
             if (paidGuestIndex) {
                 const index = parseInt(paidGuestIndex, 10);
                 if (!paidGuests.includes(index)) {
                     setPaidGuests(prev => [...prev, index]);
                 }
-                
+
                 // Clean up URL params after processing them
                 const newUrl = new URL(window.location.href);
                 newUrl.searchParams.delete('paidGuest');
                 newUrl.searchParams.delete('amount');
                 newUrl.searchParams.delete('returnUrl');
                 newUrl.searchParams.delete('transactionId');
+                newUrl.searchParams.delete('table');
                 window.history.replaceState({}, '', newUrl.toString());
             }
         }
-    }, [isOpen, searchParams, paidGuests, step]);
-    
+    }, [isOpen, searchParams, paidGuests]);
+
     const allGuestsPaid = paidGuests.length > 0 && paidGuests.length === splitCount;
 
     useEffect(() => {
@@ -64,12 +66,13 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
     const handlePayForSplit = (guestIndex: number) => {
         const remainingGuests = splitCount - paidGuests.length;
         const amountToPay = totalAmount - (paidGuests.length * perPersonAmount);
-        const currentSplitAmount = Math.min(perPersonAmount, amountToPay / remainingGuests);
+        const currentSplitAmount = Math.min(perPersonAmount, amountToPay / (remainingGuests > 0 ? remainingGuests : 1));
         
         // Construct the return URL to bring the user back to the current page with a parameter
-        const returnUrl = `${baseReturnUrl}${baseReturnUrl.includes('?') ? '&' : '?'}paidGuest=${guestIndex}`;
+        const returnUrl = new URL(baseReturnUrl, window.location.origin);
+        returnUrl.searchParams.set('paidGuest', guestIndex.toString());
 
-        router.push(`/payment-method?amount=${currentSplitAmount}&returnUrl=${encodeURIComponent(returnUrl)}`);
+        router.push(`/payment-method?amount=${currentSplitAmount.toFixed(4)}&returnUrl=${encodeURIComponent(returnUrl.pathname + returnUrl.search)}`);
         onOpenChange(false);
     }
 
@@ -81,14 +84,21 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, onSplitByIte
 
     const handleSheetChange = (open: boolean) => {
         if (!open) {
-            const isNavigatingForPayment = window.location.search.includes('amount=');
-            if (!isNavigatingForPayment) {
-                 resetState();
-            }
+             resetState();
         }
         onOpenChange(open);
     }
     
+    useEffect(() => {
+        if (isOpen) {
+            if (searchParams.has('paidGuest')) {
+                setStep('byAmount');
+            }
+        } else {
+            resetState();
+        }
+    }, [isOpen, searchParams]);
+
     useEffect(() => {
         setPaidGuests([]);
     }, [splitCount]);
