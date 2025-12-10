@@ -112,7 +112,7 @@ export default function TransactionHistoryPage() {
                      <Separator />
                     <DetailRow 
                         label="Payment Method" 
-                        value={tx.method === 'Card' && tx.cardLast4 ? `Card ending in ${tx.cardLast4}` : 'Cash'}
+                        value={tx.method}
                         icon={tx.method === 'Card' ? <CreditCard className="h-4 w-4 text-muted-foreground"/> : <Landmark className="h-4 w-4 text-muted-foreground"/>}
                     />
                      <Separator />
