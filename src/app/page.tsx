@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 
 const NetworkLogo = () => (
@@ -23,6 +24,7 @@ export default function Home() {
   const [staffId, setStaffId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +36,11 @@ export default function Home() {
         localStorage.setItem('staffId', staffId);
     }
     
+    toast({
+        title: "Staff ID Recognized",
+        description: `Welcome, David R.!`,
+    });
+
     setTimeout(() => {
       router.push('/navigation');
     }, 1500);
