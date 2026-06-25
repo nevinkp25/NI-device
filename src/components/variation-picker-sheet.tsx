@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -197,7 +196,7 @@ export function VariationPickerSheet({ isOpen, onOpenChange, item }: VariationPi
             <Button
               onClick={handleAddToCart}
               disabled={!areAllRequiredSelected}
-              className="w-full h-14 bg-primary text-primary-foreground text-lg"
+              className="w-full h-14 bg-[#E54360] hover:bg-[#E54360]/90 text-white text-lg"
             >
               Add to Cart (${finalPrice.toFixed(2)})
             </Button>
