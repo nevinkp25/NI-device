@@ -95,25 +95,25 @@ export default function TableSelectionPage() {
               <ArrowLeft className="h-6 w-6 text-primary" />
             </Button>
           </Link>
-          <h1 className="text-xl font-black mx-auto uppercase tracking-tighter">SELECT TABLE</h1>
+          <h1 className="text-xl font-black mx-auto uppercase tracking-tighter">GRID VIEW</h1>
           <div className="w-10"></div>
         </header>
         
         <OrderStepper currentStep={1} />
         
         {/* Floor Selection & Search Pills */}
-        <div className="px-4 py-4 space-y-4">
+        <div className="px-4 py-3 space-y-3">
           <div className="flex items-center gap-3">
             <Button 
                 variant="outline" 
                 size="icon" 
                 onClick={() => setIsFloorSheetOpen(true)}
-                className="h-12 w-12 shrink-0 rounded-full border-2 border-primary text-primary"
+                className="h-10 w-10 shrink-0 rounded-full border-2 border-primary text-primary"
             >
-                <LayoutGrid className="h-6 w-6" />
+                <LayoutGrid className="h-5 w-5" />
             </Button>
             
-            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1 flex-grow">
+            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 flex-grow">
               {FLOORS.map((floor) => (
                 <button
                   key={floor.id}
@@ -122,7 +122,7 @@ export default function TableSelectionPage() {
                       setSearchQuery('');
                   }}
                   className={cn(
-                    "h-12 px-8 text-sm font-black rounded-full transition-all shrink-0 uppercase tracking-tight",
+                    "h-10 px-6 text-[11px] font-black rounded-full transition-all shrink-0 uppercase tracking-tight",
                     selectedFloor === floor.id 
                       ? "bg-primary text-primary-foreground shadow-md" 
                       : "bg-[#F3F4F6] text-[#4B5563] hover:bg-slate-200"
@@ -140,29 +140,29 @@ export default function TableSelectionPage() {
               placeholder="SEARCH TABLE..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-14 pl-12 pr-6 text-base font-bold border-none bg-[#F9FAFB] rounded-full placeholder:text-[#9CA3AF] uppercase shadow-sm focus-visible:ring-1 focus-visible:ring-primary/20"
+              className="h-12 pl-10 pr-4 text-xs font-black border-none bg-[#F9FAFB] rounded-full placeholder:text-[#9CA3AF] uppercase shadow-inner focus-visible:ring-1 focus-visible:ring-primary/20"
             />
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#6B7280]" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6B7280]" />
           </div>
         </div>
       </div>
 
       <main className="p-4 flex-grow pb-32">
-        <section className="grid grid-cols-2 gap-4">
+        <section className="grid grid-cols-2 gap-3">
           {filteredTables.map((table) => (
             <Button
               key={table.id}
               onClick={() => handleTableClick(table)}
               className={cn(
-                "h-28 rounded-3xl border-2 transition-all flex flex-col items-center justify-center gap-2 shadow-sm",
+                "h-24 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 shadow-sm",
                 table.isOccupied 
                   ? "bg-destructive/5 text-destructive/40 border-destructive/10"
                   : "bg-white text-primary border-primary/5 active:bg-primary active:text-white"
               )}
             >
-              <span className="text-2xl font-black uppercase">{table.id}</span>
+              <span className="text-xl font-black uppercase">{table.id}</span>
               <span className={cn(
-                "text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border",
+                "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border",
                 table.isOccupied
                   ? "bg-destructive/10 text-destructive border-destructive/20"
                   : "bg-green-50 text-green-600 border-green-200"
@@ -171,31 +171,23 @@ export default function TableSelectionPage() {
               </span>
             </Button>
           ))}
-          {filteredTables.length === 0 && (
-            <div className="col-span-2 py-20 text-center text-muted-foreground font-bold uppercase text-sm">
-              No tables found
-            </div>
-          )}
         </section>
       </main>
 
-      {/* Floating Mode Switcher */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-        <div className="pointer-events-auto bg-slate-900/90 text-white rounded-full p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex items-center gap-1 border border-white/10 backdrop-blur-lg">
-          <Button 
-            variant="ghost" 
-            className="h-12 px-6 rounded-full bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
-          >
-            <LayoutGrid className="h-5 w-5" />
-            <span className="text-xs font-black uppercase tracking-tighter">GRID VIEW</span>
-          </Button>
+      {/* MINIMAL FLOATING SWITCHER */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+        <div className="pointer-events-auto bg-slate-900/95 text-white rounded-full p-1 shadow-2xl flex items-center gap-1 border border-white/10 backdrop-blur-md scale-90 sm:scale-100">
+          <div className="h-10 px-4 rounded-full bg-primary text-white flex items-center gap-2 shadow-inner">
+            <LayoutGrid className="h-4 w-4" />
+            <span className="text-[10px] font-black uppercase tracking-tighter">GRID</span>
+          </div>
           <Link href="/order-by-table" passHref>
             <Button 
               variant="ghost" 
-              className="h-12 px-6 rounded-full text-white/60 hover:text-white hover:bg-white/10 flex items-center gap-2"
+              className="h-10 px-4 rounded-full text-white/50 hover:text-white hover:bg-white/10 flex items-center gap-2 transition-all"
             >
-              <Hash className="h-5 w-5" />
-              <span className="text-xs font-black uppercase tracking-tighter">MANUAL</span>
+              <Hash className="h-4 w-4" />
+              <span className="text-[10px] font-black uppercase tracking-tighter">MANUAL</span>
             </Button>
           </Link>
         </div>
@@ -203,49 +195,49 @@ export default function TableSelectionPage() {
 
       {/* Guest Selection Sheet */}
       <Sheet open={isGuestSheetOpen} onOpenChange={setIsGuestSheetOpen}>
-        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[3rem] border-t-8 border-primary shadow-2xl" hideCloseButton>
-          <SheetHeader className="p-6 border-b flex-row items-center justify-between">
-            <div className="flex items-center gap-4 text-left">
-               <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center">
-                  <Users className="h-8 w-8 text-primary" />
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-8 border-primary shadow-2xl" hideCloseButton>
+          <SheetHeader className="p-4 border-b flex-row items-center justify-between">
+            <div className="flex items-center gap-3 text-left">
+               <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <Users className="h-6 w-6 text-primary" />
                </div>
                <div>
-                  <SheetTitle className="text-2xl font-black uppercase tracking-tighter">Table {tempSelectedTable?.id}</SheetTitle>
-                  <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Setup New Order</p>
+                  <SheetTitle className="text-lg font-black uppercase tracking-tighter">Table {tempSelectedTable?.id}</SheetTitle>
+                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">New Order</p>
                </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsGuestSheetOpen(false)} className="h-12 w-12 rounded-full bg-muted">
-               <X className="h-6 w-6" />
+            <Button variant="ghost" size="icon" onClick={() => setIsGuestSheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
+               <X className="h-5 w-5" />
             </Button>
           </SheetHeader>
 
-          <div className="p-10 space-y-10">
-             <div className="space-y-6 text-center">
-                <p className="text-xl font-black text-slate-400 uppercase tracking-[0.2em]">Guest Count</p>
-                <div className="flex items-center justify-center gap-10">
+          <div className="p-8 space-y-6">
+             <div className="space-y-4 text-center">
+                <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Guest Count</p>
+                <div className="flex items-center justify-center gap-8">
                    <Button 
                       variant="outline" 
                       onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                      className="h-20 w-20 rounded-3xl border-4 border-primary text-primary hover:bg-primary/5"
+                      className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
                    >
-                      <Minus className="h-10 w-10 stroke-[4]" />
+                      <Minus className="h-8 w-8 stroke-[4]" />
                    </Button>
-                   <span className="text-8xl font-black min-w-[120px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
+                   <span className="text-6xl font-black min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
                    <Button 
                       variant="outline" 
                       onClick={() => setGuestCount(guestCount + 1)}
-                      className="h-20 w-20 rounded-3xl border-4 border-primary text-primary hover:bg-primary/5"
+                      className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
                    >
-                      <Plus className="h-10 w-10 stroke-[4]" />
+                      <Plus className="h-8 w-8 stroke-[4]" />
                    </Button>
                 </div>
              </div>
           </div>
 
-          <SheetFooter className="p-6 bg-background border-t">
+          <SheetFooter className="p-4 bg-background border-t">
              <Button 
                 onClick={handleGoToMenu}
-                className="w-full h-20 text-3xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
+                className="w-full h-16 text-2xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
              >
                 GO TO MENU
              </Button>
@@ -255,22 +247,21 @@ export default function TableSelectionPage() {
 
       {/* Floor Selection Sheet */}
       <Sheet open={isFloorSheetOpen} onOpenChange={setIsFloorSheetOpen}>
-        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[3rem] border-t-8 border-primary shadow-2xl" hideCloseButton>
-            <SheetHeader className="p-6 border-b flex-row items-center justify-between">
-                <div className="flex items-center gap-4 text-left">
-                    <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center">
-                        <LayoutGrid className="h-8 w-8 text-primary" />
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-8 border-primary shadow-2xl" hideCloseButton>
+            <SheetHeader className="p-4 border-b flex-row items-center justify-between">
+                <div className="flex items-center gap-3 text-left">
+                    <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                        <LayoutGrid className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                        <SheetTitle className="text-2xl font-black uppercase tracking-tighter">SELECT FLOOR</SheetTitle>
-                        <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Jump to specific area</p>
+                        <SheetTitle className="text-lg font-black uppercase tracking-tighter">SELECT FLOOR</SheetTitle>
                     </div>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => setIsFloorSheetOpen(false)} className="h-12 w-12 rounded-full bg-muted">
-                    <X className="h-6 w-6" />
+                <Button variant="ghost" size="icon" onClick={() => setIsFloorSheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
+                    <X className="h-5 w-5" />
                 </Button>
             </SheetHeader>
-            <div className="p-4 space-y-3">
+            <div className="p-3 space-y-2">
                 {FLOORS.map((floor) => (
                     <Button
                         key={floor.id}
@@ -281,16 +272,16 @@ export default function TableSelectionPage() {
                             setIsFloorSheetOpen(false);
                         }}
                         className={cn(
-                            "w-full h-20 text-xl font-black rounded-2xl justify-between px-8 transition-all uppercase tracking-tight",
+                            "w-full h-16 text-lg font-black rounded-2xl justify-between px-6 transition-all uppercase tracking-tight",
                             selectedFloor === floor.id ? "bg-primary text-white" : "border-2 border-slate-100"
                         )}
                     >
                         <span>{floor.name}</span>
-                        {selectedFloor === floor.id && <Check className="h-6 w-6 stroke-[4]" />}
+                        {selectedFloor === floor.id && <Check className="h-5 w-5 stroke-[4]" />}
                     </Button>
                 ))}
             </div>
-            <div className="h-8" />
+            <div className="h-6" />
         </SheetContent>
       </Sheet>
     </div>

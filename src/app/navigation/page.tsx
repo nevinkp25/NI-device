@@ -19,7 +19,7 @@ const IconTableNumber = () => (
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M4 21L7 5H17L20 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M7 5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <text x="12" y="16" fontSize="7.5" textAnchor="middle" fill="currentColor" stroke="none" fontWeight="800" fontFamily="inherit">12</text>
+    <text x="12" y="16" fontSize="7.5" textAnchor="middle" fill="currentColor" stroke="none" fontWeight="800" fontFamily="inherit">#</text>
   </svg>
 );
 
@@ -60,16 +60,7 @@ export default function NavigationPage() {
       <main className="flex-grow px-3 pb-6">
         <div className="bg-white rounded-[2rem] p-5 shadow-[0_15px_40px_rgba(0,0,0,0.15)] flex flex-col gap-6 min-h-[450px]">
           <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => handleNavigation('/table-selection')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
-            >
-              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
-                <IconMenu />
-              </div>
-              <span className="text-base font-bold text-slate-800 tracking-tight">Order Menu</span>
-            </button>
-
+            {/* MANUAL ENTRY AS DEFAULT PRIMARY BUTTON */}
             <button
               onClick={() => handleNavigation('/order-by-table')}
               className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
@@ -78,6 +69,16 @@ export default function NavigationPage() {
                 <IconTableNumber />
               </div>
               <span className="text-base font-bold text-slate-800 tracking-tight">Table Number</span>
+            </button>
+
+            <button
+              onClick={() => handleNavigation('/table-selection')}
+              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
+            >
+              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
+                <IconMenu />
+              </div>
+              <span className="text-base font-bold text-slate-800 tracking-tight">Grid Map</span>
             </button>
 
             <button

@@ -25,7 +25,7 @@ export default function OrderByTablePage() {
       toast({
         variant: 'destructive',
         title: 'Invalid Table Number',
-        description: 'Please enter a valid table ID (e.g. T1001).',
+        description: 'Please enter a valid table ID.',
       });
     }
   };
@@ -34,26 +34,25 @@ export default function OrderByTablePage() {
     <div className="flex flex-col h-screen bg-background p-6">
       <header className="flex items-center mb-8">
         <Link href="/navigation" passHref>
-          <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
-            <ArrowLeft className="h-8 w-8" />
+          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
+            <ArrowLeft className="h-6 w-6 text-primary" />
           </Button>
         </Link>
-        <h1 className="text-3xl font-black mx-auto uppercase tracking-tighter">TABLE NUMBER</h1>
-        <div className="w-14"></div>
+        <h1 className="text-xl font-black mx-auto uppercase tracking-tighter">MANUAL ENTRY</h1>
+        <div className="w-12"></div>
       </header>
 
       <main className="flex-grow flex flex-col items-center justify-center text-center pb-32">
-        <div className="flex flex-col items-center space-y-12 w-full max-w-sm">
+        <div className="flex flex-col items-center space-y-8 w-full max-w-sm">
           
-          <div className="flex items-center justify-center h-40 w-40 rounded-full bg-muted border-8 border-primary shadow-xl">
-              <Hash className="h-20 w-20 text-primary" />
+          <div className="flex items-center justify-center h-24 w-24 rounded-full bg-primary/5 text-primary border-4 border-primary/20">
+              <Hash className="h-10 w-10" />
           </div>
 
-          <div className="space-y-4">
-            <p className="text-muted-foreground text-2xl font-black uppercase tracking-widest">
+          <div className="space-y-1">
+            <p className="text-slate-400 text-sm font-black uppercase tracking-[0.2em]">
               Enter Table ID
             </p>
-            <p className="text-slate-400 text-lg font-bold">Ex: T1001, V101</p>
           </div>
           
           <form 
@@ -61,46 +60,43 @@ export default function OrderByTablePage() {
               e.preventDefault();
               handleConfirm();
             }} 
-            className="w-full space-y-8"
+            className="w-full space-y-6"
           >
               <Input
                 type="text"
-                placeholder="T1001"
+                placeholder="T101"
                 value={tableNumber}
                 onChange={(e) => setTableNumber(e.target.value)}
-                className="text-center text-6xl h-40 font-black border-4 border-primary rounded-[2.5rem] shadow-inner focus-visible:ring-primary uppercase"
+                className="text-center text-5xl h-32 font-black border-4 border-primary rounded-3xl shadow-sm focus-visible:ring-primary uppercase"
                 autoFocus
               />
               <Button 
                 type="submit" 
-                className="w-full h-24 text-3xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-[1.5rem] shadow-2xl flex items-center justify-center gap-4 active:scale-95 transition-transform"
+                className="w-full h-16 text-xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform"
               >
                   <span>GO TO ORDER</span>
-                  <ArrowRight className="h-10 w-10" />
+                  <ArrowRight className="h-6 w-6" />
               </Button>
           </form>
         </div>
       </main>
 
-      {/* Floating Mode Switcher */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-        <div className="pointer-events-auto bg-slate-900/90 text-white rounded-full p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex items-center gap-1 border border-white/10 backdrop-blur-lg">
+      {/* MINIMAL FLOATING SWITCHER */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+        <div className="pointer-events-auto bg-slate-900/95 text-white rounded-full p-1 shadow-2xl flex items-center gap-1 border border-white/10 backdrop-blur-md scale-90 sm:scale-100">
           <Link href="/table-selection" passHref>
             <Button 
               variant="ghost" 
-              className="h-12 px-6 rounded-full text-white/60 hover:text-white hover:bg-white/10 flex items-center gap-2"
+              className="h-10 px-4 rounded-full text-white/50 hover:text-white hover:bg-white/10 flex items-center gap-2 transition-all"
             >
-              <LayoutGrid className="h-5 w-5" />
-              <span className="text-xs font-black uppercase tracking-tighter">GRID VIEW</span>
+              <LayoutGrid className="h-4 w-4" />
+              <span className="text-[10px] font-black uppercase tracking-tighter">GRID</span>
             </Button>
           </Link>
-          <Button 
-            variant="ghost" 
-            className="h-12 px-6 rounded-full bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
-          >
-            <Hash className="h-5 w-5" />
-            <span className="text-xs font-black uppercase tracking-tighter">MANUAL</span>
-          </Button>
+          <div className="h-10 px-4 rounded-full bg-primary text-white flex items-center gap-2 shadow-inner">
+            <Hash className="h-4 w-4" />
+            <span className="text-[10px] font-black uppercase tracking-tighter">MANUAL</span>
+          </div>
         </div>
       </div>
     </div>
