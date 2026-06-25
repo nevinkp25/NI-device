@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -126,7 +127,7 @@ export default function TableSelectionPage() {
           disabled={!selectedTable}
           className="w-full h-24 text-3xl font-black bg-primary text-primary-foreground rounded-2xl shadow-2xl disabled:opacity-20 active:scale-95 transition-transform uppercase"
         >
-          {selectedTable ? `START ${selectedTable}` : 'SELECT A TABLE'}
+          {selectedTable ? 'GO TO MENU' : 'SELECT A TABLE'}
         </Button>
       </footer>
     </div>
