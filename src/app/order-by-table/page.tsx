@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Hash, LayoutGrid, Users, Minus, Plus, X } from 'lucide-react';
-import Link from 'next/navigation';
+import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { OrderStepper } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
@@ -22,8 +22,9 @@ export default function OrderByTablePage() {
 
   const suggestions = useMemo(() => {
     if (!tableNumber.trim()) return [];
+    const search = tableNumber.toLowerCase();
     return ALL_TABLES.filter(t => 
-      t.id.toLowerCase().includes(tableNumber.toLowerCase())
+      t.id.toLowerCase().includes(search)
     ).slice(0, 5);
   }, [tableNumber]);
 
@@ -47,7 +48,7 @@ export default function OrderByTablePage() {
   };
 
   const handleFinalConfirm = () => {
-    router.push(`/menu?table=${tableNumber.toUpperCase()}&guests=${guestCount}`);
+    router.push(`/menu?table=${tableNumber.toUpperCase() || 'MANUAL'}&guests=${guestCount}`);
   };
 
   const handleSuggestionClick = (table: TableData) => {
@@ -90,18 +91,18 @@ export default function OrderByTablePage() {
               autoFocus
             />
 
-            {/* Smart Suggestions - Redesigned with better margins and spacing */}
-            <div className="min-h-[120px] mt-6 mb-8 flex flex-wrap justify-center gap-3">
+            {/* Smart Suggestions - Enhanced Spacing */}
+            <div className="min-h-[140px] mt-8 mb-10 flex flex-wrap justify-center gap-4">
               {suggestions.map((table) => (
                 <button
                   key={table.id}
                   type="button"
                   onClick={() => handleSuggestionClick(table)}
                   className={cn(
-                    "px-6 py-3 rounded-2xl border-2 font-black text-base uppercase transition-all shadow-sm active:scale-90 animate-in fade-in zoom-in-95 duration-200",
+                    "px-8 py-4 rounded-2xl border-2 font-black text-lg uppercase transition-all shadow-md active:scale-90 animate-in fade-in zoom-in-95 duration-200",
                     table.isOccupied 
                       ? "bg-destructive/10 border-destructive/20 text-destructive" 
-                      : "bg-white border-primary/20 text-primary hover:border-primary shadow-slate-100"
+                      : "bg-white border-primary/20 text-primary hover:border-primary shadow-slate-200"
                   )}
                 >
                   {table.id}
