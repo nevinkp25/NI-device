@@ -55,37 +55,43 @@ export function FoodCard({ item }: { item: MenuItem }) {
           )}
         </CardHeader>
         <CardFooter className="p-4 pt-0 flex flex-col gap-2">
-          <div className="w-full flex items-center justify-between">
+          <div className="w-full flex items-center justify-between mb-1">
             <p className="font-bold text-lg text-slate-800 tabular-nums">
               ${item.price.toFixed(2)}
             </p>
           </div>
-          {cartItem ? (
-            <div onClick={(e) => e.stopPropagation()} className="w-full">
-                <QuantitySelector
-                    quantity={cartItem.quantity}
-                    onIncrease={() => updateQuantity(cartItem.cartItemId, cartItem.quantity + 1)}
-                    onDecrease={() => updateQuantity(cartItem.cartItemId, cartItem.quantity - 1)}
-                    className="bg-slate-50 border border-slate-100"
-                />
-            </div>
-          ) : (
-            <Button
-              className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-bold shadow-sm transition-all active:scale-[0.98]"
-              onClick={(e) => {
-                e.stopPropagation();
-                hasVariations ? handleVariationAdd() : handleSimpleAdd();
-              }}
-            >
-              <Plus className="h-4 w-4 mr-1.5" />
-              ADD
-            </Button>
-          )}
-          {hasVariations && (
-            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest text-center">
-              Customizable
-            </p>
-          )}
+          
+          <div className="w-full min-h-[44px]">
+            {cartItem ? (
+              <div onClick={(e) => e.stopPropagation()} className="w-full">
+                  <QuantitySelector
+                      quantity={cartItem.quantity}
+                      onIncrease={() => updateQuantity(cartItemId, cartItem.quantity + 1)}
+                      onDecrease={() => updateQuantity(cartItemId, cartItem.quantity - 1)}
+                      className="bg-slate-50 border border-slate-100"
+                  />
+              </div>
+            ) : (
+              <Button
+                className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-bold shadow-sm transition-all active:scale-[0.98]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  hasVariations ? handleVariationAdd() : handleSimpleAdd();
+                }}
+              >
+                <Plus className="h-4 w-4 mr-1.5" />
+                ADD
+              </Button>
+            )}
+          </div>
+
+          <div className="h-3 flex items-center justify-center">
+            {hasVariations && (
+              <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">
+                Customizable
+              </p>
+            )}
+          </div>
         </CardFooter>
       </Card>
       {hasVariations && (
