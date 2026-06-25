@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, Suspense } from 'react';
@@ -24,19 +23,18 @@ function MenuHeader() {
 
   return (
     <>
-    <div className="sticky top-0 z-50 bg-background border-b shadow-sm">
+    <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b">
       <header className="flex items-center p-4">
         <Link href="/order-by-table" passHref>
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="text-primary h-6 w-6" />
+          <Button variant="ghost" size="icon" className="text-slate-600">
+            <ArrowLeft className="h-6 w-6" />
           </Button>
         </Link>
-        <h1 className="text-xl font-black mx-auto flex items-center gap-2 uppercase tracking-tighter">
-          <Utensils className="text-primary h-5 w-5" />
+        <h1 className="text-lg font-bold mx-auto flex items-center gap-2 text-slate-900 tracking-tight uppercase">
           {tableNumber ? `Table ${tableNumber}` : 'Menu'}
         </h1>
         <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
-          <Avatar className="h-10 w-10 border-2 border-primary">
+          <Avatar className="h-10 w-10 border-2 border-primary/10">
             {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
             <AvatarFallback>W</AvatarFallback>
           </Avatar>
@@ -65,32 +63,32 @@ export default function MenuPage() {
   };
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className="bg-slate-50/50 min-h-screen">
       <Suspense fallback={<div>Loading header...</div>}>
         <MenuHeader />
       </Suspense>
 
       {/* Categories Navigation */}
-      <nav className="sticky top-[112px] z-40 bg-background/95 backdrop-blur-md py-4 px-4 border-b flex items-center gap-3">
+      <nav className="sticky top-[112px] z-40 bg-white/60 backdrop-blur-md py-4 px-4 border-b flex items-center gap-3">
         <Button 
           variant="outline" 
           size="icon" 
           onClick={() => setIsCategorySheetOpen(true)}
-          className="h-10 w-10 shrink-0 rounded-full border-2 border-primary text-primary"
+          className="h-10 w-10 shrink-0 rounded-full border-slate-200 text-slate-600 bg-white shadow-sm"
         >
           <LayoutGrid className="h-5 w-5" />
         </Button>
         
-        <div className="flex space-x-3 overflow-x-auto pb-2 -mb-2 no-scrollbar flex-grow">
+        <div className="flex space-x-2.5 overflow-x-auto no-scrollbar flex-grow">
           {foodCategories.map((category) => (
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
               className={cn(
-                "px-6 py-2.5 rounded-full text-[11px] font-black whitespace-nowrap transition-all duration-200 uppercase tracking-widest border-2",
+                "px-5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 uppercase tracking-wide",
                 activeCategory === category.id
-                  ? "bg-primary border-primary text-primary-foreground shadow-lg"
-                  : "bg-slate-50 border-slate-100 text-slate-400 hover:border-slate-200"
+                  ? "bg-primary text-white shadow-md ring-2 ring-primary/20"
+                  : "bg-white border border-slate-200 text-slate-500 hover:bg-slate-50"
               )}
             >
               {category.name}
@@ -99,13 +97,13 @@ export default function MenuPage() {
         </div>
       </nav>
 
-      <main className="p-4 pb-48 animate-in fade-in slide-in-from-bottom-2 duration-300">
-        <div className="mb-8">
-            <h2 className="text-4xl font-black uppercase tracking-tighter text-slate-900 border-l-8 border-primary pl-4">
+      <main className="p-4 pb-48 animate-in fade-in duration-500">
+        <div className="mb-6 px-2">
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
                 {activeCategoryName}
             </h2>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-2 pl-6">
-                {filteredItems.length} ITEMS AVAILABLE
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-widest mt-1">
+                {filteredItems.length} options available
             </p>
         </div>
 
@@ -116,9 +114,11 @@ export default function MenuPage() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-            <Utensils className="h-12 w-12 text-slate-200" />
-            <p className="text-slate-500 font-bold uppercase tracking-tighter">No items found in this category.</p>
+          <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
+            <div className="bg-white p-6 rounded-full shadow-sm">
+                <Utensils className="h-10 w-10 text-slate-200" />
+            </div>
+            <p className="text-slate-400 font-medium">No items in this category yet.</p>
           </div>
         )}
       </main>
@@ -127,41 +127,42 @@ export default function MenuPage() {
 
       {/* Category Selection Bottom Sheet */}
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
-        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-8 border-primary shadow-2xl" hideCloseButton>
-          <SheetHeader className="p-4 border-b flex-row items-center justify-between">
-            <div className="flex items-center gap-3 text-left">
-               <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <LayoutGrid className="h-6 w-6 text-primary" />
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2rem] border-t-0 bg-slate-50" hideCloseButton>
+          <div className="mx-auto w-12 h-1.5 bg-slate-200 rounded-full mt-3 mb-1" />
+          <SheetHeader className="p-5 flex-row items-center justify-between bg-white border-b rounded-t-[2rem]">
+            <div className="flex items-center gap-4 text-left">
+               <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                  <LayoutGrid className="h-5 w-5 text-slate-600" />
                </div>
                <div>
-                  <SheetTitle className="text-lg font-black uppercase tracking-tighter">Select Category</SheetTitle>
-                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Browse Menu</p>
+                  <SheetTitle className="text-lg font-bold text-slate-900">Categories</SheetTitle>
+                  <p className="text-xs text-slate-500">Jump to a section</p>
                </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsCategorySheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
+            <Button variant="ghost" size="icon" onClick={() => setIsCategorySheetOpen(false)} className="h-10 w-10 rounded-full bg-slate-100">
                <X className="h-5 w-5" />
             </Button>
           </SheetHeader>
 
-          <div className="p-4 space-y-2">
+          <div className="p-4 space-y-2 max-h-[60vh] overflow-y-auto">
             {foodCategories.map((category) => (
               <Button
                 key={category.id}
-                variant={activeCategory === category.id ? "default" : "outline"}
+                variant="ghost"
                 onClick={() => handleCategorySelect(category.id)}
                 className={cn(
-                  "w-full h-16 text-lg font-black rounded-2xl justify-between px-6 transition-all uppercase tracking-tight",
+                  "w-full h-14 text-base font-semibold rounded-xl justify-between px-5 transition-all",
                   activeCategory === category.id 
-                    ? "bg-primary text-white" 
-                    : "border-2 border-slate-100 text-slate-600"
+                    ? "bg-primary/5 text-primary border-none" 
+                    : "text-slate-600 hover:bg-slate-100"
                 )}
               >
                 <span>{category.name}</span>
-                {activeCategory === category.id && <Check className="h-5 w-5 stroke-[4]" />}
+                {activeCategory === category.id && <Check className="h-5 w-5 stroke-[2.5]" />}
               </Button>
             ))}
           </div>
-          <div className="h-8" />
+          <div className="h-8 bg-slate-50" />
         </SheetContent>
       </Sheet>
     </div>
