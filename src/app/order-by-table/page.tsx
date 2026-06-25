@@ -71,7 +71,10 @@ export default function OrderByTablePage() {
         <OrderStepper currentStep={1} />
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-start pt-12 px-6 pb-32">
+      <main className={cn(
+        "flex-grow flex flex-col items-center justify-start px-6 pb-32 transition-all duration-300",
+        isInputFocused ? "pt-4" : "pt-12"
+      )}>
         <form 
           onSubmit={(e) => {
             e.preventDefault();
@@ -89,18 +92,25 @@ export default function OrderByTablePage() {
               onFocus={() => setIsInputFocused(true)}
               onBlur={() => setIsInputFocused(false)}
               onChange={(e) => setTableNumber(e.target.value)}
-              className="text-center text-7xl h-32 font-bold border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter"
+              className={cn(
+                "text-center font-bold border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter transition-all duration-300",
+                isInputFocused ? "text-5xl h-20" : "text-7xl h-32"
+              )}
               autoFocus
             />
 
-            <div className="min-h-[140px] mt-8 mb-10 flex flex-wrap justify-center gap-4">
+            <div className={cn(
+              "flex flex-wrap justify-center gap-2 transition-all duration-300",
+              isInputFocused ? "mt-4 mb-6" : "mt-8 mb-10 min-h-[140px]"
+            )}>
               {suggestions.map((table) => (
                 <button
                   key={table.id}
                   type="button"
                   onClick={() => handleSuggestionClick(table)}
                   className={cn(
-                    "px-8 py-4 rounded-2xl border-2 font-bold text-lg uppercase transition-all shadow-md active:scale-90 animate-in fade-in zoom-in-95 duration-200",
+                    "rounded-2xl border-2 font-bold uppercase transition-all shadow-md active:scale-90 animate-in fade-in zoom-in-95 duration-200",
+                    isInputFocused ? "px-5 py-3 text-sm" : "px-8 py-4 text-lg",
                     table.isOccupied 
                       ? "bg-destructive/10 border-destructive/20 text-destructive" 
                       : "bg-white border-primary/20 text-primary hover:border-primary shadow-slate-100"
@@ -113,10 +123,16 @@ export default function OrderByTablePage() {
           </div>
 
           {tableNumber.trim() && (
-            <div className="pt-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <div className={cn(
+                "animate-in fade-in slide-in-from-bottom-4 duration-300",
+                isInputFocused ? "pt-2" : "pt-4"
+            )}>
                 <Button 
                 type="submit" 
-                className="w-full h-20 text-2xl font-bold bg-primary text-white rounded-[1.5rem] shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
+                className={cn(
+                    "w-full font-bold bg-primary text-white rounded-[1.5rem] shadow-xl active:scale-95 transition-all uppercase tracking-tighter",
+                    isInputFocused ? "h-16 text-xl" : "h-20 text-2xl"
+                )}
                 >
                 GO TO MENU
                 </Button>
