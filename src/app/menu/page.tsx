@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, Suspense } from 'react';
@@ -14,6 +15,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
 import { OrderStepper } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { useCart } from '@/context/cart-context';
 
 function MenuHeader() {
   const searchParams = useSearchParams();
@@ -53,6 +55,7 @@ function MenuHeader() {
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState<string>(foodCategories[0].id);
   const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
+  const { cartItems } = useCart();
 
   const filteredItems = menuItems.filter((item) => item.category === activeCategory);
   const activeCategoryName = foodCategories.find(c => c.id === activeCategory)?.name || '';
@@ -79,21 +82,27 @@ export default function MenuPage() {
           <LayoutGrid className="h-5 w-5" />
         </Button>
         
-        <div className="flex space-x-2.5 overflow-x-auto no-scrollbar flex-grow">
-          {foodCategories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={cn(
-                "px-5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 uppercase tracking-wide",
-                activeCategory === category.id
-                  ? "bg-primary text-white shadow-md ring-2 ring-primary/20"
-                  : "bg-white border border-slate-200 text-slate-500 hover:bg-slate-50"
-              )}
-            >
-              {category.name}
-            </button>
-          ))}
+        <div className="flex space-x-2.5 overflow-x-auto no-scrollbar flex-grow py-1">
+          {foodCategories.map((category) => {
+            const hasItemsInCart = cartItems.some(item => item.category === category.id);
+            return (
+              <button
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={cn(
+                  "relative px-5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 uppercase tracking-wide",
+                  activeCategory === category.id
+                    ? "bg-primary text-white shadow-md ring-2 ring-primary/20"
+                    : "bg-white border border-slate-200 text-slate-500 hover:bg-slate-50"
+                )}
+              >
+                {category.name}
+                {hasItemsInCart && (
+                  <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white animate-in zoom-in-50 duration-300" />
+                )}
+              </button>
+            );
+          })}
         </div>
       </nav>
 
@@ -145,22 +154,30 @@ export default function MenuPage() {
           </SheetHeader>
 
           <div className="p-4 space-y-2 max-h-[60vh] overflow-y-auto">
-            {foodCategories.map((category) => (
-              <Button
-                key={category.id}
-                variant="ghost"
-                onClick={() => handleCategorySelect(category.id)}
-                className={cn(
-                  "w-full h-14 text-base font-semibold rounded-xl justify-between px-5 transition-all",
-                  activeCategory === category.id 
-                    ? "bg-primary/5 text-primary border-none" 
-                    : "text-slate-600 hover:bg-slate-100"
-                )}
-              >
-                <span>{category.name}</span>
-                {activeCategory === category.id && <Check className="h-5 w-5 stroke-[2.5]" />}
-              </Button>
-            ))}
+            {foodCategories.map((category) => {
+              const hasItemsInCart = cartItems.some(item => item.category === category.id);
+              return (
+                <Button
+                  key={category.id}
+                  variant="ghost"
+                  onClick={() => handleCategorySelect(category.id)}
+                  className={cn(
+                    "w-full h-14 text-base font-semibold rounded-xl justify-between px-5 transition-all",
+                    activeCategory === category.id 
+                      ? "bg-primary/5 text-primary border-none" 
+                      : "text-slate-600 hover:bg-slate-100"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <span>{category.name}</span>
+                    {hasItemsInCart && (
+                      <span className="h-2 w-2 bg-red-500 rounded-full shadow-sm" />
+                    )}
+                  </div>
+                  {activeCategory === category.id && <Check className="h-5 w-5 stroke-[2.5]" />}
+                </Button>
+              );
+            })}
           </div>
           <div className="h-8 bg-slate-50" />
         </SheetContent>
