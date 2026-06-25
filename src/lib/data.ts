@@ -30,6 +30,7 @@ export interface CartItem extends MenuItem {
   cartItemId: string; // A unique identifier for this specific item configuration in the cart
   quantity: number;
   selectedVariations: CartItemVariationSelection;
+  specialInstructions?: string;
 }
 
 export interface Order {
@@ -37,6 +38,7 @@ export interface Order {
   tableNumber: string;
   date: string;
   items: CartItem[];
+  orderInstructions?: string;
 }
 
 export interface FoodCategory {

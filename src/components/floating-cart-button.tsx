@@ -5,14 +5,25 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBasket, ArrowRight, ChevronUp, ChevronDown, ShoppingBag } from 'lucide-react';
+import { ShoppingBasket, ArrowRight, ChevronUp, ChevronDown, ShoppingBag, MessageSquareText } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { cn } from '@/lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { QuantitySelector } from './quantity-selector';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 export function FloatingCartButton() {
-  const { cartItems, totalItems, subtotal, updateQuantity, getDisplayPrice } = useCart();
+  const { 
+    cartItems, 
+    totalItems, 
+    subtotal, 
+    updateQuantity, 
+    getDisplayPrice, 
+    updateItemInstructions, 
+    orderInstructions, 
+    setOrderInstructions 
+  } = useCart();
   const [isOpen, setIsOpen] = useState(false);
 
   if (totalItems === 0) {
@@ -85,6 +96,19 @@ export function FloatingCartButton() {
                                       ${(displayPrice * item.quantity).toFixed(2)}
                                     </span>
                                 </div>
+
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest ml-1">
+                                    <MessageSquareText className="h-3 w-3" />
+                                    <span>Special Instruction</span>
+                                  </div>
+                                  <Input 
+                                    placeholder="E.g. No onions, extra spicy..." 
+                                    className="h-10 text-xs bg-slate-50/50 border-slate-200 rounded-xl focus-visible:ring-primary/20"
+                                    value={item.specialInstructions || ''}
+                                    onChange={(e) => updateItemInstructions(item.cartItemId, e.target.value)}
+                                  />
+                                </div>
                                 
                                 <div className="bg-slate-50/80 p-1 rounded-2xl">
                                     <QuantitySelector
@@ -98,6 +122,24 @@ export function FloatingCartButton() {
                         )
                     })}
                 </ul>
+
+                <div className="pt-4 border-t border-slate-200 space-y-3">
+                  <div className="flex items-center gap-3 px-1">
+                    <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                      <MessageSquareText className="h-5 w-5 text-slate-400" />
+                    </div>
+                    <div className="flex flex-col">
+                      <h4 className="font-bold text-sm text-slate-900 leading-tight uppercase tracking-tight">Overall Instruction</h4>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Applies to whole order</p>
+                    </div>
+                  </div>
+                  <Textarea 
+                    placeholder="E.g. Table is in a hurry, birthday celebration..." 
+                    className="min-h-[80px] bg-white border-slate-200 rounded-[1.25rem] text-sm focus-visible:ring-primary/20 resize-none"
+                    value={orderInstructions}
+                    onChange={(e) => setOrderInstructions(e.target.value)}
+                  />
+                </div>
                 <div className="h-4" />
               </div>
           </CollapsibleContent>

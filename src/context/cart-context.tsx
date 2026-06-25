@@ -16,6 +16,7 @@ interface CartContextType {
   addToCart: (item: MenuItem, selectedVariations: CartItemVariationSelection, quantity?: number) => void;
   updateQuantity: (cartItemId: string, quantity: number) => void;
   removeFromCart: (cartItemId: string) => void;
+  updateItemInstructions: (cartItemId: string, instructions: string) => void;
   loadCart: (items: CartItem[]) => void;
   clearCart: () => void;
   decreaseSubtotal: (amount: number) => void;
@@ -23,6 +24,8 @@ interface CartContextType {
   totalItems: number;
   subtotal: number;
   getDisplayPrice: (item: CartItem) => number;
+  orderInstructions: string;
+  setOrderInstructions: (instructions: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -30,6 +33,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [subtotal, setSubtotal] = useState(0);
+  const [orderInstructions, setOrderInstructions] = useState('');
 
   const getDisplayPrice = useCallback((item: CartItem) => {
     let finalPrice = item.price;
@@ -102,6 +106,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return newItems;
     });
   };
+
+  const updateItemInstructions = (cartItemId: string, instructions: string) => {
+    setCartItems(prevItems => {
+        const newItems = prevItems.map(item =>
+            item.cartItemId === cartItemId ? { ...item, specialInstructions: instructions } : item
+        );
+        return newItems;
+    });
+  };
   
   const getItem = (cartItemId: string) => {
     return cartItems.find(item => item.cartItemId === cartItemId);
@@ -115,6 +128,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clearCart = useCallback(() => {
     setCartItems([]);
     setSubtotal(0);
+    setOrderInstructions('');
   }, []);
 
   const decreaseSubtotal = useCallback((amount: number) => {
@@ -134,6 +148,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     addToCart,
     updateQuantity,
     removeFromCart,
+    updateItemInstructions,
     loadCart,
     clearCart,
     decreaseSubtotal,
@@ -141,6 +156,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     totalItems,
     subtotal,
     getDisplayPrice,
+    orderInstructions,
+    setOrderInstructions,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
