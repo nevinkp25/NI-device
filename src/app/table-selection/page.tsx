@@ -138,21 +138,21 @@ export default function TableSelectionPage() {
         </section>
       </main>
 
-      {/* MINIMAL FLOATING SWITCHER */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30">
-        <div className="bg-slate-900/95 text-white rounded-full p-1 shadow-2xl flex items-center gap-1 border border-white/10 backdrop-blur-md">
+      {/* MINIMAL FLOATING SWITCHER - CONDENSED & AT BOTTOM */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 scale-90 sm:scale-100">
+        <div className="bg-slate-900/95 text-white rounded-full p-0.5 shadow-2xl flex items-center gap-0.5 border border-white/10 backdrop-blur-md">
           <Link href="/order-by-table" passHref>
             <Button 
               variant="ghost" 
-              className="h-10 px-4 rounded-full text-white/50 hover:text-white flex items-center gap-2"
+              className="h-8 px-3 rounded-full text-white/50 hover:text-white flex items-center gap-1.5"
             >
-              <Hash className="h-4 w-4" />
-              <span className="text-[10px] font-black uppercase tracking-tighter">Manual</span>
+              <Hash className="h-3.5 w-3.5" />
+              <span className="text-[9px] font-black uppercase tracking-tighter">Manual</span>
             </Button>
           </Link>
-          <div className="h-10 px-4 rounded-full bg-primary text-white flex items-center gap-2 shadow-inner">
-            <LayoutGrid className="h-4 w-4" />
-            <span className="text-[10px] font-black uppercase tracking-tighter">Grid</span>
+          <div className="h-8 px-3 rounded-full bg-primary text-white flex items-center gap-1.5 shadow-inner">
+            <LayoutGrid className="h-3.5 w-3.5" />
+            <span className="text-[9px] font-black uppercase tracking-tighter">Grid</span>
           </div>
         </div>
       </div>
