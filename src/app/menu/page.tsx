@@ -23,8 +23,8 @@ function MenuHeader() {
 
   return (
     <>
-    <header className="sticky top-0 z-20 bg-background">
-      <div className="flex items-center p-4 border-b">
+    <div className="sticky top-0 z-50 bg-background border-b shadow-sm">
+      <header className="flex items-center p-4">
         <Link href="/table-selection" passHref>
           <Button variant="ghost" size="icon">
             <ArrowLeft />
@@ -40,9 +40,9 @@ function MenuHeader() {
             <AvatarFallback>W</AvatarFallback>
           </Avatar>
         </button>
-      </div>
+      </header>
       <OrderStepper currentStep={2} />
-    </header>
+    </div>
     <WaiterProfileDialog
         isOpen={isWaiterProfileOpen}
         onOpenChange={setIsWaiterProfileOpen}
@@ -95,20 +95,20 @@ export default function MenuPage() {
         <MenuHeader />
       </Suspense>
 
-      <nav className="sticky top-[136px] z-10 bg-background/90 backdrop-blur-sm py-3 px-4 border-b-2">
+      <nav className="sticky top-[112px] z-40 bg-background/90 backdrop-blur-sm py-3 px-4 border-b">
         <div className="flex space-x-2 overflow-x-auto pb-2 -mb-2 no-scrollbar">
           {foodCategories.map((category) => (
             <button
               key={category.id}
               onClick={() => handleTabClick(category.id)}
               className={cn(
-                "px-6 py-3 rounded-full text-base font-black whitespace-nowrap transition-all duration-300",
+                "px-6 py-3 rounded-full text-sm font-black whitespace-nowrap transition-all duration-300 uppercase",
                 activeCategory === category.id
                   ? "bg-primary text-primary-foreground scale-105 shadow-md"
-                  : "bg-muted text-muted-foreground hover:bg-muted/90"
+                  : "bg-[#F3F4F6] text-muted-foreground hover:bg-slate-200"
               )}
             >
-              {category.name.toUpperCase()}
+              {category.name}
             </button>
           ))}
         </div>

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, MapPin, Users, Plus, Minus, X } from 'lucide-react';
+import { ArrowLeft, Search, Users, Plus, Minus, X } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { OrderStepper } from '@/components/order-stepper';
@@ -85,10 +85,10 @@ export default function TableSelectionPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      {/* PERFECT STICKY HEADER BLOCK */}
-      <div className="sticky top-0 z-50 bg-background shadow-sm">
-        <header className="flex items-center p-4 border-b">
+    <div className="flex flex-col bg-background min-h-screen">
+      {/* CONSOLIDATED STICKY HEADER MATCHING IMAGE */}
+      <div className="sticky top-0 z-50 bg-background shadow-sm border-b">
+        <header className="flex items-center px-4 pt-4 pb-2">
           <Link href="/navigation" passHref>
             <Button variant="ghost" size="icon" className="h-10 w-10">
               <ArrowLeft className="h-6 w-6 text-primary" />
@@ -100,7 +100,7 @@ export default function TableSelectionPage() {
         
         <OrderStepper currentStep={1} />
         
-        {/* Sub-Nav matching your design image */}
+        {/* Floor Selection & Search Pills */}
         <div className="px-4 py-4 space-y-4">
           <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
             {FLOORS.map((floor) => (
@@ -111,10 +111,10 @@ export default function TableSelectionPage() {
                     setSearchQuery('');
                 }}
                 className={cn(
-                  "h-12 px-6 text-sm font-black rounded-full transition-all shrink-0 uppercase tracking-tight",
+                  "h-12 px-8 text-sm font-black rounded-full transition-all shrink-0 uppercase tracking-tight",
                   selectedFloor === floor.id 
                     ? "bg-primary text-primary-foreground shadow-md" 
-                    : "bg-[#F3F4F6] text-[#4B5563]"
+                    : "bg-[#F3F4F6] text-[#4B5563] hover:bg-slate-200"
                 )}
               >
                 {floor.name}
@@ -142,10 +142,10 @@ export default function TableSelectionPage() {
               key={table.id}
               onClick={() => handleTableClick(table)}
               className={cn(
-                "h-28 rounded-3xl border-2 transition-all flex flex-col items-center justify-center gap-2",
+                "h-28 rounded-3xl border-2 transition-all flex flex-col items-center justify-center gap-2 shadow-sm",
                 table.isOccupied 
                   ? "bg-slate-50 text-slate-300 border-slate-100"
-                  : "bg-white text-primary border-primary/10 shadow-lg active:bg-primary active:text-white"
+                  : "bg-white text-primary border-primary/5 active:bg-primary active:text-white"
               )}
             >
               <span className="text-2xl font-black uppercase">{table.id}</span>
@@ -161,7 +161,7 @@ export default function TableSelectionPage() {
           ))}
           {filteredTables.length === 0 && (
             <div className="col-span-2 py-20 text-center text-muted-foreground font-bold uppercase text-sm">
-              No tables found in this section
+              No tables found
             </div>
           )}
         </section>
