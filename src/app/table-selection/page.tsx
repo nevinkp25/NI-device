@@ -135,18 +135,6 @@ export default function TableSelectionPage() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-8 w-8 text-primary" />
         </section>
 
-        {/* Legend */}
-        <section className="flex items-center justify-around bg-slate-50 p-3 rounded-xl border-2 border-slate-100">
-           <div className="flex items-center gap-2">
-              <Circle className="h-4 w-4 fill-green-500 text-green-500" />
-              <span className="text-sm font-black text-slate-600 uppercase">Available</span>
-           </div>
-           <div className="flex items-center gap-2">
-              <Circle className="h-4 w-4 fill-slate-300 text-slate-300" />
-              <span className="text-sm font-black text-slate-600 uppercase">Occupied</span>
-           </div>
-        </section>
-
         {/* Table Grid: Massive Buttons */}
         <section className="grid grid-cols-2 gap-4">
           {filteredTables.map((table) => (
