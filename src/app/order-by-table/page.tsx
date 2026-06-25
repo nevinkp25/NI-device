@@ -65,7 +65,7 @@ export default function OrderByTablePage() {
               <ArrowLeft className="h-6 w-6 text-primary" />
             </Button>
           </Link>
-          <h1 className="text-xl font-black mx-auto uppercase tracking-tighter">TABLE NUMBER</h1>
+          <h1 className="text-xl font-bold mx-auto uppercase tracking-tight text-slate-900">Table Number</h1>
           <div className="w-10"></div>
         </div>
         <OrderStepper currentStep={1} />
@@ -80,18 +80,18 @@ export default function OrderByTablePage() {
           className="w-full space-y-2"
         >
           <div className="text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-1">ENTER ID</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-300 mb-1">Enter Table ID</p>
             <Input
               type="text"
-              placeholder="00000"
+              placeholder="0000"
               maxLength={5}
               value={tableNumber}
               onChange={(e) => setTableNumber(e.target.value)}
-              className="text-center text-7xl h-32 font-black border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter"
+              className="text-center text-7xl h-32 font-bold border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter"
               autoFocus
             />
 
-            {/* Smart Suggestions - Enhanced Spacing */}
+            {/* Smart Suggestions */}
             <div className="min-h-[140px] mt-8 mb-10 flex flex-wrap justify-center gap-4">
               {suggestions.map((table) => (
                 <button
@@ -99,10 +99,10 @@ export default function OrderByTablePage() {
                   type="button"
                   onClick={() => handleSuggestionClick(table)}
                   className={cn(
-                    "px-8 py-4 rounded-2xl border-2 font-black text-lg uppercase transition-all shadow-md active:scale-90 animate-in fade-in zoom-in-95 duration-200",
+                    "px-8 py-4 rounded-2xl border-2 font-bold text-lg uppercase transition-all shadow-md active:scale-90 animate-in fade-in zoom-in-95 duration-200",
                     table.isOccupied 
                       ? "bg-destructive/10 border-destructive/20 text-destructive" 
-                      : "bg-white border-primary/20 text-primary hover:border-primary shadow-slate-200"
+                      : "bg-white border-primary/20 text-primary hover:border-primary shadow-slate-100"
                   )}
                 >
                   {table.id}
@@ -111,23 +111,25 @@ export default function OrderByTablePage() {
             </div>
           </div>
 
-          <div className="pt-4">
-            <Button 
-              type="submit" 
-              className="w-full h-20 text-2xl font-black bg-primary text-white rounded-[1.5rem] shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
-            >
-              GO TO MENU
-            </Button>
-          </div>
+          {tableNumber.trim() && (
+            <div className="pt-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                <Button 
+                type="submit" 
+                className="w-full h-20 text-2xl font-bold bg-primary text-white rounded-[1.5rem] shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
+                >
+                GO TO MENU
+                </Button>
+            </div>
+          )}
         </form>
       </main>
 
-      {/* MINIMAL FLOATING SWITCHER - CONDENSED & AT BOTTOM */}
+      {/* Floating Switcher */}
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 scale-90 sm:scale-100">
         <div className="bg-slate-900/95 text-white rounded-full p-0.5 shadow-2xl flex items-center gap-0.5 border border-white/10 backdrop-blur-md">
            <div className="h-8 px-3 rounded-full bg-primary text-white flex items-center gap-1.5 shadow-inner">
             <Hash className="h-3.5 w-3.5" />
-            <span className="text-[9px] font-black uppercase tracking-tighter">Manual</span>
+            <span className="text-[9px] font-bold uppercase tracking-tighter">Manual</span>
           </div>
           <Link href="/table-selection" passHref>
             <Button 
@@ -135,7 +137,7 @@ export default function OrderByTablePage() {
               className="h-8 px-3 rounded-full text-white/50 hover:text-white flex items-center gap-1.5"
             >
               <LayoutGrid className="h-3.5 w-3.5" />
-              <span className="text-[9px] font-black uppercase tracking-tighter">Grid</span>
+              <span className="text-[9px] font-bold uppercase tracking-tighter">Grid</span>
             </Button>
           </Link>
         </div>
@@ -150,8 +152,8 @@ export default function OrderByTablePage() {
                   <Users className="h-6 w-6 text-primary" />
                </div>
                <div>
-                  <SheetTitle className="text-lg font-black uppercase tracking-tighter">Table {tableNumber.toUpperCase()}</SheetTitle>
-                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">New Order</p>
+                  <SheetTitle className="text-lg font-bold uppercase tracking-tight">Table {tableNumber.toUpperCase()}</SheetTitle>
+                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">New Order</p>
                </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsGuestSheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
@@ -161,22 +163,22 @@ export default function OrderByTablePage() {
 
           <div className="p-8 space-y-6">
              <div className="space-y-4 text-center">
-                <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Guest Count</p>
+                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Guest Count</p>
                 <div className="flex items-center justify-center gap-8">
                    <Button 
                       variant="outline" 
                       onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                      className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
+                      className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
                    >
-                      <Minus className="h-8 w-8 stroke-[4]" />
+                      <Minus className="h-8 w-8 stroke-[3]" />
                    </Button>
-                   <span className="text-6xl font-black min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
+                   <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
                    <Button 
                       variant="outline" 
                       onClick={() => setGuestCount(guestCount + 1)}
-                      className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
+                      className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
                    >
-                      <Plus className="h-8 w-8 stroke-[4]" />
+                      <Plus className="h-8 w-8 stroke-[3]" />
                    </Button>
                 </div>
              </div>
@@ -185,7 +187,7 @@ export default function OrderByTablePage() {
           <SheetFooter className="p-4 bg-background border-t">
              <Button 
                 onClick={handleFinalConfirm}
-                className="w-full h-16 text-2xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
+                className="w-full h-16 text-2xl font-bold bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
              >
                 GO TO MENU
              </Button>
