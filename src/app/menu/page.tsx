@@ -136,7 +136,7 @@ export default function MenuPage() {
 
       {/* Category Selection Bottom Sheet */}
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
-        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2rem] border-t-0 bg-slate-50" hideCloseButton>
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2rem] border-t-0 bg-slate-50 z-[100]" hideCloseButton>
           <div className="mx-auto w-12 h-1.5 bg-slate-200 rounded-full mt-3 mb-1" />
           <SheetHeader className="p-5 flex-row items-center justify-between bg-white border-b rounded-t-[2rem]">
             <div className="flex items-center gap-4 text-left">
