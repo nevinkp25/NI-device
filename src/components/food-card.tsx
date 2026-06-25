@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -9,7 +10,6 @@ import { Plus } from 'lucide-react';
 import { QuantitySelector } from './quantity-selector';
 import { VariationPickerSheet } from './variation-picker-sheet';
 import { cn } from '@/lib/utils';
-
 
 export function FoodCard({ item }: { item: MenuItem }) {
   const { cartItems, addToCart, updateQuantity } = useCart();
@@ -37,21 +37,29 @@ export function FoodCard({ item }: { item: MenuItem }) {
     <>
       <Card 
         className={cn(
-          "flex flex-col overflow-hidden border-2 border-border shadow-md rounded-2xl bg-card h-full min-h-[180px]",
-          (hasVariations || itemsInCart.length > 0) && "border-primary"
+          "flex flex-col overflow-hidden border-2 transition-all duration-300 rounded-3xl bg-card h-full min-h-[160px] shadow-sm",
+          (hasVariations || itemsInCart.length > 0) 
+            ? "border-primary shadow-primary/10" 
+            : "border-slate-100 hover:border-slate-200"
         )}
         onClick={handleCardClick}
       >
         <CardHeader className="p-4 pb-0 flex-grow">
-          <CardTitle className="text-xl font-bold leading-tight text-center">{item.name}</CardTitle>
+          <CardTitle className="text-lg font-black leading-tight text-slate-900 uppercase tracking-tighter">
+            {item.name}
+          </CardTitle>
            {cartItem && cartItem.selectedVariations && Object.keys(cartItem.selectedVariations).length > 0 && (
-            <div className="text-center text-sm text-muted-foreground font-semibold mt-1">
+            <div className="text-[10px] text-primary font-black uppercase tracking-widest mt-1">
               {Object.values(cartItem.selectedVariations).join(', ')}
             </div>
           )}
         </CardHeader>
         <CardFooter className="p-4 pt-2 flex flex-col gap-3">
-          <p className="font-black text-2xl text-primary">${item.price.toFixed(2)}</p>
+          <div className="w-full flex justify-between items-center px-1">
+            <p className="font-black text-2xl text-primary tabular-nums tracking-tighter">
+              ${item.price.toFixed(2)}
+            </p>
+          </div>
           {cartItem ? (
             <QuantitySelector
               quantity={cartItem.quantity}
@@ -60,13 +68,13 @@ export function FoodCard({ item }: { item: MenuItem }) {
             />
           ) : (
             <Button
-              className="w-full h-16 rounded-xl bg-primary text-primary-foreground text-xl font-bold shadow-lg"
+              className="w-full h-14 rounded-2xl bg-primary text-primary-foreground text-lg font-black shadow-xl active:scale-95 transition-all uppercase tracking-tighter"
               onClick={(e) => {
                 e.stopPropagation();
                 hasVariations ? handleVariationAdd() : handleSimpleAdd();
               }}
             >
-              <Plus className="h-8 w-8 mr-2" />
+              <Plus className="h-6 w-6 mr-1 stroke-[4]" />
               ADD
             </Button>
           )}

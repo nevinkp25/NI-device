@@ -25,14 +25,14 @@ function MenuHeader() {
     <>
     <div className="sticky top-0 z-50 bg-background border-b shadow-sm">
       <header className="flex items-center p-4">
-        <Link href="/table-selection" passHref>
+        <Link href="/order-by-table" passHref>
           <Button variant="ghost" size="icon">
-            <ArrowLeft />
+            <ArrowLeft className="text-primary h-6 w-6" />
           </Button>
         </Link>
-        <h1 className="text-xl font-semibold mx-auto flex items-center gap-2">
+        <h1 className="text-xl font-black mx-auto flex items-center gap-2 uppercase tracking-tighter">
           <Utensils className="text-primary h-5 w-5" />
-          {tableNumber ? `Table ${tableNumber}` : 'Food Menu'}
+          {tableNumber ? `Table ${tableNumber}` : 'Menu'}
         </h1>
         <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
           <Avatar className="h-10 w-10 border-2 border-primary">
@@ -65,7 +65,10 @@ export default function MenuPage() {
           }
         });
       },
-      { rootMargin: '-40% 0px -60% 0px', threshold: 0 }
+      { 
+        rootMargin: '-120px 0px -60% 0px', // Adjust for sticky header height
+        threshold: 0 
+      }
     );
 
     const currentObserver = observer.current;
@@ -83,29 +86,39 @@ export default function MenuPage() {
   }, []);
 
   const handleTabClick = (categoryId: string) => {
-    categoryRefs.current[categoryId]?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+    const element = categoryRefs.current[categoryId];
+    if (element) {
+      const offset = 220; // Height of header + stepper + nav
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+    setActiveCategory(categoryId);
   };
 
   return (
     <div className="bg-background min-h-screen">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div>Loading header...</div>}>
         <MenuHeader />
       </Suspense>
 
-      <nav className="sticky top-[112px] z-40 bg-background/90 backdrop-blur-sm py-3 px-4 border-b">
-        <div className="flex space-x-2 overflow-x-auto pb-2 -mb-2 no-scrollbar">
+      <nav className="sticky top-[112px] z-40 bg-background/95 backdrop-blur-md py-4 px-4 border-b">
+        <div className="flex space-x-3 overflow-x-auto pb-2 -mb-2 no-scrollbar">
           {foodCategories.map((category) => (
             <button
               key={category.id}
               onClick={() => handleTabClick(category.id)}
               className={cn(
-                "px-6 py-3 rounded-full text-sm font-black whitespace-nowrap transition-all duration-300 uppercase",
+                "px-6 py-3 rounded-full text-xs font-black whitespace-nowrap transition-all duration-200 uppercase tracking-widest border-2",
                 activeCategory === category.id
-                  ? "bg-primary text-primary-foreground scale-105 shadow-md"
-                  : "bg-[#F3F4F6] text-muted-foreground hover:bg-slate-200"
+                  ? "bg-primary border-primary text-primary-foreground shadow-lg scale-105"
+                  : "bg-slate-50 border-slate-100 text-slate-400 hover:border-slate-200"
               )}
             >
               {category.name}
@@ -114,7 +127,7 @@ export default function MenuPage() {
         </div>
       </nav>
 
-      <main className="p-4 pb-40">
+      <main className="p-4 pb-48">
         {foodCategories.map((category) => {
           const items = menuItems.filter((item) => item.category === category.id);
           return (
@@ -122,9 +135,11 @@ export default function MenuPage() {
               key={category.id}
               id={category.id}
               ref={(el) => (categoryRefs.current[category.id] = el)}
-              className="pt-6"
+              className="pt-10 first:pt-4"
             >
-              <h2 className="text-3xl font-black mb-6 uppercase tracking-tighter text-slate-800">{category.name}</h2>
+              <h2 className="text-4xl font-black mb-6 uppercase tracking-tighter text-slate-900 border-l-8 border-primary pl-4">
+                {category.name}
+              </h2>
               <div className="grid grid-cols-2 gap-4">
                 {items.map((item) => (
                   <FoodCard key={item.id} item={item} />
