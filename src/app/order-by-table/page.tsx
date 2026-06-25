@@ -17,6 +17,7 @@ export default function OrderByTablePage() {
   const [tableNumber, setTableNumber] = useState('');
   const [guestCount, setGuestCount] = useState(1);
   const [isGuestSheetOpen, setIsGuestSheetOpen] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -31,7 +32,6 @@ export default function OrderByTablePage() {
   const handleOpenGuestSheet = (id?: string) => {
     const finalId = id || tableNumber.trim();
     if (finalId) {
-      // Check if selected table is occupied
       const tableObj = ALL_TABLES.find(t => t.id.toUpperCase() === finalId.toUpperCase());
       if (tableObj?.isOccupied) {
         router.push(`/order-status?table=${tableObj.id}`);
@@ -71,7 +71,7 @@ export default function OrderByTablePage() {
         <OrderStepper currentStep={1} />
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-start pt-12 px-6 pb-20">
+      <main className="flex-grow flex flex-col items-center justify-start pt-12 px-6 pb-32">
         <form 
           onSubmit={(e) => {
             e.preventDefault();
@@ -86,12 +86,13 @@ export default function OrderByTablePage() {
               placeholder="0000"
               maxLength={5}
               value={tableNumber}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
               onChange={(e) => setTableNumber(e.target.value)}
               className="text-center text-7xl h-32 font-bold border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter"
               autoFocus
             />
 
-            {/* Smart Suggestions */}
             <div className="min-h-[140px] mt-8 mb-10 flex flex-wrap justify-center gap-4">
               {suggestions.map((table) => (
                 <button
@@ -124,26 +125,28 @@ export default function OrderByTablePage() {
         </form>
       </main>
 
-      {/* Floating Switcher */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 scale-90 sm:scale-100">
+      {/* Keyboard-Aware Floating Switcher */}
+      <div className={cn(
+        "fixed left-1/2 -translate-x-1/2 z-30 transition-all duration-500 ease-in-out",
+        isInputFocused ? "bottom-32 sm:bottom-40 opacity-80" : "bottom-6"
+      )}>
         <div className="bg-slate-900/95 text-white rounded-full p-0.5 shadow-2xl flex items-center gap-0.5 border border-white/10 backdrop-blur-md">
-           <div className="h-8 px-3 rounded-full bg-primary text-white flex items-center gap-1.5 shadow-inner">
-            <Hash className="h-3.5 w-3.5" />
-            <span className="text-[9px] font-bold uppercase tracking-tighter">Manual</span>
+           <div className="h-9 px-4 rounded-full bg-primary text-white flex items-center gap-2 shadow-inner">
+            <Hash className="h-4 w-4" />
+            <span className="text-[10px] font-bold uppercase tracking-tight">Manual</span>
           </div>
           <Link href="/table-selection" passHref>
             <Button 
               variant="ghost" 
-              className="h-8 px-3 rounded-full text-white/50 hover:text-white flex items-center gap-1.5"
+              className="h-9 px-4 rounded-full text-white/50 hover:text-white flex items-center gap-2"
             >
-              <LayoutGrid className="h-3.5 w-3.5" />
-              <span className="text-[9px] font-bold uppercase tracking-tighter">Grid</span>
+              <LayoutGrid className="h-4 w-4" />
+              <span className="text-[10px] font-bold uppercase tracking-tight">Grid</span>
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Guest Selection Sheet */}
       <Sheet open={isGuestSheetOpen} onOpenChange={setIsGuestSheetOpen}>
         <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-8 border-primary shadow-2xl" hideCloseButton>
           <SheetHeader className="p-4 border-b flex-row items-center justify-between">
