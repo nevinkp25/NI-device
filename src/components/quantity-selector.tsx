@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -11,30 +12,32 @@ type QuantitySelectorProps = {
 
 export function QuantitySelector({ quantity, onIncrease, onDecrease, className }: QuantitySelectorProps) {
   return (
-    <div className={cn("flex items-center justify-between w-full bg-slate-50 p-1 rounded-xl gap-2", className)}>
+    <div className={cn("flex items-center justify-between w-full bg-slate-50 p-1.5 rounded-2xl gap-4", className)}>
       <Button 
         variant="ghost" 
         size="icon" 
         className={cn(
-            "h-8 w-8 rounded-lg bg-white shadow-sm border border-slate-200 text-slate-500 hover:bg-slate-50 active:scale-90",
-            quantity === 1 && "text-destructive border-destructive/20 bg-destructive/[0.02]"
+            "h-11 w-11 rounded-xl bg-white shadow-sm border border-slate-200 transition-all active:scale-90",
+            quantity === 1 
+              ? "text-red-500 border-red-100 bg-red-50/50 hover:bg-red-50" 
+              : "text-slate-500 hover:bg-slate-50"
         )} 
         onClick={(e) => { e.stopPropagation(); onDecrease(); }}
       >
-        {quantity === 1 ? <Trash2 className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+        {quantity === 1 ? <Trash2 className="h-5 w-5 stroke-[2.5]" /> : <Minus className="h-5 w-5 stroke-[2.5]" />}
       </Button>
       
-      <span className="text-base font-bold min-w-[1.5rem] text-center text-slate-800 tabular-nums">
+      <span className="text-2xl font-black min-w-[2rem] text-center text-slate-900 tabular-nums tracking-tighter">
         {quantity}
       </span>
       
       <Button 
         variant="ghost" 
         size="icon" 
-        className="h-8 w-8 rounded-lg bg-white shadow-sm border border-slate-200 text-primary hover:bg-slate-50 active:scale-90" 
+        className="h-11 w-11 rounded-xl bg-white shadow-sm border border-primary/20 text-primary hover:bg-primary/5 active:scale-90" 
         onClick={(e) => { e.stopPropagation(); onIncrease(); }}
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="h-5 w-5 stroke-[2.5]" />
       </Button>
     </div>
   );
