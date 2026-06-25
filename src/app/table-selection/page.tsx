@@ -42,39 +42,40 @@ export default function TableSelectionPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-20 bg-background">
-        <div className="flex items-center p-6 border-b-2 border-slate-50">
+        <div className="flex items-center p-4 border-b-2 border-slate-50">
           <Link href="/navigation" passHref>
-            <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
-              <ArrowLeft className="h-8 w-8" />
+            <Button variant="outline" className="h-12 w-12 rounded-full border-2 border-primary">
+              <ArrowLeft className="h-6 w-6" />
             </Button>
           </Link>
-          <h1 className="text-3xl font-black mx-auto uppercase tracking-tighter">SELECT TABLE</h1>
-          <div className="w-14"></div>
+          <h1 className="text-2xl font-black mx-auto uppercase tracking-tighter">SELECT TABLE</h1>
+          <div className="w-12"></div>
         </div>
         <OrderStepper currentStep={1} />
       </header>
 
-      <main className="p-6 space-y-8 flex-grow pb-40">
-        {/* Floor Selection */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-2 text-muted-foreground font-black">
-            <MapPin className="h-6 w-6" />
-            <span className="text-xl">WHERE ARE YOU?</span>
+      <main className="p-4 space-y-6 flex-grow pb-40">
+        {/* Floor Selection - Condensed to Horizontal Scroll */}
+        <section className="space-y-3">
+          <div className="flex items-center gap-2 text-muted-foreground font-black px-1">
+            <MapPin className="h-5 w-5" />
+            <span className="text-lg">WHERE ARE YOU?</span>
           </div>
-          <div className="grid grid-cols-1 gap-3">
+          <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
             {FLOORS.map((floor) => (
               <Button
                 key={floor.id}
                 onClick={() => {
                     setSelectedFloor(floor.id);
                     setSearchQuery('');
+                    setSelectedTable(null);
                 }}
                 variant={selectedFloor === floor.id ? 'default' : 'outline'}
                 className={cn(
-                  "h-20 text-2xl font-black rounded-2xl border-4 transition-all",
+                  "h-16 px-8 text-xl font-black rounded-2xl border-4 transition-all shrink-0",
                   selectedFloor === floor.id 
-                    ? "bg-primary text-primary-foreground border-primary" 
-                    : "border-primary/20 text-primary"
+                    ? "bg-primary text-primary-foreground border-primary shadow-md" 
+                    : "border-primary/20 text-primary bg-white"
                 )}
               >
                 {floor.name}
@@ -83,26 +84,26 @@ export default function TableSelectionPage() {
           </div>
         </section>
 
-        {/* Search Bar */}
+        {/* Search Bar - Slightly Condensed */}
         <section className="relative">
           <Input
             type="text"
             placeholder="SEARCH TABLE #"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-20 pl-16 text-3xl font-black border-4 border-primary rounded-2xl placeholder:text-muted-foreground/30"
+            className="h-16 pl-14 text-2xl font-black border-4 border-primary rounded-2xl placeholder:text-muted-foreground/30 shadow-sm"
           />
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-8 w-8 text-primary" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-7 w-7 text-primary" />
         </section>
 
-        {/* Table Grid */}
-        <section className="grid grid-cols-3 gap-4">
+        {/* Table Grid - Still massive for big fingers */}
+        <section className="grid grid-cols-3 gap-3">
           {filteredTables.map((table) => (
             <Button
               key={table}
               onClick={() => setSelectedTable(table)}
               className={cn(
-                "h-24 text-4xl font-black rounded-2xl border-4 transition-all",
+                "h-20 text-3xl font-black rounded-2xl border-4 transition-all",
                 selectedTable === table
                   ? "bg-accent text-accent-foreground border-accent scale-105 shadow-xl"
                   : "bg-white text-primary border-primary shadow-sm"
@@ -111,15 +112,20 @@ export default function TableSelectionPage() {
               {table}
             </Button>
           ))}
+          {filteredTables.length === 0 && (
+            <div className="col-span-3 py-12 text-center text-muted-foreground font-bold">
+              NO TABLES FOUND
+            </div>
+          )}
         </section>
       </main>
 
       {/* Action Footer */}
-      <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-6 bg-background border-t-4 border-primary">
+      <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 bg-background border-t-4 border-primary shadow-[0_-10px_30px_rgba(0,0,0,0.1)] z-30">
         <Button
           onClick={handleContinue}
           disabled={!selectedTable}
-          className="w-full h-24 text-4xl font-black bg-primary text-primary-foreground rounded-2xl shadow-2xl disabled:opacity-20"
+          className="w-full h-20 text-3xl font-black bg-primary text-primary-foreground rounded-2xl shadow-2xl disabled:opacity-20 active:scale-95 transition-transform"
         >
           {selectedTable ? `START TABLE ${selectedTable}` : 'SELECT A TABLE'}
         </Button>
