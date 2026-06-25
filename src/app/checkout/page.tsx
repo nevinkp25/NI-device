@@ -1,37 +1,25 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, ShoppingBag, Loader2, Info } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Loader2, Info, MessageSquareText } from 'lucide-react';
 import Link from 'next/link';
 import { QuantitySelector } from '@/components/quantity-selector';
-import { SplitBillSheet } from '@/components/split-bill-sheet';
-import { TipSheet } from '@/components/tip-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
 import { OrderStepper } from '@/components/order-stepper';
 
 export default function CheckoutPage() {
-  const { cartItems, updateQuantity, subtotal, clearCart, getDisplayPrice } = useCart();
-  const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
-  const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
+  const { cartItems, updateQuantity, subtotal, getDisplayPrice, orderInstructions } = useCart();
   const [isWaiterProfileOpen, setIsWaiterProfileOpen] = useState(false);
   const [isPlacing, setIsPlacing] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
-
-  useEffect(() => {
-    if(searchParams.has('paidGuest')){
-      setIsSplitSheetOpen(true);
-    }
-  }, [searchParams]);
 
   const vatRate = 0.05;
   const vatAmount = subtotal * vatRate;
@@ -47,37 +35,27 @@ export default function CheckoutPage() {
     setTimeout(() => {
       const orderId = Math.floor(1000 + Math.random() * 9000).toString();
       router.push(`/order-confirmation?orderId=${orderId}`);
-    }, 1500);
-  };
-  
-  const handleSplitBill = () => {
-      setIsSplitSheetOpen(true);
-  }
-
-  const handlePostPaid = () => {
-    router.push(`/post-paid?orderId=cart`);
+    }, 2000);
   };
 
-  const handlePaymentConfirmed = (finalAmount: number, method: 'card' | 'cash') => {
-    const params = new URLSearchParams({
-        amount: finalAmount.toString(),
-        returnUrl: encodeURIComponent('/success'),
-    });
-    router.push(`/${method}-payment?${params.toString()}`);
+  const getVariationString = (item: any) => {
+    const variationValues = Object.values(item.selectedVariations);
+    if (variationValues.length === 0) return null;
+    return variationValues.join(', ');
   }
 
   return (
-    <div className="flex flex-col bg-background min-h-screen">
-        <header className="sticky top-0 z-50 bg-background shadow-sm border-b">
-          <div className="flex items-center p-4 h-20">
+    <div className="flex flex-col bg-slate-50/50 min-h-screen">
+        <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
+          <div className="flex items-center p-4 h-16">
             <Link href="/menu" passHref>
-              <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
-                <ArrowLeft className="h-8 w-8" />
+              <Button variant="ghost" size="icon" className="text-slate-600">
+                <ArrowLeft className="h-6 w-6" />
               </Button>
             </Link>
-            <h1 className="text-3xl font-black mx-auto uppercase tracking-tighter">REVIEW ORDER</h1>
+            <h1 className="text-lg font-bold mx-auto text-slate-900 tracking-tight uppercase">Review Selection</h1>
             <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
-              <Avatar className="h-14 w-14 border-2 border-primary">
+              <Avatar className="h-10 w-10 border-2 border-primary/10">
                 {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
                 <AvatarFallback>W</AvatarFallback>
               </Avatar>
@@ -87,115 +65,120 @@ export default function CheckoutPage() {
         </header>
 
         {cartItems.length === 0 ? (
-          <div className="flex-grow flex flex-col items-center justify-center text-center p-8 space-y-8">
-            <ShoppingBag className="h-32 w-32 text-muted-foreground" />
-            <h2 className="text-4xl font-black">CART IS EMPTY</h2>
-            <Link href="/menu" passHref className="w-full">
-              <Button className="w-full h-24 text-3xl font-black rounded-2xl bg-primary">GO TO MENU</Button>
+          <div className="flex-grow flex flex-col items-center justify-center text-center p-8 space-y-6">
+            <div className="bg-white p-8 rounded-full shadow-sm">
+                <ShoppingBag className="h-16 w-16 text-slate-200" />
+            </div>
+            <div className="space-y-2">
+                <h2 className="text-xl font-bold text-slate-900">Your cart is empty</h2>
+                <p className="text-sm text-slate-500 max-w-[240px]">Browse our menu to add some delicious items to your order.</p>
+            </div>
+            <Link href="/menu" passHref className="w-full max-w-xs">
+              <Button className="w-full h-14 text-lg font-bold rounded-xl bg-primary">GO TO MENU</Button>
             </Link>
           </div>
         ) : (
           <>
-            <main className="p-4 flex-grow pb-96">
+            <main className="p-4 flex-grow pb-48 animate-in fade-in duration-500">
               <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-black uppercase">Your Selection</h2>
+                <div className="flex justify-between items-center px-1">
+                  <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Current Selection</h2>
                   <Link href="/menu" passHref>
-                    <Button variant="outline" className="h-14 text-xl font-bold px-6 border-2 border-primary">
-                      + ADD MORE
+                    <Button variant="ghost" className="h-10 text-xs font-bold text-primary hover:bg-primary/5 uppercase tracking-widest">
+                      + Add Items
                     </Button>
                   </Link>
                 </div>
 
-                <Card className="p-4 shadow-xl border-2 border-primary rounded-2xl overflow-hidden">
-                    <ul className="divide-y-2 divide-muted">
-                        {cartItems.map(item => {
-                            const displayPrice = getDisplayPrice(item);
-                            return (
-                                <li key={item.cartItemId} className="py-6 flex flex-col gap-4">
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex-grow">
-                                            <span className="text-2xl font-black block uppercase">{item.name}</span>
-                                            <span className="text-xl font-bold text-primary">${displayPrice.toFixed(2)} each</span>
-                                        </div>
-                                        <span className="text-2xl font-black font-mono ml-4">${(displayPrice * item.quantity).toFixed(2)}</span>
+                <div className="space-y-3">
+                    {cartItems.map(item => {
+                        const displayPrice = getDisplayPrice(item);
+                        const variationString = getVariationString(item);
+                        return (
+                            <Card key={item.cartItemId} className="p-4 border-slate-200 shadow-sm rounded-2xl bg-white overflow-hidden space-y-4">
+                                <div className="flex justify-between items-start gap-4">
+                                    <div className="flex-grow">
+                                        <span className="text-base font-bold text-slate-900 block leading-tight tracking-tight">{item.name}</span>
+                                        <span className="text-[10px] font-bold text-slate-400 block mt-1 uppercase tracking-widest">${displayPrice.toFixed(2)} each</span>
+                                        {variationString && (
+                                          <div className="mt-2 flex flex-wrap gap-1">
+                                            <span className="bg-slate-100 text-slate-600 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md">
+                                              {variationString}
+                                            </span>
+                                          </div>
+                                        )}
+                                        {item.specialInstructions && (
+                                            <div className="mt-2 flex items-start gap-1.5 text-primary">
+                                                <MessageSquareText className="h-3 w-3 mt-0.5" />
+                                                <p className="text-[10px] font-medium italic">{item.specialInstructions}</p>
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="flex items-center justify-center bg-muted/50 p-2 rounded-2xl">
-                                        <QuantitySelector
-                                            quantity={item.quantity}
-                                            onIncrease={() => handleQuantityChange(item.cartItemId, item.quantity + 1)}
-                                            onDecrease={() => handleQuantityChange(item.cartItemId, item.quantity - 1)}
-                                        />
-                                    </div>
-                                </li>
-                            )
-                        })}
-                    </ul>
-                    <div className="mt-8 pt-6 border-t-4 border-primary space-y-4">
-                        <div className="flex justify-between text-2xl font-bold text-muted-foreground">
-                            <span>SUBTOTAL</span>
-                            <span>${subtotal.toFixed(2)}</span>
+                                    <span className="text-lg font-bold text-slate-900 tabular-nums">${(displayPrice * item.quantity).toFixed(2)}</span>
+                                </div>
+                                <div className="bg-slate-50/50 rounded-xl">
+                                    <QuantitySelector
+                                        quantity={item.quantity}
+                                        onIncrease={() => handleQuantityChange(item.cartItemId, item.quantity + 1)}
+                                        onDecrease={() => handleQuantityChange(item.cartItemId, item.quantity - 1)}
+                                        className="h-10 bg-transparent border-none"
+                                    />
+                                </div>
+                            </Card>
+                        )
+                    })}
+                </div>
+
+                {orderInstructions && (
+                    <Card className="p-4 bg-primary/[0.03] border-primary/10 rounded-2xl">
+                        <div className="flex items-center gap-2 mb-2">
+                             <MessageSquareText className="h-4 w-4 text-primary" />
+                             <h3 className="text-[10px] font-bold text-primary uppercase tracking-widest">Overall Kitchen Note</h3>
                         </div>
-                        <div className="flex justify-between text-2xl font-bold text-muted-foreground">
-                            <span>TAX (5%)</span>
-                            <span>${vatAmount.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between font-black text-4xl pt-4 border-t-2 mt-4 text-primary">
-                            <span>TOTAL</span>
-                            <span>${total.toFixed(2)}</span>
-                        </div>
+                        <p className="text-sm text-slate-700 font-medium italic">"{orderInstructions}"</p>
+                    </Card>
+                )}
+
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-sm">
+                    <div className="flex justify-between text-sm font-semibold text-slate-500">
+                        <span>SUBTOTAL</span>
+                        <span className="tabular-nums">${subtotal.toFixed(2)}</span>
                     </div>
-                </Card>
+                    <div className="flex justify-between text-sm font-semibold text-slate-500">
+                        <span>TAX (5%)</span>
+                        <span className="tabular-nums">${vatAmount.toFixed(2)}</span>
+                    </div>
+                    <div className="h-px bg-slate-100 my-2" />
+                    <div className="flex justify-between items-end">
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Amount</span>
+                        <span className="text-3xl font-bold text-slate-900 tabular-nums tracking-tighter">${total.toFixed(2)}</span>
+                    </div>
+                </div>
               </div>
             </main>
 
-            <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 bg-background border-t-4 border-primary shadow-[0_-10px_30px_rgba(0,0,0,0.1)] space-y-6 z-20">
-               <div className="space-y-4">
-                  <Button 
-                    onClick={handlePlaceOrder} 
-                    disabled={isPlacing}
-                    className="w-full h-24 bg-primary text-primary-foreground text-3xl font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 transition-all"
-                  >
-                      {isPlacing ? (
-                        <Loader2 className="h-10 w-10 animate-spin" />
-                      ) : (
-                        <span>PLACE ORDER ${total.toFixed(2)}</span>
-                      )}
-                  </Button>
-                  <div className="flex items-start gap-3 px-2 text-slate-500">
-                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                      <p className="text-[10px] font-black uppercase tracking-wider leading-snug">
-                          Final amount may include applicable taxes and service charges
-                      </p>
-                  </div>
-               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                  <Button onClick={handleSplitBill} variant="outline" className="h-20 text-xl font-black border-4 border-primary rounded-2xl">
-                    SPLIT BILL
-                  </Button>
-                  <Button onClick={handlePostPaid} variant="outline" className="h-20 text-xl font-black border-4 border-primary rounded-2xl text-accent">
-                    POST-PAID
-                  </Button>
+            <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-5 bg-white border-t-2 border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 space-y-4">
+              <Button 
+                onClick={handlePlaceOrder} 
+                disabled={isPlacing}
+                className="w-full h-16 bg-[#E54360] hover:bg-[#D43D56] text-white text-lg font-bold rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+              >
+                  {isPlacing ? (
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  ) : (
+                    <>
+                        <span>PLACE ORDER</span>
+                        <span className="bg-white/20 px-3 py-1 rounded-lg text-sm">${total.toFixed(2)}</span>
+                    </>
+                  )}
+              </Button>
+              <div className="flex items-start gap-2.5 px-2 text-slate-400">
+                  <Info className="h-3.5 w-3.5 mt-0.5 shrink-0 text-slate-300" />
+                  <p className="text-[10px] font-medium leading-relaxed">
+                      Final amount may include applicable taxes and service charges depending on payment method.
+                  </p>
               </div>
             </footer>
-
-             <TipSheet
-                isOpen={tipDetails.isOpen}
-                onOpenChange={(isOpen) => setTipDetails(prev => ({...prev, isOpen}))}
-                billAmount={tipDetails.amount}
-                onPaymentConfirmed={handlePaymentConfirmed}
-             />
-             <SplitBillSheet 
-                  isOpen={isSplitSheetOpen}
-                  onOpenChange={setIsSplitSheetOpen}
-                  totalAmount={total}
-                  onProceedToPayment={(amount) => {
-                    setIsSplitSheetOpen(false);
-                    setTipDetails({ isOpen: true, amount: amount });
-                  }}
-                  baseReturnUrl={pathname}
-             />
           </>
         )}
         <WaiterProfileDialog isOpen={isWaiterProfileOpen} onOpenChange={setIsWaiterProfileOpen} />
