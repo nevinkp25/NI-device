@@ -41,18 +41,18 @@ export function FloatingCartButton() {
       )}>
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CollapsibleContent className="p-0 overflow-hidden">
-              <div className="bg-[#F8FAFC] p-6 space-y-6 max-h-[70vh] overflow-y-auto pt-8">
-                <div className="flex justify-between items-center px-1 mb-2">
+              <div className="bg-[#F8FAFC] p-6 space-y-5 max-h-[70vh] overflow-y-auto pt-8">
+                <div className="flex justify-between items-center px-1">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary/10 p-2 rounded-xl">
                       <ShoppingBag className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="font-black text-2xl text-slate-900 tracking-tighter uppercase">Your Selection</h3>
+                    <h3 className="font-bold text-2xl text-slate-900 tracking-tight uppercase">Your Selection</h3>
                   </div>
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="text-slate-400 font-black uppercase text-[11px] tracking-[0.2em] hover:bg-transparent" 
+                    className="text-slate-400 font-semibold uppercase text-[10px] tracking-widest hover:bg-transparent" 
                     onClick={() => setIsOpen(false)}
                   >
                       Hide Details
@@ -64,24 +64,24 @@ export function FloatingCartButton() {
                         const displayPrice = getDisplayPrice(item);
                         const variationString = getVariationString(item);
                         return (
-                            <li key={item.cartItemId} className="bg-white p-5 rounded-[1.5rem] border border-slate-200 shadow-sm space-y-5">
+                            <li key={item.cartItemId} className="bg-white p-5 rounded-[1.5rem] border border-slate-200 shadow-sm space-y-4">
                                 <div className="flex justify-between items-start gap-2">
                                     <div className="flex-grow">
-                                        <span className="font-black text-xl text-slate-900 block leading-tight tracking-tight">
+                                        <span className="font-bold text-xl text-slate-900 block leading-tight tracking-tight">
                                           {item.name}
                                         </span>
-                                        <span className="text-[11px] text-slate-400 font-black block mt-1 tracking-widest uppercase">
+                                        <span className="text-[10px] text-slate-400 font-bold block mt-1 tracking-widest uppercase">
                                           ${displayPrice.toFixed(2)} EACH
                                         </span>
                                         {variationString && (
                                           <div className="mt-2 flex flex-wrap gap-1">
-                                            <span className="bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg">
+                                            <span className="bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg">
                                               {variationString}
                                             </span>
                                           </div>
                                         )}
                                     </div>
-                                    <span className="font-black text-xl text-slate-900 tabular-nums">
+                                    <span className="font-bold text-xl text-slate-900 tabular-nums">
                                       ${(displayPrice * item.quantity).toFixed(2)}
                                     </span>
                                 </div>
@@ -91,7 +91,7 @@ export function FloatingCartButton() {
                                       quantity={item.quantity}
                                       onIncrease={() => updateQuantity(item.cartItemId, item.quantity + 1)}
                                       onDecrease={() => updateQuantity(item.cartItemId, item.quantity - 1)}
-                                      className="bg-transparent border-none h-14 px-3"
+                                      className="bg-transparent border-none h-12 px-3"
                                     />
                                 </div>
                             </li>
@@ -117,21 +117,21 @@ export function FloatingCartButton() {
                 <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                     <ShoppingBasket className="h-7 w-7 text-primary" />
                 </div>
-                <Badge className="absolute -top-1.5 -right-1.5 h-6 min-w-6 flex items-center justify-center p-0 font-black text-[12px] rounded-lg bg-primary text-white border-2 border-white shadow-md">
+                <Badge className="absolute -top-1.5 -right-1.5 h-6 min-w-6 flex items-center justify-center p-0 font-bold text-[12px] rounded-lg bg-primary text-white border-2 border-white shadow-md">
                   {totalItems}
                 </Badge>
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                    <span className='text-[11px] text-slate-400 font-black uppercase tracking-[0.2em]'>TOTAL</span>
+                    <span className='text-[10px] text-slate-400 font-bold uppercase tracking-widest'>TOTAL</span>
                     {isOpen ? <ChevronDown className="h-3.5 w-3.5 text-slate-400" /> : <ChevronUp className="h-3.5 w-3.5 text-slate-400" />}
                 </div>
-                <p className="font-black text-2xl text-slate-900 leading-none tracking-tighter tabular-nums">${subtotal.toFixed(2)}</p>
+                <p className="font-bold text-2xl text-slate-900 leading-none tracking-tighter tabular-nums">${subtotal.toFixed(2)}</p>
               </div>
             </CollapsibleTrigger>
             
             <Link href="/checkout" passHref className="flex-grow">
-              <Button className="w-full h-14 bg-[#E54360] hover:bg-[#D43D56] text-white shadow-xl rounded-[1.25rem] font-black uppercase tracking-tighter text-lg flex items-center justify-center gap-3 transition-all active:scale-95 group">
+              <Button className="w-full h-14 bg-[#E54360] hover:bg-[#D43D56] text-white shadow-xl rounded-[1.25rem] font-bold uppercase tracking-tight text-lg flex items-center justify-center gap-3 transition-all active:scale-95 group">
                 <span>Checkout</span>
                 <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
               </Button>
