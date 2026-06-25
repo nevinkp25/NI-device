@@ -86,96 +86,93 @@ export default function TableSelectionPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <header className="sticky top-0 z-30 bg-background border-b-2">
-        <div className="flex items-center p-3 border-b-2 border-slate-50">
+      {/* 100% STICKY HEADER BLOCK */}
+      <div className="sticky top-0 z-40 bg-background shadow-md">
+        <header className="flex items-center p-3 border-b">
           <Link href="/navigation" passHref>
-            <Button variant="outline" className="h-10 w-10 rounded-full border-2 border-primary">
-              <ArrowLeft className="h-6 w-6" />
+            <Button variant="ghost" size="icon" className="h-10 w-10">
+              <ArrowLeft className="h-6 w-6 text-primary" />
             </Button>
           </Link>
-          <h1 className="text-xl font-black mx-auto uppercase tracking-tighter">SELECT TABLE</h1>
+          <h1 className="text-lg font-black mx-auto uppercase tracking-tighter">SELECT TABLE</h1>
           <div className="w-10"></div>
-        </div>
+        </header>
+        
         <OrderStepper currentStep={1} />
         
-        {/* Sticky Secondary Navigation */}
-        <div className="bg-background/95 backdrop-blur-md p-3 space-y-3 shadow-sm">
-          <section className="space-y-1">
-            <div className="flex items-center gap-2 text-muted-foreground font-black px-1">
-              <MapPin className="h-3 w-3" />
-              <span className="text-[9px] tracking-widest uppercase">Select Floor</span>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
-              {FLOORS.map((floor) => (
-                <Button
-                  key={floor.id}
-                  onClick={() => {
-                      setSelectedFloor(floor.id);
-                      setSearchQuery('');
-                  }}
-                  variant={selectedFloor === floor.id ? 'default' : 'outline'}
-                  className={cn(
-                    "h-10 px-5 text-sm font-black rounded-xl border-2 transition-all shrink-0",
-                    selectedFloor === floor.id 
-                      ? "bg-primary text-primary-foreground border-primary shadow-sm" 
-                      : "border-primary/20 text-primary bg-white"
-                  )}
-                >
-                  {floor.name}
-                </Button>
-              ))}
-            </div>
-          </section>
+        {/* Condensed Sub-Nav */}
+        <div className="bg-background/95 backdrop-blur-md px-3 py-2 border-b flex flex-col gap-2">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+            {FLOORS.map((floor) => (
+              <Button
+                key={floor.id}
+                onClick={() => {
+                    setSelectedFloor(floor.id);
+                    setSearchQuery('');
+                }}
+                variant={selectedFloor === floor.id ? 'default' : 'secondary'}
+                className={cn(
+                  "h-9 px-4 text-xs font-black rounded-full transition-all shrink-0",
+                  selectedFloor === floor.id 
+                    ? "bg-primary text-primary-foreground shadow-sm" 
+                    : "text-muted-foreground bg-muted"
+                )}
+              >
+                {floor.name}
+              </Button>
+            ))}
+          </div>
 
-          <section className="relative">
+          <div className="relative">
             <Input
               type="text"
-              placeholder="FIND TABLE (e.g. T1001)"
+              placeholder="SEARCH TABLE..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-12 pl-10 text-base font-black border-2 border-primary rounded-xl placeholder:text-muted-foreground/30 shadow-sm uppercase"
+              className="h-10 pl-9 text-sm font-bold border-muted bg-muted/50 rounded-lg placeholder:text-muted-foreground/50 uppercase"
             />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
-          </section>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          </div>
         </div>
-      </header>
+      </div>
 
-      <main className="p-3 flex-grow pb-10">
+      <main className="p-3 flex-grow pb-24">
         <section className="grid grid-cols-2 gap-3">
           {filteredTables.map((table) => (
             <Button
               key={table.id}
               onClick={() => handleTableClick(table)}
               className={cn(
-                "h-28 rounded-xl border-2 transition-all flex flex-col items-center justify-center gap-1",
+                "h-24 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1",
                 table.isOccupied 
                   ? "bg-slate-50 text-slate-300 border-slate-100"
-                  : "bg-white text-primary border-primary/30 shadow-sm active:bg-primary active:text-white"
+                  : "bg-white text-primary border-primary/20 shadow-sm active:bg-primary active:text-white"
               )}
             >
-              <span className="text-2xl font-black uppercase">{table.id}</span>
+              <span className="text-xl font-black uppercase">{table.id}</span>
               <span className={cn(
-                "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border",
+                "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border",
                 table.isOccupied
                   ? "bg-slate-100 text-slate-400 border-slate-200"
-                  : "bg-green-50 text-green-600 border-green-100"
+                  : "bg-green-50 text-green-600 border-green-200"
               )}>
                 {table.isOccupied ? 'Occupied' : 'Available'}
               </span>
             </Button>
           ))}
           {filteredTables.length === 0 && (
-            <div className="col-span-2 py-8 text-center text-muted-foreground font-bold uppercase text-xs">
-              No tables found
+            <div className="col-span-2 py-12 text-center text-muted-foreground font-bold uppercase text-xs">
+              No results found
             </div>
           )}
         </section>
       </main>
 
+      {/* Guest Selection Sheet */}
       <Sheet open={isGuestSheetOpen} onOpenChange={setIsGuestSheetOpen}>
-        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2rem] border-t-4 border-primary shadow-2xl" hideCloseButton>
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-4 border-primary shadow-2xl" hideCloseButton>
           <SheetHeader className="p-4 border-b flex-row items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 text-left">
                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center">
                   <Users className="h-7 w-7 text-primary" />
                </div>
@@ -184,38 +181,38 @@ export default function TableSelectionPage() {
                   <p className="text-[10px] text-muted-foreground font-bold uppercase">New Order</p>
                </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsGuestSheetOpen(false)} className="h-10 w-10 rounded-full bg-slate-100">
+            <Button variant="ghost" size="icon" onClick={() => setIsGuestSheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
                <X className="h-6 w-6" />
             </Button>
           </SheetHeader>
 
-          <div className="p-6 space-y-6">
+          <div className="p-8 space-y-6">
              <div className="space-y-4 text-center">
-                <p className="text-lg font-black text-slate-500 uppercase tracking-widest">How many guests?</p>
-                <div className="flex items-center justify-center gap-6">
+                <p className="text-lg font-black text-slate-500 uppercase tracking-widest">Guest Count</p>
+                <div className="flex items-center justify-center gap-8">
                    <Button 
                       variant="outline" 
                       onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                      className="h-20 w-20 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
+                      className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
                    >
-                      <Minus className="h-10 w-10 stroke-[4]" />
+                      <Minus className="h-8 w-8 stroke-[3]" />
                    </Button>
-                   <span className="text-6xl font-black min-w-[90px] text-[#0051B5] tabular-nums">{guestCount}</span>
+                   <span className="text-6xl font-black min-w-[90px] text-primary tabular-nums">{guestCount}</span>
                    <Button 
                       variant="outline" 
                       onClick={() => setGuestCount(guestCount + 1)}
-                      className="h-20 w-20 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
+                      className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
                    >
-                      <Plus className="h-10 w-10 stroke-[4]" />
+                      <Plus className="h-8 w-8 stroke-[3]" />
                    </Button>
                 </div>
              </div>
           </div>
 
-          <SheetFooter className="p-4 border-t border-slate-50 bg-white">
+          <SheetFooter className="p-4 bg-background border-t">
              <Button 
                 onClick={handleGoToMenu}
-                className="w-full h-20 text-3xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase"
+                className="w-full h-16 text-2xl font-black bg-primary text-white rounded-xl shadow-lg active:scale-95 transition-transform uppercase"
              >
                 GO TO MENU
              </Button>
