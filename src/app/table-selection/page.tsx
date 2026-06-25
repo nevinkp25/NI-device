@@ -10,48 +10,13 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { OrderStepper } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
-
-interface TableData {
-  id: string;
-  isOccupied: boolean;
-}
+import { TABLES_BY_FLOOR, ALL_TABLES, type TableData } from '@/lib/data';
 
 const FLOORS = [
   { id: 'f1', name: 'MAIN FLOOR' },
   { id: 'f2', name: 'TERRACE' },
   { id: 'vip', name: 'VIP LOUNGE' },
 ];
-
-const TABLES_BY_FLOOR: Record<string, TableData[]> = {
-  f1: [
-    { id: 'T101', isOccupied: false },
-    { id: 'T102', isOccupied: true },
-    { id: 'T103', isOccupied: false },
-    { id: 'T104', isOccupied: false },
-    { id: 'T105', isOccupied: true },
-    { id: 'T106', isOccupied: false },
-    { id: 'T107', isOccupied: false },
-    { id: 'T108', isOccupied: false },
-    { id: 'T109', isOccupied: true },
-    { id: 'T110', isOccupied: false },
-    { id: 'T111', isOccupied: false },
-    { id: 'T112', isOccupied: false },
-  ],
-  f2: [
-    { id: 'T201', isOccupied: true },
-    { id: 'T202', isOccupied: false },
-    { id: 'T203', isOccupied: false },
-    { id: 'T204', isOccupied: true },
-    { id: 'T205', isOccupied: false },
-    { id: 'T501', isOccupied: false },
-    { id: 'T502', isOccupied: true },
-  ],
-  vip: [
-    { id: 'V1001', isOccupied: false },
-    { id: 'V1002', isOccupied: true },
-    { id: 'V1003', isOccupied: false },
-  ],
-};
 
 export default function TableSelectionPage() {
   const router = useRouter();
@@ -63,10 +28,9 @@ export default function TableSelectionPage() {
   const [isFloorSheetOpen, setIsFloorSheetOpen] = useState(false);
 
   const tables = TABLES_BY_FLOOR[selectedFloor] || [];
-  const allTables = Object.values(TABLES_BY_FLOOR).flat();
   
   const filteredTables = searchQuery 
-    ? allTables.filter(t => t.id.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? ALL_TABLES.filter(t => t.id.toLowerCase().includes(searchQuery.toLowerCase()))
     : tables;
 
   const handleTableClick = (table: TableData) => {

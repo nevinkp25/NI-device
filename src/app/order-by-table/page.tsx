@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { OrderStepper } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
+import { ALL_TABLES, type TableData } from '@/lib/data';
+import { cn } from '@/lib/utils';
 
 export default function OrderByTablePage() {
   const [tableNumber, setTableNumber] = useState('');
@@ -18,8 +20,22 @@ export default function OrderByTablePage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleOpenGuestSheet = () => {
-    if (tableNumber.trim()) {
+  const suggestions = useMemo(() => {
+    if (!tableNumber.trim()) return [];
+    return ALL_TABLES.filter(t => 
+      t.id.toLowerCase().includes(tableNumber.toLowerCase())
+    ).slice(0, 5);
+  }, [tableNumber]);
+
+  const handleOpenGuestSheet = (id?: string) => {
+    const finalId = id || tableNumber.trim();
+    if (finalId) {
+      // Check if selected table is occupied
+      const tableObj = ALL_TABLES.find(t => t.id.toUpperCase() === finalId.toUpperCase());
+      if (tableObj?.isOccupied) {
+        router.push(`/order-status?table=${tableObj.id}`);
+        return;
+      }
       setIsGuestSheetOpen(true);
     } else {
       toast({
@@ -32,6 +48,11 @@ export default function OrderByTablePage() {
 
   const handleFinalConfirm = () => {
     router.push(`/menu?table=${tableNumber.toUpperCase()}&guests=${guestCount}`);
+  };
+
+  const handleSuggestionClick = (table: TableData) => {
+    setTableNumber(table.id);
+    handleOpenGuestSheet(table.id);
   };
 
   return (
@@ -49,15 +70,15 @@ export default function OrderByTablePage() {
         <OrderStepper currentStep={1} />
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-center px-6 pb-20">
+      <main className="flex-grow flex flex-col items-center justify-start pt-20 px-6 pb-20">
         <form 
           onSubmit={(e) => {
             e.preventDefault();
             handleOpenGuestSheet();
           }} 
-          className="w-full space-y-8"
+          className="w-full space-y-4"
         >
-          <div className="text-center">
+          <div className="text-center relative">
             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-1">ENTER ID</p>
             <Input
               type="text"
@@ -68,14 +89,37 @@ export default function OrderByTablePage() {
               className="text-center text-7xl h-32 font-black border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter"
               autoFocus
             />
+
+            {/* Smart Suggestions */}
+            {suggestions.length > 0 && (
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-full max-w-[280px] mt-4 flex flex-wrap justify-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                {suggestions.map((table) => (
+                  <button
+                    key={table.id}
+                    type="button"
+                    onClick={() => handleSuggestionClick(table)}
+                    className={cn(
+                      "px-4 py-2 rounded-xl border-2 font-black text-sm uppercase transition-all shadow-sm active:scale-95",
+                      table.isOccupied 
+                        ? "bg-destructive/10 border-destructive/20 text-destructive" 
+                        : "bg-white border-primary/20 text-primary hover:border-primary"
+                    )}
+                  >
+                    {table.id}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full h-16 text-2xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
-          >
-            GO TO MENU
-          </Button>
+          <div className="pt-20">
+            <Button 
+              type="submit" 
+              className="w-full h-16 text-2xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
+            >
+              GO TO MENU
+            </Button>
+          </div>
         </form>
       </main>
 
