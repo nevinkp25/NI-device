@@ -13,29 +13,26 @@
     --popover: 0 0% 100%;
     --popover-foreground: 224 71% 4%;
     
-    --primary: 222 47% 11%; /* High contrast dark navy */
+    --primary: 215 90% 45%; /* Network International Blue */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 220 14% 90%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 215 90% 45%;
 
     --muted: 220 14% 96%;
     --muted-foreground: 220 9% 30%;
 
-    --accent: 206 100% 45%; /* Bright Blue for specific actions */
+    --accent: 215 90% 45%;
     --accent-foreground: 210 20% 98%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 13% 80%;
-    --input: 220 13% 80%;
-    --ring: 206 100% 45%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 215 90% 45%;
     
-    --radius: 1rem;
-
-    --brand: 222 47% 11%;
-    --brand-foreground: 0 0% 100%;
+    --radius: 1.5rem;
   }
 }
 
@@ -44,9 +41,9 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground text-xl antialiased; /* Increased base text size */
+    @apply bg-background text-foreground antialiased selection:bg-primary/20;
   }
   button {
-    @apply active:scale-95 transition-transform; /* Tactile feedback */
+    @apply active:scale-[0.98] transition-all duration-100;
   }
 }
