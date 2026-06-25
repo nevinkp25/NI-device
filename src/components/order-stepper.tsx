@@ -17,48 +17,53 @@ const steps: Step[] = [
 
 export function OrderStepper({ currentStep }: { currentStep: number }) {
   return (
-    <div className="w-full bg-white px-4 py-2 border-b border-slate-100 shadow-sm">
-      <div className="flex items-center justify-between max-w-sm mx-auto relative">
-        {/* Background Connector Line */}
-        <div className="absolute top-4 left-6 right-6 h-0.5 bg-slate-100 -z-0" />
-        
+    <div className="w-full bg-background border-b border-slate-100">
+      <div className="flex h-12 items-stretch">
         {steps.map((step) => {
           const isCompleted = currentStep > step.id;
           const isActive = currentStep === step.id;
-
+          
           return (
-            <div key={step.id} className="relative z-10 flex flex-col items-center gap-1">
-              <div
-                className={cn(
-                  "h-8 w-8 rounded-full flex items-center justify-center text-xs font-black border-2 transition-all duration-300",
-                  isActive
-                    ? "bg-primary text-white border-primary scale-110 shadow-md"
-                    : isCompleted
-                    ? "bg-green-500 text-white border-green-500"
-                    : "bg-white text-slate-300 border-slate-200"
-                )}
-              >
-                {isCompleted ? <Check className="h-4 w-4 stroke-[4]" /> : step.id}
+            <div 
+              key={step.id} 
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 relative transition-all duration-300 px-1",
+                isActive ? "bg-primary/5" : "bg-transparent"
+              )}
+            >
+              {/* Status Indicator */}
+              <div className={cn(
+                "h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 transition-colors duration-300",
+                isCompleted ? "bg-green-500 text-white" : 
+                isActive ? "bg-primary text-white shadow-sm" : 
+                "bg-slate-100 text-slate-400"
+              )}>
+                {isCompleted ? <Check className="h-3 w-3 stroke-[4]" /> : step.id}
               </div>
-              <span
-                className={cn(
-                  "text-[8px] font-black tracking-tight uppercase",
-                  isActive ? "text-primary" : "text-slate-400"
-                )}
-              >
+
+              {/* Label */}
+              <span className={cn(
+                "text-[10px] font-black tracking-tight uppercase whitespace-nowrap transition-colors duration-300",
+                isActive ? "text-primary" : 
+                isCompleted ? "text-green-600" : 
+                "text-slate-400"
+              )}>
                 {step.label}
               </span>
-            </div>
-          );
-        })}
 
-        {/* Dynamic Progress Line Overlay */}
-        <div 
-          className="absolute top-4 left-6 h-0.5 bg-green-500 transition-all duration-500 -z-0" 
-          style={{ 
-            width: currentStep === 1 ? '0%' : currentStep === 2 ? '45%' : '90%' 
-          }} 
-        />
+              {/* Active Indicator Bar */}
+              {isActive && (
+                <div className="absolute bottom-0 left-2 right-2 h-1 bg-primary rounded-t-full animate-in fade-in slide-in-from-bottom-1" />
+              )}
+
+              {/* Connector (if needed) */}
+              <div className={cn(
+                "absolute right-0 top-1/2 -translate-y-1/2 w-[1px] h-4 bg-slate-100",
+                step.id === steps.length && "hidden"
+              )} />
+            </div>
+          )
+        })}
       </div>
     </div>
   );
