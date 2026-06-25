@@ -26,7 +26,7 @@ export default function NavigationPage() {
 
       <div className="flex-grow flex flex-col gap-5">
         <Button
-          onClick={() => handleNavigation('/menu')}
+          onClick={() => handleNavigation('/table-selection')}
           className="w-full h-28 text-2xl font-black justify-start px-10 rounded-2xl shadow-xl gap-8 bg-primary text-primary-foreground hover:bg-primary/90"
         >
           <Menu className="h-10 w-10" />
