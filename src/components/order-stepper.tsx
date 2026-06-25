@@ -3,6 +3,7 @@
 
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
+import React from "react";
 
 interface Step {
   id: number;
@@ -17,51 +18,45 @@ const steps: Step[] = [
 
 export function OrderStepper({ currentStep }: { currentStep: number }) {
   return (
-    <div className="w-full bg-background border-b border-slate-100">
-      <div className="flex h-12 items-stretch">
-        {steps.map((step) => {
+    <div className="w-full bg-background pt-2 pb-3">
+      <div className="flex items-center justify-center px-4 max-w-[320px] mx-auto">
+        {steps.map((step, index) => {
           const isCompleted = currentStep > step.id;
           const isActive = currentStep === step.id;
-          
+          const isLast = index === steps.length - 1;
+
           return (
-            <div 
-              key={step.id} 
-              className={cn(
-                "flex-1 flex items-center justify-center gap-2 relative transition-all duration-300 px-1",
-                isActive ? "bg-primary/5" : "bg-transparent"
-              )}
-            >
-              {/* Status Indicator */}
-              <div className={cn(
-                "h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 transition-colors duration-300",
-                isCompleted ? "bg-green-500 text-white" : 
-                isActive ? "bg-primary text-white shadow-sm" : 
-                "bg-slate-100 text-slate-400"
-              )}>
-                {isCompleted ? <Check className="h-3 w-3 stroke-[4]" /> : step.id}
+            <React.Fragment key={step.id}>
+              {/* Step Circle & Label Group */}
+              <div className="flex flex-col items-center gap-1.5 z-10 min-w-[50px]">
+                <div className={cn(
+                  "h-8 w-8 rounded-full flex items-center justify-center text-[11px] font-black transition-all duration-300 border-2",
+                  isCompleted 
+                    ? "bg-green-500 border-green-500 text-white" 
+                    : isActive 
+                      ? "bg-primary border-primary text-white shadow-md scale-105" 
+                      : "bg-white border-slate-200 text-slate-300"
+                )}>
+                  {isCompleted ? <Check className="h-4 w-4 stroke-[4]" /> : step.id}
+                </div>
+                <span className={cn(
+                  "text-[9px] font-black tracking-widest uppercase transition-colors duration-300",
+                  isActive ? "text-primary" : isCompleted ? "text-green-600" : "text-slate-400"
+                )}>
+                  {step.label}
+                </span>
               </div>
 
-              {/* Label */}
-              <span className={cn(
-                "text-[10px] font-black tracking-tight uppercase whitespace-nowrap transition-colors duration-300",
-                isActive ? "text-primary" : 
-                isCompleted ? "text-green-600" : 
-                "text-slate-400"
-              )}>
-                {step.label}
-              </span>
-
-              {/* Active Indicator Bar */}
-              {isActive && (
-                <div className="absolute bottom-0 left-2 right-2 h-1 bg-primary rounded-t-full animate-in fade-in slide-in-from-bottom-1" />
+              {/* Progress Line */}
+              {!isLast && (
+                <div className="flex-grow h-[2px] -mt-5 bg-slate-100">
+                   <div className={cn(
+                     "h-full transition-all duration-700 ease-in-out",
+                     isCompleted ? "bg-green-500 w-full" : "w-0"
+                   )} />
+                </div>
               )}
-
-              {/* Connector (if needed) */}
-              <div className={cn(
-                "absolute right-0 top-1/2 -translate-y-1/2 w-[1px] h-4 bg-slate-100",
-                step.id === steps.length && "hidden"
-              )} />
-            </div>
+            </React.Fragment>
           )
         })}
       </div>
