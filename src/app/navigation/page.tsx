@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -50,53 +51,53 @@ export default function NavigationPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0051B5]">
-      {/* Header */}
-      <header className="px-8 pt-14 pb-8">
-        <h1 className="text-3xl font-semibold text-white tracking-tight">Bella Cucina</h1>
+      {/* Header - Condensed */}
+      <header className="px-8 pt-8 pb-4">
+        <h1 className="text-2xl font-semibold text-white tracking-tight">Bella Cucina</h1>
       </header>
 
-      {/* Main Content Card */}
-      <main className="flex-grow px-4 pb-8">
-        <div className="bg-white rounded-[2.5rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.2)] flex flex-col gap-8 min-h-[500px]">
-          <div className="grid grid-cols-2 gap-5">
+      {/* Main Content Card - Refined spacing */}
+      <main className="flex-grow px-3 pb-6">
+        <div className="bg-white rounded-[2rem] p-5 shadow-[0_15px_40px_rgba(0,0,0,0.15)] flex flex-col gap-6 min-h-[450px]">
+          <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => handleNavigation('/table-selection')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-4 py-8 shadow-sm group"
+              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
             >
-              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
+              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
                 <IconMenu />
               </div>
-              <span className="text-lg font-bold text-slate-800 tracking-tight">Order Menu</span>
+              <span className="text-base font-bold text-slate-800 tracking-tight">Order Menu</span>
             </button>
 
             <button
               onClick={() => handleNavigation('/order-by-table')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-4 py-8 shadow-sm group"
+              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
             >
-              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
+              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
                 <IconTableNumber />
               </div>
-              <span className="text-lg font-bold text-slate-800 tracking-tight">Table Number</span>
+              <span className="text-base font-bold text-slate-800 tracking-tight">Table Number</span>
             </button>
 
             <button
               onClick={() => handleNavigation('/scan-qr')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-4 py-8 shadow-sm group"
+              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
             >
-              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
+              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
                 <IconScanQR />
               </div>
-              <span className="text-lg font-bold text-slate-800 tracking-tight">Scan Table QR</span>
+              <span className="text-base font-bold text-slate-800 tracking-tight">Scan Table QR</span>
             </button>
 
             <button
               onClick={() => handleNavigation('/transaction-history')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-4 py-8 shadow-sm group"
+              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
             >
-              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
+              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
                 <IconManualSale />
               </div>
-              <span className="text-lg font-bold text-slate-800 tracking-tight">Manual Sale</span>
+              <span className="text-base font-bold text-slate-800 tracking-tight">Manual Sale</span>
             </button>
           </div>
 
@@ -104,7 +105,7 @@ export default function NavigationPage() {
             <Link href="/" passHref className="w-full">
               <Button 
                 variant="outline" 
-                className="w-full h-20 text-xl font-bold border-2 border-[#FF0000] text-[#FF0000] rounded-[1.5rem] bg-white hover:bg-red-50 hover:text-red-700 transition-all shadow-sm active:scale-[0.98]"
+                className="w-full h-16 text-lg font-bold border-2 border-[#FF0000] text-[#FF0000] rounded-[1.25rem] bg-white hover:bg-red-50 hover:text-red-700 transition-all shadow-sm active:scale-[0.98]"
               >
                 Finish Shift
               </Button>
@@ -113,14 +114,14 @@ export default function NavigationPage() {
         </div>
       </main>
 
-      {/* Footer Branding */}
-      <footer className="pb-12 flex flex-col items-center gap-1.5 opacity-90">
-        <p className="text-white/70 text-xs font-medium uppercase tracking-[0.1em]">Powered by</p>
-        <div className="flex items-center gap-1.5">
-          <span className="text-white text-3xl font-bold tracking-tight">network</span>
-          <span className="text-[#FF0000] text-3xl font-extrabold -ml-1 select-none">&gt;</span>
+      {/* Footer Branding - Condensed */}
+      <footer className="pb-8 flex flex-col items-center gap-1 opacity-90">
+        <p className="text-white/60 text-[10px] font-medium uppercase tracking-[0.1em]">Powered by</p>
+        <div className="flex items-center gap-1">
+          <span className="text-white text-2xl font-bold tracking-tight">network</span>
+          <span className="text-[#FF0000] text-2xl font-extrabold -ml-1 select-none">&gt;</span>
         </div>
-        <p className="text-white text-xs font-bold uppercase tracking-[0.2em] -mt-1 opacity-80">dine</p>
+        <p className="text-white text-[10px] font-bold uppercase tracking-[0.2em] -mt-1 opacity-70">dine</p>
       </footer>
     </div>
   );
