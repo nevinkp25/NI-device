@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Hash, LayoutGrid, Users, Minus, Plus, X } from 'lucide-react';
-import Link from 'next/link';
+import Link from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { OrderStepper } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
@@ -70,15 +70,15 @@ export default function OrderByTablePage() {
         <OrderStepper currentStep={1} />
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-start pt-20 px-6 pb-20">
+      <main className="flex-grow flex flex-col items-center justify-start pt-12 px-6 pb-20">
         <form 
           onSubmit={(e) => {
             e.preventDefault();
             handleOpenGuestSheet();
           }} 
-          className="w-full space-y-4"
+          className="w-full space-y-2"
         >
-          <div className="text-center relative">
+          <div className="text-center">
             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-1">ENTER ID</p>
             <Input
               type="text"
@@ -90,32 +90,30 @@ export default function OrderByTablePage() {
               autoFocus
             />
 
-            {/* Smart Suggestions */}
-            {suggestions.length > 0 && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-full max-w-[280px] mt-4 flex flex-wrap justify-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                {suggestions.map((table) => (
-                  <button
-                    key={table.id}
-                    type="button"
-                    onClick={() => handleSuggestionClick(table)}
-                    className={cn(
-                      "px-4 py-2 rounded-xl border-2 font-black text-sm uppercase transition-all shadow-sm active:scale-95",
-                      table.isOccupied 
-                        ? "bg-destructive/10 border-destructive/20 text-destructive" 
-                        : "bg-white border-primary/20 text-primary hover:border-primary"
-                    )}
-                  >
-                    {table.id}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Smart Suggestions - Redesigned with better margins and spacing */}
+            <div className="min-h-[120px] mt-6 mb-8 flex flex-wrap justify-center gap-3">
+              {suggestions.map((table) => (
+                <button
+                  key={table.id}
+                  type="button"
+                  onClick={() => handleSuggestionClick(table)}
+                  className={cn(
+                    "px-6 py-3 rounded-2xl border-2 font-black text-base uppercase transition-all shadow-sm active:scale-90 animate-in fade-in zoom-in-95 duration-200",
+                    table.isOccupied 
+                      ? "bg-destructive/10 border-destructive/20 text-destructive" 
+                      : "bg-white border-primary/20 text-primary hover:border-primary shadow-slate-100"
+                  )}
+                >
+                  {table.id}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="pt-20">
+          <div className="pt-4">
             <Button 
               type="submit" 
-              className="w-full h-16 text-2xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
+              className="w-full h-20 text-2xl font-black bg-primary text-white rounded-[1.5rem] shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
             >
               GO TO MENU
             </Button>
