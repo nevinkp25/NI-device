@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -39,7 +38,7 @@ export default function NavigationPage() {
             className="flex-col w-full h-56 text-2xl font-black rounded-3xl shadow-2xl gap-4 bg-primary text-primary-foreground hover:bg-primary/90"
           >
             <Hash className="h-16 w-16" />
-            <span className="text-center px-2">TABLE NUMBER</span>
+            <span className="text-center px-2 leading-tight">TABLE NUMBER</span>
           </Button>
 
           <Button

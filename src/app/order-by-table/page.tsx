@@ -31,37 +31,50 @@ export default function OrderByTablePage() {
 
   return (
     <div className="flex flex-col h-screen bg-background p-6">
+      <header className="flex items-center mb-8">
+        <Link href="/navigation" passHref>
+          <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
+            <ArrowLeft className="h-8 w-8" />
+          </Button>
+        </Link>
+        <h1 className="text-3xl font-black mx-auto uppercase tracking-tighter">TABLE NUMBER</h1>
+        <div className="w-14"></div>
+      </header>
+
       <main className="flex-grow flex flex-col items-center justify-center text-center">
-        <div className="flex flex-col items-center space-y-8 w-full max-w-sm">
+        <div className="flex flex-col items-center space-y-12 w-full max-w-sm">
           
-          <div className="flex items-center justify-center h-24 w-24 rounded-full bg-muted mb-4">
-              <Hash className="h-12 w-12 text-primary" />
+          <div className="flex items-center justify-center h-32 w-32 rounded-full bg-muted border-4 border-primary">
+              <Hash className="h-16 w-16 text-primary" />
           </div>
 
-          <p className="text-muted-foreground text-lg">
-            Please enter your table number <br /> to continue
+          <p className="text-muted-foreground text-2xl font-bold uppercase tracking-wide">
+            Enter Table #
           </p>
           
-          <form action={handleConfirm} className="w-full space-y-4">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleConfirm();
+            }} 
+            className="w-full space-y-8"
+          >
               <Input
                 type="number"
-                placeholder=""
+                placeholder="00"
                 value={tableNumber}
                 onChange={(e) => setTableNumber(e.target.value)}
-                className="text-center text-4xl h-20"
+                className="text-center text-6xl h-32 font-black border-4 border-primary rounded-3xl shadow-inner focus-visible:ring-primary"
+                autoFocus
               />
-              <Button type="submit" className="w-full h-14 text-lg bg-primary text-primary-foreground hover:bg-primary/90">
-                  <span>Go to Order</span>
-                  <ArrowRight />
+              <Button 
+                type="submit" 
+                className="w-full h-24 text-3xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl shadow-xl flex items-center justify-center gap-4"
+              >
+                  <span>GO TO ORDER</span>
+                  <ArrowRight className="h-10 w-10" />
               </Button>
           </form>
-          
-          <Link href="/navigation" passHref>
-              <Button variant="outline" className="w-48 h-12">
-                  <ArrowLeft />
-                  <span>Back to Home</span>
-              </Button>
-          </Link>
         </div>
       </main>
     </div>
