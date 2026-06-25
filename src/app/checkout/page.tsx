@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Loader2, Info } from 'lucide-react';
 import Link from 'next/link';
 import { QuantitySelector } from '@/components/quantity-selector';
 import { SplitBillSheet } from '@/components/split-bill-sheet';
@@ -17,10 +17,11 @@ import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
 import { OrderStepper } from '@/components/order-stepper';
 
 export default function CheckoutPage() {
-  const { cartItems, updateQuantity, subtotal, loadCart, getDisplayPrice } = useCart();
+  const { cartItems, updateQuantity, subtotal, clearCart, getDisplayPrice } = useCart();
   const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const [isWaiterProfileOpen, setIsWaiterProfileOpen] = useState(false);
+  const [isPlacing, setIsPlacing] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -40,8 +41,13 @@ export default function CheckoutPage() {
     updateQuantity(cartItemId, newQuantity);
   };
   
-  const handleProceedToPayment = () => {
-    setTipDetails({isOpen: true, amount: total});
+  const handlePlaceOrder = () => {
+    setIsPlacing(true);
+    // Simulate API call to send order to kitchen
+    setTimeout(() => {
+      const orderId = Math.floor(1000 + Math.random() * 9000).toString();
+      router.push(`/order-confirmation?orderId=${orderId}`);
+    }, 1500);
   };
   
   const handleSplitBill = () => {
@@ -90,7 +96,7 @@ export default function CheckoutPage() {
           </div>
         ) : (
           <>
-            <main className="p-4 flex-grow pb-80">
+            <main className="p-4 flex-grow pb-96">
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-2xl font-black uppercase">Your Selection</h2>
@@ -143,10 +149,27 @@ export default function CheckoutPage() {
               </div>
             </main>
 
-            <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 bg-background border-t-4 border-primary shadow-[0_-10px_30px_rgba(0,0,0,0.1)] space-y-4 z-20">
-               <Button onClick={handleProceedToPayment} className="w-full h-24 bg-primary text-primary-foreground text-3xl font-black rounded-2xl shadow-xl flex items-center justify-center gap-4">
-                    <span>PLACE ORDER ${total.toFixed(2)}</span>
-                </Button>
+            <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 bg-background border-t-4 border-primary shadow-[0_-10px_30px_rgba(0,0,0,0.1)] space-y-6 z-20">
+               <div className="space-y-4">
+                  <Button 
+                    onClick={handlePlaceOrder} 
+                    disabled={isPlacing}
+                    className="w-full h-24 bg-primary text-primary-foreground text-3xl font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 transition-all"
+                  >
+                      {isPlacing ? (
+                        <Loader2 className="h-10 w-10 animate-spin" />
+                      ) : (
+                        <span>PLACE ORDER ${total.toFixed(2)}</span>
+                      )}
+                  </Button>
+                  <div className="flex items-start gap-3 px-2 text-slate-500">
+                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+                      <p className="text-[10px] font-black uppercase tracking-wider leading-snug">
+                          Final amount may include applicable taxes and service charges
+                      </p>
+                  </div>
+               </div>
+
               <div className="grid grid-cols-2 gap-4">
                   <Button onClick={handleSplitBill} variant="outline" className="h-20 text-xl font-black border-4 border-primary rounded-2xl">
                     SPLIT BILL
