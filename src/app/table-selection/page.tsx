@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, Users, Plus, Minus, X } from 'lucide-react';
+import { ArrowLeft, Search, Users, Plus, Minus, X, LayoutGrid, Check } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { OrderStepper } from '@/components/order-stepper';
@@ -60,6 +60,7 @@ export default function TableSelectionPage() {
   const [guestCount, setGuestCount] = useState(1);
   const [tempSelectedTable, setTempSelectedTable] = useState<TableData | null>(null);
   const [isGuestSheetOpen, setIsGuestSheetOpen] = useState(false);
+  const [isFloorSheetOpen, setIsFloorSheetOpen] = useState(false);
 
   const tables = TABLES_BY_FLOOR[selectedFloor] || [];
   const allTables = Object.values(TABLES_BY_FLOOR).flat();
@@ -84,6 +85,8 @@ export default function TableSelectionPage() {
     }
   };
 
+  const currentFloorName = FLOORS.find(f => f.id === selectedFloor)?.name || '';
+
   return (
     <div className="flex flex-col bg-background min-h-screen">
       {/* CONSOLIDATED STICKY HEADER */}
@@ -102,24 +105,35 @@ export default function TableSelectionPage() {
         
         {/* Floor Selection & Search Pills */}
         <div className="px-4 py-4 space-y-4">
-          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-            {FLOORS.map((floor) => (
-              <button
-                key={floor.id}
-                onClick={() => {
-                    setSelectedFloor(floor.id);
-                    setSearchQuery('');
-                }}
-                className={cn(
-                  "h-12 px-8 text-sm font-black rounded-full transition-all shrink-0 uppercase tracking-tight",
-                  selectedFloor === floor.id 
-                    ? "bg-primary text-primary-foreground shadow-md" 
-                    : "bg-[#F3F4F6] text-[#4B5563] hover:bg-slate-200"
-                )}
-              >
-                {floor.name}
-              </button>
-            ))}
+          <div className="flex items-center gap-3">
+            <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => setIsFloorSheetOpen(true)}
+                className="h-12 w-12 shrink-0 rounded-full border-2 border-primary text-primary"
+            >
+                <LayoutGrid className="h-6 w-6" />
+            </Button>
+            
+            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1 flex-grow">
+              {FLOORS.map((floor) => (
+                <button
+                  key={floor.id}
+                  onClick={() => {
+                      setSelectedFloor(floor.id);
+                      setSearchQuery('');
+                  }}
+                  className={cn(
+                    "h-12 px-8 text-sm font-black rounded-full transition-all shrink-0 uppercase tracking-tight",
+                    selectedFloor === floor.id 
+                      ? "bg-primary text-primary-foreground shadow-md" 
+                      : "bg-[#F3F4F6] text-[#4B5563] hover:bg-slate-200"
+                  )}
+                >
+                  {floor.name}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="relative">
@@ -216,6 +230,47 @@ export default function TableSelectionPage() {
                 GO TO MENU
              </Button>
           </SheetFooter>
+        </SheetContent>
+      </Sheet>
+
+      {/* Floor Selection Sheet */}
+      <Sheet open={isFloorSheetOpen} onOpenChange={setIsFloorSheetOpen}>
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[3rem] border-t-8 border-primary shadow-2xl" hideCloseButton>
+            <SheetHeader className="p-6 border-b flex-row items-center justify-between">
+                <div className="flex items-center gap-4 text-left">
+                    <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center">
+                        <LayoutGrid className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                        <SheetTitle className="text-2xl font-black uppercase tracking-tighter">SELECT FLOOR</SheetTitle>
+                        <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Jump to specific area</p>
+                    </div>
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => setIsFloorSheetOpen(false)} className="h-12 w-12 rounded-full bg-muted">
+                    <X className="h-6 w-6" />
+                </Button>
+            </SheetHeader>
+            <div className="p-4 space-y-3">
+                {FLOORS.map((floor) => (
+                    <Button
+                        key={floor.id}
+                        variant={selectedFloor === floor.id ? "default" : "outline"}
+                        onClick={() => {
+                            setSelectedFloor(floor.id);
+                            setSearchQuery('');
+                            setIsFloorSheetOpen(false);
+                        }}
+                        className={cn(
+                            "w-full h-20 text-xl font-black rounded-2xl justify-between px-8 transition-all uppercase tracking-tight",
+                            selectedFloor === floor.id ? "bg-primary text-white" : "border-2 border-slate-100"
+                        )}
+                    >
+                        <span>{floor.name}</span>
+                        {selectedFloor === floor.id && <Check className="h-6 w-6 stroke-[4]" />}
+                    </Button>
+                ))}
+            </div>
+            <div className="h-8" />
         </SheetContent>
       </Sheet>
     </div>
