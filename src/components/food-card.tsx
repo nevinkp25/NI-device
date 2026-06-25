@@ -54,7 +54,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
             </div>
           )}
         </CardHeader>
-        <CardFooter className="p-4 pt-0 flex flex-col gap-3">
+        <CardFooter className="p-4 pt-0 flex flex-col gap-2">
           <div className="w-full flex items-center justify-between">
             <p className="font-bold text-lg text-slate-800 tabular-nums">
               ${item.price.toFixed(2)}
@@ -80,6 +80,11 @@ export function FoodCard({ item }: { item: MenuItem }) {
               <Plus className="h-4 w-4 mr-1.5" />
               ADD
             </Button>
+          )}
+          {hasVariations && (
+            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest text-center">
+              Customizable
+            </p>
           )}
         </CardFooter>
       </Card>
