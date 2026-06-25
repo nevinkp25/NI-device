@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, Users, Plus, Minus, X, LayoutGrid, Check } from 'lucide-react';
+import { ArrowLeft, Search, Users, Plus, Minus, X, LayoutGrid, Check, Hash } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { OrderStepper } from '@/components/order-stepper';
@@ -85,8 +85,6 @@ export default function TableSelectionPage() {
     }
   };
 
-  const currentFloorName = FLOORS.find(f => f.id === selectedFloor)?.name || '';
-
   return (
     <div className="flex flex-col bg-background min-h-screen">
       {/* CONSOLIDATED STICKY HEADER */}
@@ -149,7 +147,7 @@ export default function TableSelectionPage() {
         </div>
       </div>
 
-      <main className="p-4 flex-grow pb-24">
+      <main className="p-4 flex-grow pb-32">
         <section className="grid grid-cols-2 gap-4">
           {filteredTables.map((table) => (
             <Button
@@ -180,6 +178,28 @@ export default function TableSelectionPage() {
           )}
         </section>
       </main>
+
+      {/* Floating Mode Switcher */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+        <div className="pointer-events-auto bg-slate-900/90 text-white rounded-full p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex items-center gap-1 border border-white/10 backdrop-blur-lg">
+          <Button 
+            variant="ghost" 
+            className="h-12 px-6 rounded-full bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
+          >
+            <LayoutGrid className="h-5 w-5" />
+            <span className="text-xs font-black uppercase tracking-tighter">GRID VIEW</span>
+          </Button>
+          <Link href="/order-by-table" passHref>
+            <Button 
+              variant="ghost" 
+              className="h-12 px-6 rounded-full text-white/60 hover:text-white hover:bg-white/10 flex items-center gap-2"
+            >
+              <Hash className="h-5 w-5" />
+              <span className="text-xs font-black uppercase tracking-tighter">MANUAL</span>
+            </Button>
+          </Link>
+        </div>
+      </div>
 
       {/* Guest Selection Sheet */}
       <Sheet open={isGuestSheetOpen} onOpenChange={setIsGuestSheetOpen}>
