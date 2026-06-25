@@ -66,8 +66,8 @@ export function FoodCard({ item }: { item: MenuItem }) {
               <div onClick={(e) => e.stopPropagation()} className="w-full">
                   <QuantitySelector
                       quantity={cartItem.quantity}
-                      onIncrease={() => updateQuantity(cartItemId, cartItem.quantity + 1)}
-                      onDecrease={() => updateQuantity(cartItemId, cartItem.quantity - 1)}
+                      onIncrease={() => updateQuantity(cartItem.cartItemId, cartItem.quantity + 1)}
+                      onDecrease={() => updateQuantity(cartItem.cartItemId, cartItem.quantity - 1)}
                       className="bg-slate-50 border border-slate-100"
                   />
               </div>
