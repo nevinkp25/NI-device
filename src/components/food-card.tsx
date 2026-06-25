@@ -71,7 +71,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
             </div>
           ) : (
             <Button
-              className="w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-sm transition-all active:scale-[0.98]"
+              className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-bold shadow-sm transition-all active:scale-[0.98]"
               onClick={(e) => {
                 e.stopPropagation();
                 hasVariations ? handleVariationAdd() : handleSimpleAdd();

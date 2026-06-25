@@ -197,7 +197,7 @@ export function VariationPickerSheet({ isOpen, onOpenChange, item }: VariationPi
             <Button
               onClick={handleAddToCart}
               disabled={!areAllRequiredSelected}
-              className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white text-lg"
+              className="w-full h-14 bg-primary hover:bg-primary/90 text-white text-lg"
             >
               Add to Cart (${finalPrice.toFixed(2)})
             </Button>
