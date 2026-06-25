@@ -17,7 +17,7 @@ export default function OrderByTablePage() {
 
   const handleConfirm = () => {
     if (tableNumber.trim()) {
-      router.push(`/menu?table=${tableNumber}`);
+      router.push(`/menu?table=${tableNumber.toUpperCase()}`);
     } else {
       toast({
         variant: 'destructive',
@@ -42,22 +42,23 @@ export default function OrderByTablePage() {
         <OrderStepper currentStep={1} />
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-center px-8 pb-32">
+      <main className="flex-grow flex flex-col items-center justify-center px-6 pb-20">
         <form 
           onSubmit={(e) => {
             e.preventDefault();
             handleConfirm();
           }} 
-          className="w-full space-y-12"
+          className="w-full space-y-8"
         >
           <div className="text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-2">ENTER NUMBER</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-1">ENTER ID</p>
             <Input
               type="text"
-              placeholder="00"
+              placeholder="00000"
+              maxLength={5}
               value={tableNumber}
               onChange={(e) => setTableNumber(e.target.value)}
-              className="text-center text-[120px] h-48 font-black border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums"
+              className="text-center text-7xl h-32 font-black border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter"
               autoFocus
             />
           </div>
@@ -74,7 +75,7 @@ export default function OrderByTablePage() {
       {/* MINIMAL FLOATING SWITCHER */}
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30">
         <div className="bg-slate-900/95 text-white rounded-full p-1 shadow-2xl flex items-center gap-1 border border-white/10 backdrop-blur-md">
-           <div className="h-10 px-4 rounded-full bg-primary text-white flex items-center gap-2">
+           <div className="h-10 px-4 rounded-full bg-primary text-white flex items-center gap-2 shadow-inner">
             <Hash className="h-4 w-4" />
             <span className="text-[10px] font-black uppercase tracking-tighter">Manual</span>
           </div>
