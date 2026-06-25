@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Hash, LayoutGrid } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
+import { OrderStepper } from '@/components/order-stepper';
 
 export default function OrderByTablePage() {
   const [tableNumber, setTableNumber] = useState('');
@@ -16,7 +17,7 @@ export default function OrderByTablePage() {
 
   const handleConfirm = () => {
     if (tableNumber.trim()) {
-      router.push(`/order-status?table=${tableNumber}`);
+      router.push(`/menu?table=${tableNumber}`);
     } else {
       toast({
         variant: 'destructive',
@@ -28,14 +29,17 @@ export default function OrderByTablePage() {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <header className="flex items-center p-4">
-        <Link href="/navigation" passHref>
-          <Button variant="ghost" size="icon" className="h-10 w-10">
-            <ArrowLeft className="h-6 w-6 text-slate-400" />
-          </Button>
-        </Link>
-        <h1 className="text-lg font-black mx-auto uppercase tracking-tighter opacity-20">Manual Entry</h1>
-        <div className="w-10"></div>
+      <header className="sticky top-0 z-50 bg-background shadow-sm border-b">
+        <div className="flex items-center px-4 pt-4 pb-2">
+          <Link href="/navigation" passHref>
+            <Button variant="ghost" size="icon" className="h-10 w-10">
+              <ArrowLeft className="h-6 w-6 text-primary" />
+            </Button>
+          </Link>
+          <h1 className="text-xl font-black mx-auto uppercase tracking-tighter">TABLE NUMBER</h1>
+          <div className="w-10"></div>
+        </div>
+        <OrderStepper currentStep={1} />
       </header>
 
       <main className="flex-grow flex flex-col items-center justify-center px-8 pb-32">
@@ -44,10 +48,10 @@ export default function OrderByTablePage() {
             e.preventDefault();
             handleConfirm();
           }} 
-          className="w-full space-y-16"
+          className="w-full space-y-12"
         >
-          <div className="text-center space-y-4">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">TABLE NUMBER</p>
+          <div className="text-center">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-2">ENTER NUMBER</p>
             <Input
               type="text"
               placeholder="00"
@@ -60,9 +64,9 @@ export default function OrderByTablePage() {
 
           <Button 
             type="submit" 
-            className="w-full h-16 text-xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
+            className="w-full h-16 text-2xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
           >
-            GO TO ORDER
+            GO TO MENU
           </Button>
         </form>
       </main>

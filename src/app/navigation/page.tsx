@@ -62,13 +62,13 @@ export default function NavigationPage() {
         <div className="bg-white rounded-[2.5rem] p-6 shadow-2xl flex flex-col gap-6 min-h-[500px]">
           <div className="grid grid-cols-2 gap-4">
             <button
-              onClick={() => handleNavigation('/table-selection')}
+              onClick={() => handleNavigation('/order-by-table')}
               className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
             >
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconOrderMenu />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight">Order Menu</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Order Menu</span>
             </button>
 
             <button
@@ -78,7 +78,7 @@ export default function NavigationPage() {
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconPayByTable />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight">Pay by Table</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Pay by Table</span>
             </button>
 
             <button
@@ -88,7 +88,7 @@ export default function NavigationPage() {
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconScanQR />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight">Scan Table QR</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Scan Table QR</span>
             </button>
 
             <button
@@ -98,7 +98,7 @@ export default function NavigationPage() {
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconManualSale />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight">Manual Sale</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Manual Sale</span>
             </button>
           </div>
 

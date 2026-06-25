@@ -156,7 +156,7 @@ export default function TableSelectionPage() {
               className={cn(
                 "h-24 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 shadow-sm",
                 table.isOccupied 
-                  ? "bg-destructive/5 text-destructive/40 border-destructive/10"
+                  ? "bg-destructive/10 text-destructive border-destructive/20"
                   : "bg-white text-primary border-primary/5 active:bg-primary active:text-white"
               )}
             >
@@ -164,7 +164,7 @@ export default function TableSelectionPage() {
               <span className={cn(
                 "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border",
                 table.isOccupied
-                  ? "bg-destructive/10 text-destructive border-destructive/20"
+                  ? "bg-destructive/20 text-destructive border-destructive/30"
                   : "bg-green-50 text-green-600 border-green-200"
               )}>
                 {table.isOccupied ? 'Occupied' : 'Available'}
@@ -175,21 +175,21 @@ export default function TableSelectionPage() {
       </main>
 
       {/* MINIMAL FLOATING SWITCHER */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-        <div className="pointer-events-auto bg-slate-900/95 text-white rounded-full p-1 shadow-2xl flex items-center gap-1 border border-white/10 backdrop-blur-md scale-90 sm:scale-100">
-          <div className="h-10 px-4 rounded-full bg-primary text-white flex items-center gap-2 shadow-inner">
-            <LayoutGrid className="h-4 w-4" />
-            <span className="text-[10px] font-black uppercase tracking-tighter">GRID</span>
-          </div>
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30">
+        <div className="bg-slate-900/95 text-white rounded-full p-1 shadow-2xl flex items-center gap-1 border border-white/10 backdrop-blur-md">
           <Link href="/order-by-table" passHref>
             <Button 
               variant="ghost" 
-              className="h-10 px-4 rounded-full text-white/50 hover:text-white hover:bg-white/10 flex items-center gap-2 transition-all"
+              className="h-10 px-4 rounded-full text-white/50 hover:text-white flex items-center gap-2"
             >
               <Hash className="h-4 w-4" />
-              <span className="text-[10px] font-black uppercase tracking-tighter">MANUAL</span>
+              <span className="text-[10px] font-black uppercase tracking-tighter">Manual</span>
             </Button>
           </Link>
+          <div className="h-10 px-4 rounded-full bg-primary text-white flex items-center gap-2 shadow-inner">
+            <LayoutGrid className="h-4 w-4" />
+            <span className="text-[10px] font-black uppercase tracking-tighter">Grid</span>
+          </div>
         </div>
       </div>
 
