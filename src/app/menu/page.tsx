@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { foodCategories, menuItems } from '@/lib/data';
 import { FoodCard } from '@/components/food-card';
 import { FloatingCartButton } from '@/components/floating-cart-button';
-import { Utensils, ArrowLeft } from 'lucide-react';
+import { Utensils, ArrowLeft, LayoutGrid, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
 import { OrderStepper } from '@/components/order-stepper';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 function MenuHeader() {
   const searchParams = useSearchParams();
@@ -53,9 +54,15 @@ function MenuHeader() {
 
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState<string>(foodCategories[0].id);
+  const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
 
   const filteredItems = menuItems.filter((item) => item.category === activeCategory);
   const activeCategoryName = foodCategories.find(c => c.id === activeCategory)?.name || '';
+
+  const handleCategorySelect = (id: string) => {
+    setActiveCategory(id);
+    setIsCategorySheetOpen(false);
+  };
 
   return (
     <div className="bg-background min-h-screen">
@@ -64,16 +71,25 @@ export default function MenuPage() {
       </Suspense>
 
       {/* Categories Navigation */}
-      <nav className="sticky top-[112px] z-40 bg-background/95 backdrop-blur-md py-4 px-4 border-b">
-        <div className="flex space-x-3 overflow-x-auto pb-2 -mb-2 no-scrollbar">
+      <nav className="sticky top-[112px] z-40 bg-background/95 backdrop-blur-md py-4 px-4 border-b flex items-center gap-3">
+        <Button 
+          variant="outline" 
+          size="icon" 
+          onClick={() => setIsCategorySheetOpen(true)}
+          className="h-10 w-10 shrink-0 rounded-full border-2 border-primary text-primary"
+        >
+          <LayoutGrid className="h-5 w-5" />
+        </Button>
+        
+        <div className="flex space-x-3 overflow-x-auto pb-2 -mb-2 no-scrollbar flex-grow">
           {foodCategories.map((category) => (
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
               className={cn(
-                "px-6 py-3 rounded-full text-xs font-black whitespace-nowrap transition-all duration-200 uppercase tracking-widest border-2",
+                "px-6 py-2.5 rounded-full text-[11px] font-black whitespace-nowrap transition-all duration-200 uppercase tracking-widest border-2",
                 activeCategory === category.id
-                  ? "bg-primary border-primary text-primary-foreground shadow-lg scale-105"
+                  ? "bg-primary border-primary text-primary-foreground shadow-lg"
                   : "bg-slate-50 border-slate-100 text-slate-400 hover:border-slate-200"
               )}
             >
@@ -108,6 +124,46 @@ export default function MenuPage() {
       </main>
 
       <FloatingCartButton />
+
+      {/* Category Selection Bottom Sheet */}
+      <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-8 border-primary shadow-2xl" hideCloseButton>
+          <SheetHeader className="p-4 border-b flex-row items-center justify-between">
+            <div className="flex items-center gap-3 text-left">
+               <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <LayoutGrid className="h-6 w-6 text-primary" />
+               </div>
+               <div>
+                  <SheetTitle className="text-lg font-black uppercase tracking-tighter">Select Category</SheetTitle>
+                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Browse Menu</p>
+               </div>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setIsCategorySheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
+               <X className="h-5 w-5" />
+            </Button>
+          </SheetHeader>
+
+          <div className="p-4 space-y-2">
+            {foodCategories.map((category) => (
+              <Button
+                key={category.id}
+                variant={activeCategory === category.id ? "default" : "outline"}
+                onClick={() => handleCategorySelect(category.id)}
+                className={cn(
+                  "w-full h-16 text-lg font-black rounded-2xl justify-between px-6 transition-all uppercase tracking-tight",
+                  activeCategory === category.id 
+                    ? "bg-primary text-white" 
+                    : "border-2 border-slate-100 text-slate-600"
+                )}
+              >
+                <span>{category.name}</span>
+                {activeCategory === category.id && <Check className="h-5 w-5 stroke-[4]" />}
+              </Button>
+            ))}
+          </div>
+          <div className="h-8" />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
