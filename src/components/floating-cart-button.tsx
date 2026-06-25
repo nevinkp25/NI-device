@@ -27,16 +27,16 @@ export function FloatingCartButton() {
 
   return (
     <>
-      {/* Dark Backdrop Overlay */}
+      {/* Dark Backdrop Overlay - High z-index to cover header/stepper */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 z-40 animate-in fade-in duration-300" 
+          className="fixed inset-0 bg-black/60 z-[60] animate-in fade-in duration-300" 
           onClick={() => setIsOpen(false)}
         />
       )}
 
       <div className={cn(
-        "fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t-2 border-slate-100 shadow-[0_-15px_40px_rgba(0,0,0,0.2)] transition-all duration-500 ease-in-out z-50",
+        "fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t-2 border-slate-100 shadow-[0_-15px_40px_rgba(0,0,0,0.2)] transition-all duration-500 ease-in-out z-[70]",
         isOpen ? "rounded-t-[2.5rem]" : ""
       )}>
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
