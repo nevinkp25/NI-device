@@ -121,23 +121,6 @@ export default function OrderByTablePage() {
               ))}
             </div>
           </div>
-
-          {tableNumber.trim() && (
-            <div className={cn(
-                "animate-in fade-in slide-in-from-bottom-4 duration-300",
-                isInputFocused ? "pt-2" : "pt-4"
-            )}>
-                <Button 
-                type="submit" 
-                className={cn(
-                    "w-full font-bold bg-primary text-white rounded-[1.5rem] shadow-xl active:scale-95 transition-all uppercase tracking-tighter",
-                    isInputFocused ? "h-16 text-xl" : "h-20 text-2xl"
-                )}
-                >
-                GO TO MENU
-                </Button>
-            </div>
-          )}
         </form>
       </main>
 
