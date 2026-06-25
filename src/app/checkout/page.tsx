@@ -62,8 +62,8 @@ export default function CheckoutPage() {
 
   return (
     <div className="flex flex-col bg-background min-h-screen">
-        <header className="sticky top-0 z-20 bg-background shadow-sm">
-          <div className="flex items-center p-4 border-b h-20">
+        <header className="sticky top-0 z-50 bg-background shadow-sm border-b">
+          <div className="flex items-center p-4 h-20">
             <Link href="/menu" passHref>
               <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
                 <ArrowLeft className="h-8 w-8" />

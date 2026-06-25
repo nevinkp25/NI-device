@@ -28,7 +28,7 @@ export default function OrderByTablePage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-background shadow-sm border-b">
         <div className="flex items-center px-4 pt-4 pb-2">
           <Link href="/navigation" passHref>
