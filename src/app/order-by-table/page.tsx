@@ -5,19 +5,22 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Hash, LayoutGrid } from 'lucide-react';
+import { ArrowLeft, Hash, LayoutGrid, Users, Minus, Plus, X } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { OrderStepper } from '@/components/order-stepper';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 
 export default function OrderByTablePage() {
   const [tableNumber, setTableNumber] = useState('');
+  const [guestCount, setGuestCount] = useState(1);
+  const [isGuestSheetOpen, setIsGuestSheetOpen] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleConfirm = () => {
+  const handleOpenGuestSheet = () => {
     if (tableNumber.trim()) {
-      router.push(`/menu?table=${tableNumber.toUpperCase()}`);
+      setIsGuestSheetOpen(true);
     } else {
       toast({
         variant: 'destructive',
@@ -25,6 +28,10 @@ export default function OrderByTablePage() {
         description: 'Please enter a table number.',
       });
     }
+  };
+
+  const handleFinalConfirm = () => {
+    router.push(`/menu?table=${tableNumber.toUpperCase()}&guests=${guestCount}`);
   };
 
   return (
@@ -46,7 +53,7 @@ export default function OrderByTablePage() {
         <form 
           onSubmit={(e) => {
             e.preventDefault();
-            handleConfirm();
+            handleOpenGuestSheet();
           }} 
           className="w-full space-y-8"
         >
@@ -90,6 +97,58 @@ export default function OrderByTablePage() {
           </Link>
         </div>
       </div>
+
+      {/* Guest Selection Sheet */}
+      <Sheet open={isGuestSheetOpen} onOpenChange={setIsGuestSheetOpen}>
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-8 border-primary shadow-2xl" hideCloseButton>
+          <SheetHeader className="p-4 border-b flex-row items-center justify-between">
+            <div className="flex items-center gap-3 text-left">
+               <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <Users className="h-6 w-6 text-primary" />
+               </div>
+               <div>
+                  <SheetTitle className="text-lg font-black uppercase tracking-tighter">Table {tableNumber.toUpperCase()}</SheetTitle>
+                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">New Order</p>
+               </div>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setIsGuestSheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
+               <X className="h-5 w-5" />
+            </Button>
+          </SheetHeader>
+
+          <div className="p-8 space-y-6">
+             <div className="space-y-4 text-center">
+                <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Guest Count</p>
+                <div className="flex items-center justify-center gap-8">
+                   <Button 
+                      variant="outline" 
+                      onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                      className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
+                   >
+                      <Minus className="h-8 w-8 stroke-[4]" />
+                   </Button>
+                   <span className="text-6xl font-black min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
+                   <Button 
+                      variant="outline" 
+                      onClick={() => setGuestCount(guestCount + 1)}
+                      className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
+                   >
+                      <Plus className="h-8 w-8 stroke-[4]" />
+                   </Button>
+                </div>
+             </div>
+          </div>
+
+          <SheetFooter className="p-4 bg-background border-t">
+             <Button 
+                onClick={handleFinalConfirm}
+                className="w-full h-16 text-2xl font-black bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
+             >
+                GO TO MENU
+             </Button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
