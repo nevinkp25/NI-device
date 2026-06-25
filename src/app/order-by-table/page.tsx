@@ -70,7 +70,7 @@ export default function OrderByTablePage() {
       {/* MINIMAL FLOATING SWITCHER */}
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30">
         <div className="bg-slate-900/95 text-white rounded-full p-1 shadow-2xl flex items-center gap-1 border border-white/10 backdrop-blur-md">
-          <div className="h-10 px-4 rounded-full bg-primary text-white flex items-center gap-2">
+           <div className="h-10 px-4 rounded-full bg-primary text-white flex items-center gap-2">
             <Hash className="h-4 w-4" />
             <span className="text-[10px] font-black uppercase tracking-tighter">Manual</span>
           </div>

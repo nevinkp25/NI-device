@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 // Bespoke, polished SVG Icons
-const IconMenu = () => (
+const IconOrderMenu = () => (
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M4 19.5C4 18.1193 5.11929 17 6.5 17H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M6.5 2H20V22H6.5C5.11929 22 4 20.8807 4 19.5V4.5C4 3.11929 5.11929 2 6.5 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -15,7 +15,7 @@ const IconMenu = () => (
   </svg>
 );
 
-const IconTableNumber = () => (
+const IconPayByTable = () => (
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M4 21L7 5H17L20 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M7 5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -51,54 +51,54 @@ export default function NavigationPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0051B5]">
-      {/* Header - Condensed */}
-      <header className="px-8 pt-8 pb-4">
-        <h1 className="text-2xl font-semibold text-white tracking-tight">Bella Cucina</h1>
+      {/* Header */}
+      <header className="px-8 pt-10 pb-6">
+        <h1 className="text-3xl font-bold text-white tracking-tight">Bella Cucina</h1>
+        <p className="text-white/60 text-sm mt-1">Staff Dashboard</p>
       </header>
 
-      {/* Main Content Card - Refined spacing */}
-      <main className="flex-grow px-3 pb-6">
-        <div className="bg-white rounded-[2rem] p-5 shadow-[0_15px_40px_rgba(0,0,0,0.15)] flex flex-col gap-6 min-h-[450px]">
+      {/* Main Content Card */}
+      <main className="flex-grow px-4 pb-8">
+        <div className="bg-white rounded-[2.5rem] p-6 shadow-2xl flex flex-col gap-6 min-h-[500px]">
           <div className="grid grid-cols-2 gap-4">
-            {/* MANUAL ENTRY AS DEFAULT PRIMARY BUTTON */}
             <button
-              onClick={() => handleNavigation('/order-by-table')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
+              onClick={() => handleNavigation('/table-selection')}
+              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
             >
-              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
-                <IconTableNumber />
+              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
+                <IconOrderMenu />
               </div>
-              <span className="text-base font-bold text-slate-800 tracking-tight">Table Number</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight">Order Menu</span>
             </button>
 
             <button
-              onClick={() => handleNavigation('/table-selection')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
+              onClick={() => handleNavigation('/order-by-table')}
+              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
             >
-              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
-                <IconMenu />
+              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
+                <IconPayByTable />
               </div>
-              <span className="text-base font-bold text-slate-800 tracking-tight">Grid Map</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight">Pay by Table</span>
             </button>
 
             <button
               onClick={() => handleNavigation('/scan-qr')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
+              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
             >
-              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
+              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconScanQR />
               </div>
-              <span className="text-base font-bold text-slate-800 tracking-tight">Scan Table QR</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight">Scan Table QR</span>
             </button>
 
             <button
               onClick={() => handleNavigation('/transaction-history')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border border-slate-100 bg-white hover:bg-slate-50 active:scale-[0.97] transition-all duration-200 gap-3 py-6 shadow-sm group"
+              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
             >
-              <div className="text-[#0051B5] group-hover:scale-105 transition-transform duration-300">
+              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconManualSale />
               </div>
-              <span className="text-base font-bold text-slate-800 tracking-tight">Manual Sale</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight">Manual Sale</span>
             </button>
           </div>
 
@@ -106,7 +106,7 @@ export default function NavigationPage() {
             <Link href="/" passHref className="w-full">
               <Button 
                 variant="outline" 
-                className="w-full h-16 text-lg font-bold border-2 border-[#FF0000] text-[#FF0000] rounded-[1.25rem] bg-white hover:bg-red-50 hover:text-red-700 transition-all shadow-sm active:scale-[0.98]"
+                className="w-full h-20 text-xl font-black border-4 border-[#FF0000] text-[#FF0000] rounded-[1.5rem] bg-white hover:bg-red-50 hover:text-red-700 transition-all shadow-md active:scale-[0.98] uppercase tracking-tighter"
               >
                 Finish Shift
               </Button>
@@ -115,14 +115,14 @@ export default function NavigationPage() {
         </div>
       </main>
 
-      {/* Footer Branding - Condensed */}
-      <footer className="pb-8 flex flex-col items-center gap-1 opacity-90">
-        <p className="text-white/60 text-[10px] font-medium uppercase tracking-[0.1em]">Powered by</p>
+      {/* Footer Branding */}
+      <footer className="pb-10 flex flex-col items-center gap-1 opacity-80">
+        <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em]">Powered by</p>
         <div className="flex items-center gap-1">
-          <span className="text-white text-2xl font-bold tracking-tight">network</span>
-          <span className="text-[#FF0000] text-2xl font-extrabold -ml-1 select-none">&gt;</span>
+          <span className="text-white text-3xl font-black tracking-tighter">network</span>
+          <span className="text-[#FF0000] text-3xl font-black -ml-1 select-none">&gt;</span>
         </div>
-        <p className="text-white text-[10px] font-bold uppercase tracking-[0.2em] -mt-1 opacity-70">dine</p>
+        <p className="text-white text-[10px] font-black uppercase tracking-[0.4em] -mt-1 opacity-60">dine</p>
       </footer>
     </div>
   );
