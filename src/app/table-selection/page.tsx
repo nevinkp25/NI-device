@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -85,7 +86,7 @@ export default function TableSelectionPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <header className="sticky top-0 z-20 bg-background">
+      <header className="sticky top-0 z-30 bg-background border-b-2">
         <div className="flex items-center p-3 border-b-2 border-slate-50">
           <Link href="/navigation" passHref>
             <Button variant="outline" className="h-10 w-10 rounded-full border-2 border-primary">
@@ -96,47 +97,50 @@ export default function TableSelectionPage() {
           <div className="w-10"></div>
         </div>
         <OrderStepper currentStep={1} />
+        
+        {/* Sticky Secondary Navigation */}
+        <div className="bg-background/95 backdrop-blur-md p-3 space-y-3 shadow-sm">
+          <section className="space-y-1">
+            <div className="flex items-center gap-2 text-muted-foreground font-black px-1">
+              <MapPin className="h-3 w-3" />
+              <span className="text-[9px] tracking-widest uppercase">Select Floor</span>
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
+              {FLOORS.map((floor) => (
+                <Button
+                  key={floor.id}
+                  onClick={() => {
+                      setSelectedFloor(floor.id);
+                      setSearchQuery('');
+                  }}
+                  variant={selectedFloor === floor.id ? 'default' : 'outline'}
+                  className={cn(
+                    "h-10 px-5 text-sm font-black rounded-xl border-2 transition-all shrink-0",
+                    selectedFloor === floor.id 
+                      ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                      : "border-primary/20 text-primary bg-white"
+                  )}
+                >
+                  {floor.name}
+                </Button>
+              ))}
+            </div>
+          </section>
+
+          <section className="relative">
+            <Input
+              type="text"
+              placeholder="FIND TABLE (e.g. T1001)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-12 pl-10 text-base font-black border-2 border-primary rounded-xl placeholder:text-muted-foreground/30 shadow-sm uppercase"
+            />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
+          </section>
+        </div>
       </header>
 
-      <main className="p-3 space-y-4 flex-grow pb-10">
-        <section className="space-y-2">
-          <div className="flex items-center gap-2 text-muted-foreground font-black px-1">
-            <MapPin className="h-4 w-4" />
-            <span className="text-[10px] tracking-widest uppercase">Select Floor</span>
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
-            {FLOORS.map((floor) => (
-              <Button
-                key={floor.id}
-                onClick={() => {
-                    setSelectedFloor(floor.id);
-                    setSearchQuery('');
-                }}
-                variant={selectedFloor === floor.id ? 'default' : 'outline'}
-                className={cn(
-                  "h-12 px-6 text-base font-black rounded-xl border-2 transition-all shrink-0",
-                  selectedFloor === floor.id 
-                    ? "bg-primary text-primary-foreground border-primary shadow-md" 
-                    : "border-primary/20 text-primary bg-white"
-                )}
-              >
-                {floor.name}
-              </Button>
-            ))}
-          </div>
-        </section>
-
-        <section className="relative">
-          <Input
-            type="text"
-            placeholder="FIND TABLE (e.g. T1001)"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-14 pl-12 text-lg font-black border-2 border-primary rounded-xl placeholder:text-muted-foreground/30 shadow-sm uppercase"
-          />
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary" />
-        </section>
-
+      <main className="p-3 flex-grow pb-10">
         <section className="grid grid-cols-2 gap-3">
           {filteredTables.map((table) => (
             <Button
