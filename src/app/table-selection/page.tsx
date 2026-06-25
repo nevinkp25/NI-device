@@ -86,7 +86,7 @@ export default function TableSelectionPage() {
 
   return (
     <div className="flex flex-col bg-background min-h-screen">
-      {/* CONSOLIDATED STICKY HEADER MATCHING IMAGE */}
+      {/* CONSOLIDATED STICKY HEADER */}
       <div className="sticky top-0 z-50 bg-background shadow-sm border-b">
         <header className="flex items-center px-4 pt-4 pb-2">
           <Link href="/navigation" passHref>
@@ -144,7 +144,7 @@ export default function TableSelectionPage() {
               className={cn(
                 "h-28 rounded-3xl border-2 transition-all flex flex-col items-center justify-center gap-2 shadow-sm",
                 table.isOccupied 
-                  ? "bg-slate-50 text-slate-300 border-slate-100"
+                  ? "bg-destructive/5 text-destructive/40 border-destructive/10"
                   : "bg-white text-primary border-primary/5 active:bg-primary active:text-white"
               )}
             >
@@ -152,7 +152,7 @@ export default function TableSelectionPage() {
               <span className={cn(
                 "text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border",
                 table.isOccupied
-                  ? "bg-slate-100 text-slate-400 border-slate-200"
+                  ? "bg-destructive/10 text-destructive border-destructive/20"
                   : "bg-green-50 text-green-600 border-green-200"
               )}>
                 {table.isOccupied ? 'Occupied' : 'Available'}
