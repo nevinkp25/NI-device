@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-6">
       <div className="text-center mb-16">
-        <h1 className="text-6xl font-black text-primary tracking-tighter">NETWORK</h1>
+        <h1 className="text-6xl font-black text-[#0051B5] tracking-tighter">NETWORK</h1>
         <p className="text-2xl font-bold text-muted-foreground mt-2 uppercase tracking-widest">Staff Portal</p>
       </div>
       
@@ -51,7 +51,7 @@ export default function Home() {
             value={staffId}
             onChange={(e) => setStaffId(e.target.value)}
             disabled={isLoading}
-            className="text-center text-5xl h-24 font-bold border-4 border-primary rounded-2xl shadow-inner"
+            className="text-center text-5xl h-24 font-bold border-4 border-primary/20 rounded-2xl shadow-inner focus-visible:ring-primary"
           />
         </div>
         
