@@ -156,10 +156,10 @@ export function FloatingCartButton() {
 
             <CollapsibleTrigger className="flex items-center gap-4 text-left outline-none group flex-shrink-0">
               <div className="relative">
-                <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <ShoppingBasket className="h-7 w-7 text-primary" />
+                <div className="h-14 w-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-[0_8px_16px_rgba(0,81,181,0.25)] group-hover:bg-primary/90 transition-all duration-300">
+                    <ShoppingBasket className="h-7 w-7" />
                 </div>
-                <Badge className="absolute -top-1.5 -right-1.5 h-6 min-w-6 flex items-center justify-center p-0 font-bold text-[12px] rounded-lg bg-primary text-white border-2 border-white shadow-md">
+                <Badge className="absolute -top-1.5 -right-1.5 h-6 min-w-6 flex items-center justify-center p-0 font-bold text-[12px] rounded-lg bg-[#E54360] text-white border-2 border-white shadow-md">
                   {totalItems}
                 </Badge>
               </div>
