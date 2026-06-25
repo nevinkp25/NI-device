@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useRef, useEffect, useState, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { foodCategories, menuItems } from '@/lib/data';
 import { FoodCard } from '@/components/food-card';
@@ -53,54 +53,9 @@ function MenuHeader() {
 
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState<string>(foodCategories[0].id);
-  const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const observer = useRef<IntersectionObserver | null>(null);
 
-  useEffect(() => {
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveCategory(entry.target.id);
-          }
-        });
-      },
-      { 
-        rootMargin: '-120px 0px -60% 0px', // Adjust for sticky header height
-        threshold: 0 
-      }
-    );
-
-    const currentObserver = observer.current;
-    const refs = categoryRefs.current;
-
-    Object.values(refs).forEach((ref) => {
-      if (ref) currentObserver.observe(ref);
-    });
-
-    return () => {
-      Object.values(refs).forEach((ref) => {
-        if (ref) currentObserver.unobserve(ref);
-      });
-    };
-  }, []);
-
-  const handleTabClick = (categoryId: string) => {
-    const element = categoryRefs.current[categoryId];
-    if (element) {
-      const offset = 220; // Height of header + stepper + nav
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-    setActiveCategory(categoryId);
-  };
+  const filteredItems = menuItems.filter((item) => item.category === activeCategory);
+  const activeCategoryName = foodCategories.find(c => c.id === activeCategory)?.name || '';
 
   return (
     <div className="bg-background min-h-screen">
@@ -108,12 +63,13 @@ export default function MenuPage() {
         <MenuHeader />
       </Suspense>
 
+      {/* Categories Navigation */}
       <nav className="sticky top-[112px] z-40 bg-background/95 backdrop-blur-md py-4 px-4 border-b">
         <div className="flex space-x-3 overflow-x-auto pb-2 -mb-2 no-scrollbar">
           {foodCategories.map((category) => (
             <button
               key={category.id}
-              onClick={() => handleTabClick(category.id)}
+              onClick={() => setActiveCategory(category.id)}
               className={cn(
                 "px-6 py-3 rounded-full text-xs font-black whitespace-nowrap transition-all duration-200 uppercase tracking-widest border-2",
                 activeCategory === category.id
@@ -127,27 +83,28 @@ export default function MenuPage() {
         </div>
       </nav>
 
-      <main className="p-4 pb-48">
-        {foodCategories.map((category) => {
-          const items = menuItems.filter((item) => item.category === category.id);
-          return (
-            <section
-              key={category.id}
-              id={category.id}
-              ref={(el) => (categoryRefs.current[category.id] = el)}
-              className="pt-10 first:pt-4"
-            >
-              <h2 className="text-4xl font-black mb-6 uppercase tracking-tighter text-slate-900 border-l-8 border-primary pl-4">
-                {category.name}
-              </h2>
-              <div className="grid grid-cols-2 gap-4">
-                {items.map((item) => (
-                  <FoodCard key={item.id} item={item} />
-                ))}
-              </div>
-            </section>
-          );
-        })}
+      <main className="p-4 pb-48 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="mb-8">
+            <h2 className="text-4xl font-black uppercase tracking-tighter text-slate-900 border-l-8 border-primary pl-4">
+                {activeCategoryName}
+            </h2>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-2 pl-6">
+                {filteredItems.length} ITEMS AVAILABLE
+            </p>
+        </div>
+
+        {filteredItems.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4">
+            {filteredItems.map((item) => (
+              <FoodCard key={item.id} item={item} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+            <Utensils className="h-12 w-12 text-slate-200" />
+            <p className="text-slate-500 font-bold uppercase tracking-tighter">No items found in this category.</p>
+          </div>
+        )}
       </main>
 
       <FloatingCartButton />
