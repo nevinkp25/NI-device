@@ -93,12 +93,16 @@ export function FloatingCartButton() {
           <div className="flex items-center justify-between p-5 gap-4 bg-white relative">
             {/* Handle Bar for Expansion */}
             <CollapsibleTrigger asChild>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-slate-200 rounded-full cursor-pointer hover:bg-slate-300 transition-colors" />
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-1.5 bg-slate-200 rounded-full cursor-pointer hover:bg-slate-300 transition-colors flex items-center justify-center">
+                    <div className="w-1 h-1 rounded-full bg-slate-300 mx-0.5" />
+                    <div className="w-1 h-1 rounded-full bg-slate-300 mx-0.5" />
+                    <div className="w-1 h-1 rounded-full bg-slate-300 mx-0.5" />
+                </div>
             </CollapsibleTrigger>
 
-            <div className="flex items-center gap-4">
+            <CollapsibleTrigger className="flex items-center gap-4 text-left outline-none group">
               <div className="relative">
-                <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center">
+                <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                     <ShoppingBasket className="h-7 w-7 text-primary" />
                 </div>
                 <Badge className="absolute -top-1 -right-1 h-6 min-w-6 flex items-center justify-center p-0 font-black text-[11px] rounded-lg bg-primary text-white border-2 border-white shadow-sm">
@@ -106,10 +110,13 @@ export function FloatingCartButton() {
                 </Badge>
               </div>
               <div className="flex flex-col">
-                <span className='text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]'>TOTAL</span>
+                <div className="flex items-center gap-1">
+                    <span className='text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]'>TOTAL</span>
+                    {isOpen ? <ChevronDown className="h-3 w-3 text-slate-400" /> : <ChevronUp className="h-3 w-3 text-slate-400" />}
+                </div>
                 <p className="font-black text-2xl text-slate-900 leading-none tracking-tighter">${subtotal.toFixed(2)}</p>
               </div>
-            </div>
+            </CollapsibleTrigger>
             
             <Link href="/checkout" passHref className="flex-grow">
               <Button className="w-full h-14 bg-[#E54360] hover:bg-[#E54360]/90 text-white shadow-lg rounded-[1.25rem] font-black uppercase tracking-tighter text-lg flex items-center justify-center gap-3 transition-all active:scale-95 group">
