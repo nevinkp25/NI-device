@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -12,44 +13,58 @@ export default function NavigationPage() {
     router.push(path);
   };
 
-  const options = [
-    { name: 'OPEN MENU', icon: Menu, path: '/menu', color: 'bg-primary text-primary-foreground' },
-    { name: 'TABLE NUMBER', icon: Hash, path: '/order-by-table', color: 'bg-primary text-primary-foreground' },
-    { name: 'SCAN QR CODE', icon: QrCode, path: '/scan-qr', color: 'bg-primary text-primary-foreground' },
-    { name: 'HISTORY', icon: History, path: '/transaction-history', color: 'bg-secondary text-secondary-foreground border-2 border-primary' },
-  ];
-
   return (
-    <div className="flex flex-col min-h-screen bg-background p-4 space-y-4">
-        <header className="flex justify-between items-center py-4">
-            <h1 className="text-3xl font-black">NETWORK</h1>
-            <Link href="/settings">
-                <Button variant="outline" size="icon" className="h-16 w-16 rounded-full border-2 border-primary">
-                    <Settings className="h-8 w-8" />
-                </Button>
-            </Link>
-        </header>
+    <div className="flex flex-col min-h-screen bg-background p-6 space-y-6">
+      <header className="flex justify-between items-center py-4">
+        <h1 className="text-4xl font-black tracking-tight">NETWORK</h1>
+        <Link href="/settings">
+          <Button variant="outline" size="icon" className="h-14 w-14 rounded-full border-2 border-primary shadow-sm">
+            <Settings className="h-7 w-7" />
+          </Button>
+        </Link>
+      </header>
 
-        <div className="flex-grow flex flex-col gap-4">
-            {options.map((option) => (
-            <Button
-                key={option.name}
-                onClick={() => handleNavigation(option.path)}
-                className={`w-full h-24 text-2xl font-black justify-start px-8 rounded-2xl shadow-lg gap-6 ${option.color}`}
-            >
-                <option.icon className="h-10 w-10" />
-                <span>{option.name}</span>
-            </Button>
-            ))}
-        </div>
+      <div className="flex-grow flex flex-col gap-5">
+        <Button
+          onClick={() => handleNavigation('/menu')}
+          className="w-full h-28 text-2xl font-black justify-start px-10 rounded-2xl shadow-xl gap-8 bg-primary text-primary-foreground hover:bg-primary/90"
+        >
+          <Menu className="h-10 w-10" />
+          <span>OPEN MENU</span>
+        </Button>
 
-       <div className="pt-8 pb-4">
-            <Link href="/" passHref>
-                <Button variant="ghost" className="w-full h-20 text-2xl font-bold text-destructive hover:bg-destructive/10">
-                    <LogOut className="mr-4 h-8 w-8" />
-                    FINISH SHIFT
-                </Button>
-            </Link>
+        <Button
+          onClick={() => handleNavigation('/order-by-table')}
+          className="w-full h-28 text-2xl font-black justify-start px-10 rounded-2xl shadow-xl gap-8 bg-primary text-primary-foreground hover:bg-primary/90"
+        >
+          <Hash className="h-10 w-10" />
+          <span>TABLE NUMBER</span>
+        </Button>
+
+        <Button
+          onClick={() => handleNavigation('/scan-qr')}
+          className="w-full h-28 text-2xl font-black justify-start px-10 rounded-2xl shadow-xl gap-8 bg-primary text-primary-foreground hover:bg-primary/90"
+        >
+          <QrCode className="h-10 w-10" />
+          <span>SCAN QR CODE</span>
+        </Button>
+
+        <Button
+          onClick={() => handleNavigation('/transaction-history')}
+          className="w-full h-28 text-2xl font-black justify-start px-10 rounded-2xl shadow-xl gap-8 bg-secondary text-secondary-foreground border-2 border-primary hover:bg-secondary/80"
+        >
+          <History className="h-10 w-10" />
+          <span>HISTORY</span>
+        </Button>
+      </div>
+
+      <div className="pt-8 pb-6">
+        <Link href="/" passHref>
+          <Button variant="ghost" className="w-full h-20 text-3xl font-black text-destructive hover:bg-destructive/10 flex items-center justify-center gap-4">
+            <LogOut className="h-10 w-10" />
+            <span>FINISH SHIFT</span>
+          </Button>
+        </Link>
       </div>
     </div>
   );
