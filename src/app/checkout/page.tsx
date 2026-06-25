@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -5,15 +6,15 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, HandCoins, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { QuantitySelector } from '@/components/quantity-selector';
 import { SplitBillSheet } from '@/components/split-bill-sheet';
 import { TipSheet } from '@/components/tip-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Separator } from '@/components/ui/separator';
 import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
+import { OrderStepper } from '@/components/order-stepper';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, loadCart, getDisplayPrice } = useCart();
@@ -61,19 +62,22 @@ export default function CheckoutPage() {
 
   return (
     <div className="flex flex-col bg-background min-h-screen">
-        <header className="flex items-center p-4 border-b sticky top-0 bg-background z-10 h-20">
-          <Link href="/menu" passHref>
-            <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
-              <ArrowLeft className="h-8 w-8" />
-            </Button>
-          </Link>
-          <h1 className="text-3xl font-black mx-auto">CHECKOUT</h1>
-          <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
-            <Avatar className="h-14 w-14 border-2 border-primary">
-              {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
-              <AvatarFallback>W</AvatarFallback>
-            </Avatar>
-          </button>
+        <header className="sticky top-0 z-20 bg-background shadow-sm">
+          <div className="flex items-center p-4 border-b h-20">
+            <Link href="/menu" passHref>
+              <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
+                <ArrowLeft className="h-8 w-8" />
+              </Button>
+            </Link>
+            <h1 className="text-3xl font-black mx-auto uppercase tracking-tighter">REVIEW ORDER</h1>
+            <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
+              <Avatar className="h-14 w-14 border-2 border-primary">
+                {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
+                <AvatarFallback>W</AvatarFallback>
+              </Avatar>
+            </button>
+          </div>
+          <OrderStepper currentStep={3} />
         </header>
 
         {cartItems.length === 0 ? (
@@ -89,7 +93,7 @@ export default function CheckoutPage() {
             <main className="p-4 flex-grow pb-80">
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-black uppercase">Your Order</h2>
+                  <h2 className="text-2xl font-black uppercase">Your Selection</h2>
                   <Link href="/menu" passHref>
                     <Button variant="outline" className="h-14 text-xl font-bold px-6 border-2 border-primary">
                       + ADD MORE
@@ -141,7 +145,7 @@ export default function CheckoutPage() {
 
             <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 bg-background border-t-4 border-primary shadow-[0_-10px_30px_rgba(0,0,0,0.1)] space-y-4 z-20">
                <Button onClick={handleProceedToPayment} className="w-full h-24 bg-primary text-primary-foreground text-3xl font-black rounded-2xl shadow-xl flex items-center justify-center gap-4">
-                    <span>PAY ${total.toFixed(2)}</span>
+                    <span>PLACE ORDER ${total.toFixed(2)}</span>
                 </Button>
               <div className="grid grid-cols-2 gap-4">
                   <Button onClick={handleSplitBill} variant="outline" className="h-20 text-xl font-black border-4 border-primary rounded-2xl">

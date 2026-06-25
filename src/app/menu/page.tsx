@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
+import { OrderStepper } from '@/components/order-stepper';
 
 function MenuHeader() {
   const searchParams = useSearchParams();
@@ -22,22 +23,25 @@ function MenuHeader() {
 
   return (
     <>
-    <header className="flex items-center p-4 border-b">
-      <Link href="/navigation" passHref>
-        <Button variant="ghost" size="icon">
-          <ArrowLeft />
-        </Button>
-      </Link>
-      <h1 className="text-xl font-semibold mx-auto flex items-center gap-2">
-        <Utensils className="text-primary h-5 w-5" />
-        {tableNumber ? `Table ${tableNumber} Menu` : 'Food Menu'}
-      </h1>
-      <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
-        <Avatar className="h-10 w-10">
-          {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
-          <AvatarFallback>W</AvatarFallback>
-        </Avatar>
-      </button>
+    <header className="sticky top-0 z-20 bg-background">
+      <div className="flex items-center p-4 border-b">
+        <Link href="/table-selection" passHref>
+          <Button variant="ghost" size="icon">
+            <ArrowLeft />
+          </Button>
+        </Link>
+        <h1 className="text-xl font-semibold mx-auto flex items-center gap-2">
+          <Utensils className="text-primary h-5 w-5" />
+          {tableNumber ? `Table ${tableNumber}` : 'Food Menu'}
+        </h1>
+        <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
+          <Avatar className="h-10 w-10 border-2 border-primary">
+            {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
+            <AvatarFallback>W</AvatarFallback>
+          </Avatar>
+        </button>
+      </div>
+      <OrderStepper currentStep={2} />
     </header>
     <WaiterProfileDialog
         isOpen={isWaiterProfileOpen}
@@ -91,26 +95,26 @@ export default function MenuPage() {
         <MenuHeader />
       </Suspense>
 
-      <nav className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-2 px-4 border-b">
-        <div className="flex space-x-2 overflow-x-auto pb-2 -mb-2">
+      <nav className="sticky top-[136px] z-10 bg-background/90 backdrop-blur-sm py-3 px-4 border-b-2">
+        <div className="flex space-x-2 overflow-x-auto pb-2 -mb-2 no-scrollbar">
           {foodCategories.map((category) => (
             <button
               key={category.id}
               onClick={() => handleTabClick(category.id)}
               className={cn(
-                "px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors duration-300",
+                "px-6 py-3 rounded-full text-base font-black whitespace-nowrap transition-all duration-300",
                 activeCategory === category.id
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground/80 hover:bg-muted/90"
+                  ? "bg-primary text-primary-foreground scale-105 shadow-md"
+                  : "bg-muted text-muted-foreground hover:bg-muted/90"
               )}
             >
-              {category.name}
+              {category.name.toUpperCase()}
             </button>
           ))}
         </div>
       </nav>
 
-      <main className="p-4 pb-24">
+      <main className="p-4 pb-40">
         {foodCategories.map((category) => {
           const items = menuItems.filter((item) => item.category === category.id);
           return (
@@ -118,9 +122,9 @@ export default function MenuPage() {
               key={category.id}
               id={category.id}
               ref={(el) => (categoryRefs.current[category.id] = el)}
-              className="pt-4"
+              className="pt-6"
             >
-              <h2 className="text-2xl font-bold mb-4">{category.name}</h2>
+              <h2 className="text-3xl font-black mb-6 uppercase tracking-tighter text-slate-800">{category.name}</h2>
               <div className="grid grid-cols-2 gap-4">
                 {items.map((item) => (
                   <FoodCard key={item.id} item={item} />

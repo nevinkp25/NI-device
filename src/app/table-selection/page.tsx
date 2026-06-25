@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Search, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { OrderStepper } from '@/components/order-stepper';
 
 const FLOORS = [
   { id: 'f1', name: 'MAIN FLOOR' },
@@ -40,14 +41,17 @@ export default function TableSelectionPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <header className="flex items-center p-6 border-b-4 border-primary sticky top-0 bg-background z-10">
-        <Link href="/navigation" passHref>
-          <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
-            <ArrowLeft className="h-8 w-8" />
-          </Button>
-        </Link>
-        <h1 className="text-3xl font-black mx-auto uppercase tracking-tighter">SELECT TABLE</h1>
-        <div className="w-14"></div>
+      <header className="sticky top-0 z-20 bg-background">
+        <div className="flex items-center p-6 border-b-2 border-slate-50">
+          <Link href="/navigation" passHref>
+            <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
+              <ArrowLeft className="h-8 w-8" />
+            </Button>
+          </Link>
+          <h1 className="text-3xl font-black mx-auto uppercase tracking-tighter">SELECT TABLE</h1>
+          <div className="w-14"></div>
+        </div>
+        <OrderStepper currentStep={1} />
       </header>
 
       <main className="p-6 space-y-8 flex-grow pb-40">
