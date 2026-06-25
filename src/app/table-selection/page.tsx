@@ -18,7 +18,7 @@ const FLOORS = [
 
 const TABLES_BY_FLOOR: Record<string, string[]> = {
   f1: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  f2: ['20', '21', '22', '23', '24', '25'],
+  f2: ['20', '21', '22', '23', '24', 'T51', 'T52'],
   vip: ['V1', 'V2', 'V3'],
 };
 
@@ -55,7 +55,6 @@ export default function TableSelectionPage() {
       </header>
 
       <main className="p-4 space-y-6 flex-grow pb-40">
-        {/* Floor Selection - Condensed to Horizontal Scroll */}
         <section className="space-y-3">
           <div className="flex items-center gap-2 text-muted-foreground font-black px-1">
             <MapPin className="h-5 w-5" />
@@ -84,19 +83,17 @@ export default function TableSelectionPage() {
           </div>
         </section>
 
-        {/* Search Bar - Slightly Condensed */}
         <section className="relative">
           <Input
             type="text"
-            placeholder="SEARCH TABLE #"
+            placeholder="SEARCH TABLE (e.g. T51)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-16 pl-14 text-2xl font-black border-4 border-primary rounded-2xl placeholder:text-muted-foreground/30 shadow-sm"
+            className="h-16 pl-14 text-2xl font-black border-4 border-primary rounded-2xl placeholder:text-muted-foreground/30 shadow-sm uppercase"
           />
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-7 w-7 text-primary" />
         </section>
 
-        {/* Table Grid - Still massive for big fingers */}
         <section className="grid grid-cols-3 gap-3">
           {filteredTables.map((table) => (
             <Button
@@ -120,7 +117,6 @@ export default function TableSelectionPage() {
         </section>
       </main>
 
-      {/* Action Footer */}
       <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 bg-background border-t-4 border-primary shadow-[0_-10px_30px_rgba(0,0,0,0.1)] z-30">
         <Button
           onClick={handleContinue}

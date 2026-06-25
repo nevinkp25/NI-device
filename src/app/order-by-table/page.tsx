@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -24,7 +25,7 @@ export default function OrderByTablePage() {
       toast({
         variant: 'destructive',
         title: 'Invalid Table Number',
-        description: 'Please enter a valid table number.',
+        description: 'Please enter a valid table ID (e.g. 12 or T51).',
       });
     }
   };
@@ -49,7 +50,7 @@ export default function OrderByTablePage() {
           </div>
 
           <p className="text-muted-foreground text-2xl font-bold uppercase tracking-wide">
-            Enter Table #
+            Enter Table ID
           </p>
           
           <form 
@@ -60,11 +61,11 @@ export default function OrderByTablePage() {
             className="w-full space-y-8"
           >
               <Input
-                type="number"
-                placeholder="00"
+                type="text"
+                placeholder="Ex: T51"
                 value={tableNumber}
                 onChange={(e) => setTableNumber(e.target.value)}
-                className="text-center text-6xl h-32 font-black border-4 border-primary rounded-3xl shadow-inner focus-visible:ring-primary"
+                className="text-center text-6xl h-32 font-black border-4 border-primary rounded-3xl shadow-inner focus-visible:ring-primary uppercase"
                 autoFocus
               />
               <Button 
