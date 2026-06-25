@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -17,9 +16,9 @@ const FLOORS = [
 ];
 
 const TABLES_BY_FLOOR: Record<string, string[]> = {
-  f1: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  f2: ['20', '21', '22', '23', '24', 'T51', 'T52'],
-  vip: ['V1', 'V2', 'V3'],
+  f1: ['T101', 'T102', 'T103', 'T104', 'T105', 'T106', 'T107', 'T108', 'T109', 'T110', 'T111', 'T112'],
+  f2: ['T201', 'T202', 'T203', 'T204', 'T205', 'T501', 'T502'],
+  vip: ['V1001', 'V1002', 'V1003'],
 };
 
 export default function TableSelectionPage() {
@@ -44,23 +43,24 @@ export default function TableSelectionPage() {
       <header className="sticky top-0 z-20 bg-background">
         <div className="flex items-center p-4 border-b-2 border-slate-50">
           <Link href="/navigation" passHref>
-            <Button variant="outline" className="h-12 w-12 rounded-full border-2 border-primary">
-              <ArrowLeft className="h-6 w-6" />
+            <Button variant="outline" className="h-14 w-14 rounded-full border-2 border-primary">
+              <ArrowLeft className="h-8 w-8" />
             </Button>
           </Link>
           <h1 className="text-2xl font-black mx-auto uppercase tracking-tighter">SELECT TABLE</h1>
-          <div className="w-12"></div>
+          <div className="w-14"></div>
         </div>
         <OrderStepper currentStep={1} />
       </header>
 
       <main className="p-4 space-y-6 flex-grow pb-40">
+        {/* Floor Selection: Horizontal Scroll */}
         <section className="space-y-3">
           <div className="flex items-center gap-2 text-muted-foreground font-black px-1">
             <MapPin className="h-5 w-5" />
-            <span className="text-lg">WHERE ARE YOU?</span>
+            <span className="text-sm tracking-widest">WHERE ARE YOU?</span>
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
+          <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar scroll-smooth">
             {FLOORS.map((floor) => (
               <Button
                 key={floor.id}
@@ -73,7 +73,7 @@ export default function TableSelectionPage() {
                 className={cn(
                   "h-16 px-8 text-xl font-black rounded-2xl border-4 transition-all shrink-0",
                   selectedFloor === floor.id 
-                    ? "bg-primary text-primary-foreground border-primary shadow-md" 
+                    ? "bg-primary text-primary-foreground border-primary shadow-lg" 
                     : "border-primary/20 text-primary bg-white"
                 )}
               >
@@ -83,47 +83,50 @@ export default function TableSelectionPage() {
           </div>
         </section>
 
+        {/* Search Bar: Large Targets */}
         <section className="relative">
           <Input
             type="text"
-            placeholder="SEARCH TABLE (e.g. T51)"
+            placeholder="FIND TABLE (e.g. T1001)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-16 pl-14 text-2xl font-black border-4 border-primary rounded-2xl placeholder:text-muted-foreground/30 shadow-sm uppercase"
+            className="h-20 pl-14 text-2xl font-black border-4 border-primary rounded-2xl placeholder:text-muted-foreground/30 shadow-sm uppercase"
           />
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-7 w-7 text-primary" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-8 w-8 text-primary" />
         </section>
 
-        <section className="grid grid-cols-3 gap-3">
+        {/* Table Grid: Massive Buttons */}
+        <section className="grid grid-cols-2 gap-4">
           {filteredTables.map((table) => (
             <Button
               key={table}
               onClick={() => setSelectedTable(table)}
               className={cn(
-                "h-20 text-3xl font-black rounded-2xl border-4 transition-all",
+                "h-24 text-3xl font-black rounded-2xl border-4 transition-all",
                 selectedTable === table
-                  ? "bg-accent text-accent-foreground border-accent scale-105 shadow-xl"
-                  : "bg-white text-primary border-primary shadow-sm"
+                  ? "bg-primary text-white border-primary scale-105 shadow-2xl"
+                  : "bg-white text-primary border-primary/40 shadow-sm"
               )}
             >
               {table}
             </Button>
           ))}
           {filteredTables.length === 0 && (
-            <div className="col-span-3 py-12 text-center text-muted-foreground font-bold">
+            <div className="col-span-2 py-12 text-center text-muted-foreground font-bold">
               NO TABLES FOUND
             </div>
           )}
         </section>
       </main>
 
+      {/* Persistent Action Footer */}
       <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-4 bg-background border-t-4 border-primary shadow-[0_-10px_30px_rgba(0,0,0,0.1)] z-30">
         <Button
           onClick={handleContinue}
           disabled={!selectedTable}
-          className="w-full h-20 text-3xl font-black bg-primary text-primary-foreground rounded-2xl shadow-2xl disabled:opacity-20 active:scale-95 transition-transform"
+          className="w-full h-24 text-3xl font-black bg-primary text-primary-foreground rounded-2xl shadow-2xl disabled:opacity-20 active:scale-95 transition-transform uppercase"
         >
-          {selectedTable ? `START TABLE ${selectedTable}` : 'SELECT A TABLE'}
+          {selectedTable ? `START ${selectedTable}` : 'SELECT A TABLE'}
         </Button>
       </footer>
     </div>

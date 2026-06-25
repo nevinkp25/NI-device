@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -25,7 +24,7 @@ export default function OrderByTablePage() {
       toast({
         variant: 'destructive',
         title: 'Invalid Table Number',
-        description: 'Please enter a valid table ID (e.g. 12 or T51).',
+        description: 'Please enter a valid table ID (e.g. T1001).',
       });
     }
   };
@@ -45,13 +44,16 @@ export default function OrderByTablePage() {
       <main className="flex-grow flex flex-col items-center justify-center text-center">
         <div className="flex flex-col items-center space-y-12 w-full max-w-sm">
           
-          <div className="flex items-center justify-center h-32 w-32 rounded-full bg-muted border-4 border-primary">
-              <Hash className="h-16 w-16 text-primary" />
+          <div className="flex items-center justify-center h-40 w-40 rounded-full bg-muted border-8 border-primary shadow-xl">
+              <Hash className="h-20 w-20 text-primary" />
           </div>
 
-          <p className="text-muted-foreground text-2xl font-bold uppercase tracking-wide">
-            Enter Table ID
-          </p>
+          <div className="space-y-4">
+            <p className="text-muted-foreground text-2xl font-black uppercase tracking-widest">
+              Enter Table ID
+            </p>
+            <p className="text-slate-400 text-lg font-bold">Ex: T1001, V101</p>
+          </div>
           
           <form 
             onSubmit={(e) => {
@@ -62,15 +64,15 @@ export default function OrderByTablePage() {
           >
               <Input
                 type="text"
-                placeholder="Ex: T51"
+                placeholder="T1001"
                 value={tableNumber}
                 onChange={(e) => setTableNumber(e.target.value)}
-                className="text-center text-6xl h-32 font-black border-4 border-primary rounded-3xl shadow-inner focus-visible:ring-primary uppercase"
+                className="text-center text-6xl h-40 font-black border-4 border-primary rounded-[2.5rem] shadow-inner focus-visible:ring-primary uppercase"
                 autoFocus
               />
               <Button 
                 type="submit" 
-                className="w-full h-24 text-3xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl shadow-xl flex items-center justify-center gap-4"
+                className="w-full h-24 text-3xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-[1.5rem] shadow-2xl flex items-center justify-center gap-4 active:scale-95 transition-transform"
               >
                   <span>GO TO ORDER</span>
                   <ArrowRight className="h-10 w-10" />
