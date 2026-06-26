@@ -24,9 +24,10 @@ export default function OrderByTablePage() {
   const suggestions = useMemo(() => {
     if (!tableNumber.trim()) return [];
     const search = tableNumber.toLowerCase();
+    // Increased limit to 20 to support larger table counts as requested
     return ALL_TABLES.filter(t => 
       t.id.toLowerCase().includes(search)
-    ).slice(0, 5);
+    ).slice(0, 20);
   }, [tableNumber]);
 
   const handleOpenGuestSheet = (id?: string) => {
@@ -72,7 +73,7 @@ export default function OrderByTablePage() {
       </header>
 
       <main className={cn(
-        "flex-grow flex flex-col items-center justify-start px-6 pb-32 transition-all duration-300",
+        "flex-grow flex flex-col items-center justify-start px-6 pb-40 transition-all duration-300",
         isInputFocused ? "pt-4" : "pt-12"
       )}>
         <form 
@@ -82,7 +83,7 @@ export default function OrderByTablePage() {
           }} 
           className="w-full space-y-2"
         >
-          <div className="text-center">
+          <div className="text-center w-full max-w-sm mx-auto">
             <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-300 mb-1">Enter Table ID</p>
             <Input
               type="text"
@@ -99,9 +100,10 @@ export default function OrderByTablePage() {
               autoFocus
             />
 
+            {/* Professional Grid Layout for handling many tables (10-20+) */}
             <div className={cn(
-              "flex flex-wrap justify-center gap-2 transition-all duration-300",
-              isInputFocused ? "mt-4 mb-6" : "mt-8 mb-10 min-h-[140px]"
+              "grid gap-3 transition-all duration-300 w-full",
+              isInputFocused ? "grid-cols-3 mt-4 mb-6" : "grid-cols-2 mt-8 mb-10 min-h-[160px]"
             )}>
               {suggestions.map((table) => (
                 <button
@@ -109,11 +111,11 @@ export default function OrderByTablePage() {
                   type="button"
                   onClick={() => handleSuggestionClick(table)}
                   className={cn(
-                    "rounded-2xl border-2 font-bold uppercase transition-all shadow-md active:scale-90 animate-in fade-in zoom-in-95 duration-200",
-                    isInputFocused ? "px-5 py-3 text-sm" : "px-8 py-4 text-lg",
+                    "rounded-2xl border-2 font-bold uppercase transition-all shadow-sm active:scale-95 animate-in fade-in zoom-in-95 duration-200 flex items-center justify-center",
+                    isInputFocused ? "h-14 text-sm" : "h-20 text-lg",
                     table.isOccupied 
-                      ? "bg-destructive/10 border-destructive/20 text-destructive" 
-                      : "bg-white border-primary/20 text-primary hover:border-primary shadow-slate-100"
+                      ? "bg-destructive/5 border-destructive/10 text-destructive shadow-destructive/5" 
+                      : "bg-white border-primary/10 text-primary hover:border-primary shadow-slate-100"
                   )}
                 >
                   {table.id}
