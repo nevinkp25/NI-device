@@ -20,7 +20,7 @@ function MenuHeader({ isScrolled }: { isScrolled: boolean }) {
   const tableNumber = searchParams.get('table');
 
   return (
-    <div className="sticky top-0 z-50 bg-white border-b shadow-sm transition-all duration-300">
+    <div className="bg-white">
       <header className="flex items-center p-3 h-16">
         <Link href="/order-by-table" passHref>
           <Button variant="ghost" size="icon" className="text-slate-900 h-10 w-10 hover:bg-slate-100">
@@ -56,17 +56,16 @@ export default function MenuPage() {
   const { cartItems } = useCart();
   const navRef = useRef<HTMLDivElement>(null);
 
-  // Scroll listener to hide/show stepper and stick nav
+  // Scroll listener to manage header states
   useEffect(() => {
     const handleScroll = () => {
-      // Threshold for sticking. 54 is the approx height of the stepper.
-      setIsScrolled(window.scrollY > 40);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Auto-scroll the active category into view when it changes
+  // Auto-scroll the active category into view
   useEffect(() => {
     if (activeCategory) {
       const element = document.getElementById(`nav-item-${activeCategory}`);
@@ -96,6 +95,8 @@ export default function MenuPage() {
     setIsCategorySheetOpen(false);
     setSearchQuery('');
     setIsSearchOpen(false);
+    // Smooth scroll to top when category changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const toggleSearch = () => {
@@ -105,82 +106,80 @@ export default function MenuPage() {
 
   return (
     <div className="bg-slate-50 min-h-screen">
-      <Suspense fallback={<div>Loading header...</div>}>
-        <MenuHeader isScrolled={isScrolled} />
-      </Suspense>
+      {/* UNIFIED STICKY HEADER BLOCK */}
+      <div className="sticky top-0 z-50 bg-white shadow-md transition-all duration-300">
+        <Suspense fallback={<div className="h-16 bg-white" />}>
+          <MenuHeader isScrolled={isScrolled} />
+        </Suspense>
 
-      {/* Category Navigation - Sticky with dynamic top based on scroll */}
-      <nav 
-        className={cn(
-          "sticky z-40 bg-white/95 backdrop-blur-md py-2 px-4 border-b flex items-center gap-2 shadow-sm transition-all duration-300",
-          isScrolled ? "top-[64px]" : "top-[118px]"
-        )}
-      >
-        {!isSearchOpen ? (
-          <>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={() => setIsCategorySheetOpen(true)}
-              className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
-            >
-              <LayoutGrid className="h-5 w-5" />
-            </Button>
-            
-            <div 
-              ref={navRef}
-              className="flex space-x-2 overflow-x-auto no-scrollbar flex-grow py-1 scroll-smooth"
-            >
-              {foodCategories.map((category) => {
-                const hasItemsInCart = cartItems.some(item => item.category === category.id);
-                return (
-                  <button
-                    key={category.id}
-                    id={`nav-item-${category.id}`}
-                    onClick={() => handleCategorySelect(category.id)}
-                    className={cn(
-                      "relative px-4 py-2 rounded-xl text-[10px] font-black whitespace-nowrap transition-all duration-300 tracking-[0.1em] uppercase",
-                      activeCategory === category.id
-                        ? "bg-primary text-white shadow-md ring-2 ring-primary/10"
-                        : "bg-white border border-slate-200 text-slate-500 hover:border-slate-300"
-                    )}
-                  >
-                    {category.name}
-                    {hasItemsInCart && (
-                      <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-600 rounded-full border border-white shadow-sm" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+        {/* Category Navigation - Always pinned below the main header line */}
+        <nav className="bg-white/95 backdrop-blur-md py-2 px-4 border-b flex items-center gap-2 shadow-sm">
+          {!isSearchOpen ? (
+            <>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => setIsCategorySheetOpen(true)}
+                className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
+              >
+                <LayoutGrid className="h-5 w-5" />
+              </Button>
+              
+              <div 
+                ref={navRef}
+                className="flex space-x-2 overflow-x-auto no-scrollbar flex-grow py-1 scroll-smooth"
+              >
+                {foodCategories.map((category) => {
+                  const hasItemsInCart = cartItems.some(item => item.category === category.id);
+                  return (
+                    <button
+                      key={category.id}
+                      id={`nav-item-${category.id}`}
+                      onClick={() => handleCategorySelect(category.id)}
+                      className={cn(
+                        "relative px-4 py-2 rounded-xl text-[10px] font-black whitespace-nowrap transition-all duration-300 tracking-[0.1em] uppercase",
+                        activeCategory === category.id
+                          ? "bg-primary text-white shadow-md ring-2 ring-primary/10"
+                          : "bg-white border border-slate-200 text-slate-500 hover:border-slate-300"
+                      )}
+                    >
+                      {category.name}
+                      {hasItemsInCart && (
+                        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-600 rounded-full border border-white shadow-sm" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={toggleSearch}
-              className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-          </>
-        ) : (
-          <div className="flex items-center w-full gap-2 animate-in slide-in-from-right-4 duration-300 h-10">
-             <div className="relative flex-grow">
-               <Input 
-                autoFocus
-                placeholder="Find item..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 pl-9 pr-4 rounded-xl bg-slate-50 border-slate-200 text-xs font-bold text-slate-900 focus-visible:ring-primary/20"
-               />
-               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-             </div>
-             <Button variant="ghost" size="sm" onClick={toggleSearch} className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2 h-9">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={toggleSearch}
+                className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
+              >
+                <Search className="h-5 w-5" />
+              </Button>
+            </>
+          ) : (
+            <div className="flex items-center w-full gap-2 animate-in slide-in-from-right-4 duration-300 h-10">
+              <div className="relative flex-grow">
+                <Input 
+                  autoFocus
+                  placeholder="Find item..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-9 pl-9 pr-4 rounded-xl bg-slate-50 border-slate-200 text-xs font-bold text-slate-900 focus-visible:ring-primary/20"
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              </div>
+              <Button variant="ghost" size="sm" onClick={toggleSearch} className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2 h-9">
                 Cancel
-             </Button>
-          </div>
-        )}
-      </nav>
+              </Button>
+            </div>
+          )}
+        </nav>
+      </div>
 
       <main className="p-4 pb-48 animate-in fade-in duration-500">
         <div className="mb-4 px-1">
@@ -210,7 +209,7 @@ export default function MenuPage() {
 
       <FloatingCartButton />
 
-      {/* Section Selection Bottom Sheet - Compact */}
+      {/* Section Selection Bottom Sheet */}
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
         <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2rem] border-t-0 bg-slate-50 z-[100]" hideCloseButton>
           <div className="mx-auto w-10 h-1 bg-slate-200 rounded-full mt-3 mb-1" />
