@@ -79,7 +79,7 @@ export default function StaffLoginPage() {
           />
         </div>
         
-        <div className="space-y-3">
+        <div className="space-y-3 flex flex-col">
           <Button
             type="submit"
             disabled={isLoading || !staffId}
@@ -95,7 +95,7 @@ export default function StaffLoginPage() {
             )}
           </Button>
 
-          <Link href="/" passHref className="w-full">
+          <Link href="/" passHref className="w-full mt-10 block">
             <Button 
               variant="outline" 
               className="w-full h-16 text-lg font-bold border-2 border-primary text-primary hover:bg-primary/5 rounded-2xl shadow-sm transition-all active:scale-[0.98] uppercase tracking-tight"
