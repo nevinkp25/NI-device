@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, Suspense, useMemo } from 'react';
+import { useState, Suspense, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { foodCategories, menuItems } from '@/lib/data';
 import { FoodCard } from '@/components/food-card';
@@ -47,6 +47,21 @@ export default function MenuPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { cartItems } = useCart();
+  const navRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll the active category into view when it changes
+  useEffect(() => {
+    if (activeCategory) {
+      const element = document.getElementById(`nav-item-${activeCategory}`);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          inline: 'center',
+          block: 'nearest'
+        });
+      }
+    }
+  }, [activeCategory]);
 
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
@@ -77,7 +92,7 @@ export default function MenuPage() {
         <MenuHeader />
       </Suspense>
 
-      {/* Section Navigation - Optimized for Visibility */}
+      {/* Section Navigation - Optimized for Visibility and Auto-centering */}
       <nav className="sticky top-[128px] z-40 bg-white py-4 px-4 border-b flex items-center gap-3 shadow-md">
         {!isSearchOpen ? (
           <>
@@ -90,15 +105,19 @@ export default function MenuPage() {
               <LayoutGrid className="h-7 w-7" />
             </Button>
             
-            <div className="flex space-x-3 overflow-x-auto no-scrollbar flex-grow py-1">
+            <div 
+              ref={navRef}
+              className="flex space-x-3 overflow-x-auto no-scrollbar flex-grow py-1 scroll-smooth"
+            >
               {foodCategories.map((category) => {
                 const hasItemsInCart = cartItems.some(item => item.category === category.id);
                 return (
                   <button
                     key={category.id}
+                    id={`nav-item-${category.id}`}
                     onClick={() => handleCategorySelect(category.id)}
                     className={cn(
-                      "relative px-6 py-3 rounded-full text-base font-bold whitespace-nowrap transition-all duration-200 tracking-wide",
+                      "relative px-6 py-3 rounded-full text-base font-bold whitespace-nowrap transition-all duration-300 tracking-wide",
                       activeCategory === category.id
                         ? "bg-primary text-white shadow-xl ring-2 ring-primary/20 scale-105"
                         : "bg-white border-2 border-slate-400 text-slate-900 hover:border-slate-600"
@@ -172,7 +191,7 @@ export default function MenuPage() {
 
       {/* Section Selection Bottom Sheet - High Visibility */}
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
-        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-0 bg-slate-50 z-[110]" hideCloseButton>
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-0 bg-slate-50 z-[100]" hideCloseButton>
           <div className="mx-auto w-16 h-2 bg-slate-300 rounded-full mt-4 mb-2" />
           <SheetHeader className="p-6 flex-row items-center justify-between bg-white border-b rounded-t-[2rem] shadow-sm">
             <div className="flex items-center gap-4 text-left">
