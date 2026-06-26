@@ -79,20 +79,31 @@ export default function StaffLoginPage() {
           />
         </div>
         
-        <Button
-          type="submit"
-          disabled={isLoading || !staffId}
-          className="w-full h-16 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
-        >
-          {isLoading ? (
-            <Loader2 className="animate-spin h-6 w-6" />
-          ) : (
-            <>
-              <UserCheck className="h-6 w-6" />
-              <span>START SHIFT</span>
-            </>
-          )}
-        </Button>
+        <div className="space-y-3">
+          <Button
+            type="submit"
+            disabled={isLoading || !staffId}
+            className="w-full h-16 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+          >
+            {isLoading ? (
+              <Loader2 className="animate-spin h-6 w-6" />
+            ) : (
+              <>
+                <UserCheck className="h-6 w-6" />
+                <span>START SHIFT</span>
+              </>
+            )}
+          </Button>
+
+          <Link href="/" passHref className="w-full">
+            <Button 
+              variant="outline" 
+              className="w-full h-16 text-lg font-bold border-2 border-primary text-primary hover:bg-primary/5 rounded-2xl shadow-sm transition-all active:scale-[0.98] uppercase tracking-tight"
+            >
+              Switch Branch
+            </Button>
+          </Link>
+        </div>
       </form>
 
       <div className="mt-12 text-center opacity-30">
