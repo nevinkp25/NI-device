@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useRouter } from 'next/navigation';
+import { useState, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -23,6 +23,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useToast } from '@/hooks/use-toast';
 
 // Bespoke, polished SVG Icons
@@ -64,6 +73,8 @@ const IconManualSale = () => (
 export default function NavigationPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [isAdminLogoutDialogOpen, setIsAdminLogoutDialogOpen] = useState(false);
+  const [authId, setAuthId] = useState('');
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -84,6 +95,15 @@ export default function NavigationPage() {
   };
 
   const handleAdminLogout = () => {
+    if (!authId) {
+      toast({
+        variant: 'destructive',
+        title: "Authorization Required",
+        description: "Please enter a valid Staff ID to authorize logout.",
+      });
+      return;
+    }
+
     if (typeof window !== 'undefined') {
       localStorage.removeItem('restaurantSlug');
       localStorage.removeItem('staffId');
@@ -148,7 +168,7 @@ export default function NavigationPage() {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-700" onClick={handleAdminLogout}>
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-700" onClick={() => setIsAdminLogoutDialogOpen(true)}>
               <LogOut className="h-4 w-4" />
               <span className="font-bold text-sm">Admin Logout</span>
             </DropdownMenuItem>
@@ -213,6 +233,46 @@ export default function NavigationPage() {
           </div>
         </div>
       </main>
+
+      {/* Admin Logout Authorization Dialog */}
+      <Dialog open={isAdminLogoutDialogOpen} onOpenChange={setIsAdminLogoutDialogOpen}>
+        <DialogContent className="rounded-3xl p-8 max-w-[340px] z-[100]">
+          <DialogHeader className="items-center text-center space-y-3">
+            <div className="h-16 w-16 bg-red-50 rounded-full flex items-center justify-center mb-2">
+              <ShieldAlert className="h-8 w-8 text-red-600" />
+            </div>
+            <DialogTitle className="text-xl font-black uppercase tracking-tight">Admin Authorization</DialogTitle>
+            <DialogDescription className="text-xs font-medium text-slate-500 uppercase tracking-widest leading-relaxed">
+              Enter Staff ID to authorize terminal reset and branch logout.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-6">
+            <Input
+              type="number"
+              placeholder="0000"
+              value={authId}
+              onChange={(e) => setAuthId(e.target.value)}
+              className="text-center text-2xl h-16 font-black border-2 border-slate-200 rounded-2xl focus-visible:ring-red-500/20"
+              autoFocus
+            />
+          </div>
+          <DialogFooter className="flex flex-col gap-2">
+            <Button 
+              onClick={handleAdminLogout}
+              className="w-full h-14 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl uppercase tracking-tight transition-all active:scale-[0.98]"
+            >
+              Authorize Logout
+            </Button>
+            <Button 
+              variant="ghost" 
+              onClick={() => setIsAdminLogoutDialogOpen(false)}
+              className="w-full h-10 text-slate-400 font-bold uppercase text-[10px] tracking-widest"
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Footer Branding */}
       <footer className="pb-10 flex flex-col items-center gap-1 opacity-80">
