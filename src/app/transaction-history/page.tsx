@@ -101,21 +101,17 @@ export default function TransactionHistoryPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50/50">
-      <header className="sticky top-0 z-50 bg-[#0051B5] text-white shadow-lg">
+      <header className="sticky top-0 z-50 bg-[#0051B5] text-white shadow-md">
         <div className="flex items-center justify-between p-4 h-16">
           <div className="flex items-center gap-3">
             <Link href="/navigation" passHref>
-              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full h-10 w-10">
-                <ArrowLeft className="h-6 w-6" />
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full h-9 w-9">
+                <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <div className="flex flex-col">
-              <h1 className="text-lg font-bold tracking-tight leading-tight">
-                Audit History
-              </h1>
-              <p className="text-xs font-medium text-white/60 leading-none">
-                Terminal Log
-              </p>
+            <div>
+              <h1 className="text-base font-bold tracking-tight">Audit Log</h1>
+              <p className="text-[10px] font-medium text-white/50 leading-none">Terminal History</p>
             </div>
           </div>
           
@@ -124,41 +120,41 @@ export default function TransactionHistoryPage() {
             size="icon" 
             onClick={() => setIsSearchVisible(!isSearchVisible)}
             className={cn(
-              "text-white rounded-full h-10 w-10 transition-all",
+              "text-white rounded-full h-9 w-9 transition-all",
               isSearchVisible ? "bg-white/20" : "hover:bg-white/10"
             )}
           >
-            {isSearchVisible ? <X className="h-6 w-6" /> : <Search className="h-6 w-6" />}
+            {isSearchVisible ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
           </Button>
         </div>
 
         {isSearchVisible && (
-          <div className="px-4 pb-4 animate-in slide-in-from-top-2 duration-200">
+          <div className="px-4 pb-3 animate-in slide-in-from-top-2 duration-200">
             <div className="relative">
               <Input 
                 autoFocus
-                placeholder="Search Order # or Table..."
+                placeholder="Search Order or Table..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-12 pl-10 pr-4 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl focus-visible:ring-white/30 text-base"
+                className="h-10 pl-9 pr-4 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl focus-visible:ring-white/30 text-sm"
               />
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
             </div>
           </div>
         )}
 
-        <div className="px-4 pb-4 flex items-center justify-between gap-3">
+        <div className="px-4 pb-4 flex items-center justify-between gap-2">
           <Popover>
             <PopoverTrigger asChild>
               <Button 
                 variant="ghost" 
-                className="h-11 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white px-4 gap-2 flex-grow justify-start"
+                className="h-10 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white px-3 gap-2 flex-grow justify-start"
               >
-                <CalendarIcon className="h-4 w-4 opacity-70" />
-                <span className="text-sm font-bold">
+                <CalendarIcon className="h-3.5 w-3.5 opacity-70" />
+                <span className="text-xs font-bold">
                   {date ? (date.toDateString() === new Date().toDateString() ? 'Today' : format(date, "MMM d, yyyy")) : 'Select Date'}
                 </span>
-                <ChevronDown className="h-4 w-4 ml-auto opacity-50" />
+                <ChevronDown className="h-3.5 w-3.5 ml-auto opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 rounded-2xl border-none shadow-2xl" align="start">
@@ -172,91 +168,73 @@ export default function TransactionHistoryPage() {
             </PopoverContent>
           </Popover>
 
-          <div className="bg-white/10 border border-white/20 rounded-xl px-4 h-11 flex items-center gap-2 shrink-0">
-             <Hash className="h-4 w-4 text-white/50" />
-             <span className="text-sm font-bold">{orderCount} {orderCount === 1 ? 'Order' : 'Orders'}</span>
+          <div className="bg-white/10 border border-white/20 rounded-xl px-3 h-10 flex items-center gap-2 shrink-0">
+             <Hash className="h-3.5 w-3.5 text-white/50" />
+             <span className="text-xs font-bold">{orderCount} {orderCount === 1 ? 'Record' : 'Records'}</span>
           </div>
         </div>
       </header>
 
-      <main className="p-4 space-y-4 pb-24 animate-in fade-in duration-500">
+      <main className="p-3 space-y-3 pb-24 animate-in fade-in duration-500">
         {filteredTransactions.map((tx) => (
-          <Card key={tx.id} className="rounded-[1.5rem] border-slate-200 shadow-sm overflow-hidden bg-white hover:border-primary/20 transition-all border">
-            <div className="p-5 space-y-5">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase mb-1">Order Ref</p>
-                  <h3 className="text-2xl font-black text-slate-900 leading-none">#{tx.id}</h3>
+          <Card key={tx.id} className="rounded-2xl border-slate-200 shadow-sm overflow-hidden bg-white hover:border-primary/20 transition-all border">
+            <div className="p-3.5 space-y-3">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">Ref:</span>
+                  <span className="text-base font-bold text-slate-900">#{tx.id}</span>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs font-bold text-slate-400 uppercase mb-1">Table</p>
-                  <div className="bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-                    <span className="text-base font-black text-slate-900">{tx.table}</span>
-                  </div>
+                <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">Table:</span>
+                  <span className="text-sm font-bold text-slate-900">{tx.table}</span>
                 </div>
               </div>
 
-              <Separator className="opacity-60" />
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-blue-50 rounded-full flex items-center justify-center text-primary shrink-0 border border-blue-100">
-                    <User className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-400 leading-none mb-1">Staff</p>
-                    <p className="text-sm font-black text-slate-700">{tx.waiter}</p>
-                  </div>
+              <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
+                <div className="flex items-center gap-1.5">
+                  <User className="h-3 w-3 text-slate-400" />
+                  <span>{tx.waiter}</span>
                 </div>
-                <div className="flex items-center gap-3 justify-end">
-                  <div className="text-right">
-                    <p className="text-xs font-bold text-slate-400 leading-none mb-1">Closed At</p>
-                    <p className="text-sm font-black text-slate-700">{tx.time}</p>
-                  </div>
-                  <div className="h-10 w-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 shrink-0 border border-slate-100">
-                    <Clock className="h-5 w-5" />
-                  </div>
+                <div className="flex items-center gap-1.5">
+                  <Clock className="h-3 w-3 text-slate-400" />
+                  <span>{tx.time}</span>
                 </div>
               </div>
 
-              <div className="bg-slate-50/80 rounded-2xl p-4 space-y-3 border border-slate-100">
-                <div className="flex justify-between items-center">
-                  <div className="flex flex-wrap gap-2">
-                     <Badge className={cn(
-                        "shadow-none border text-xs font-bold px-3 py-1 rounded-lg",
-                        tx.status === 'Paid' ? "bg-green-100 text-green-700 border-green-200" : 
-                        tx.status === 'Pending' ? "bg-amber-100 text-amber-700 border-amber-200" :
-                        "bg-blue-100 text-blue-700 border-blue-200"
-                     )}>
-                        {tx.status}
-                     </Badge>
-                     {tx.method !== 'None' && (
-                       <Badge variant="outline" className="border-slate-300 bg-white text-slate-600 flex items-center gap-2 text-xs font-bold px-3 py-1 rounded-lg">
-                          {tx.method === 'Card' ? <CreditCard className="h-4 w-4" /> : <Landmark className="h-4 w-4" />}
-                          {tx.method}
-                       </Badge>
-                     )}
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-black text-[#0051B5] tabular-nums tracking-tighter">
-                      ${tx.finalAmount.toFixed(2)}
-                    </p>
-                  </div>
+              <Separator className="opacity-50" />
+
+              <div className="flex justify-between items-center">
+                <div className="flex gap-1.5">
+                  <Badge className={cn(
+                    "shadow-none text-[9px] font-bold px-2 py-0.5 rounded-md border",
+                    tx.status === 'Paid' ? "bg-green-50 text-green-700 border-green-100" : 
+                    tx.status === 'Pending' ? "bg-amber-50 text-amber-700 border-amber-100" :
+                    "bg-blue-50 text-blue-700 border-blue-100"
+                  )}>
+                    {tx.status}
+                  </Badge>
+                  {tx.method !== 'None' && (
+                    <Badge variant="outline" className="border-slate-200 bg-white text-slate-500 flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-md">
+                      {tx.method === 'Card' ? <CreditCard className="h-3 w-3" /> : <Landmark className="h-3 w-3" />}
+                      {tx.method}
+                    </Badge>
+                  )}
                 </div>
+                <span className="text-lg font-bold text-[#0051B5] tracking-tight tabular-nums">
+                  ${tx.finalAmount.toFixed(2)}
+                </span>
+              </div>
 
-                <div className="h-px bg-slate-200 my-1" />
-
-                <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-                   <div className="flex items-center gap-2">
-                     <span className="text-slate-400">Initiated:</span>
-                     <span className="text-slate-700">${tx.initiatedAmount.toFixed(2)}</span>
-                   </div>
-                   <div className="flex items-center gap-2 justify-end">
-                     <span className="text-slate-400">Pending:</span>
-                     <span className={cn(tx.pendingAmount > 0 ? "text-red-500" : "text-green-600")}>
-                      ${tx.pendingAmount.toFixed(2)}
-                     </span>
-                   </div>
+              <div className="bg-slate-50/50 rounded-xl p-2.5 flex justify-between items-center text-[10px] border border-slate-100/50">
+                <div className="flex items-center gap-1">
+                  <span className="text-slate-400 font-bold uppercase">Initial:</span>
+                  <span className="text-slate-600 font-bold">${tx.initiatedAmount.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-slate-400 font-bold uppercase">Pending:</span>
+                  <span className={cn("font-bold", tx.pendingAmount > 0 ? "text-red-500" : "text-green-600")}>
+                    ${tx.pendingAmount.toFixed(2)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -264,11 +242,11 @@ export default function TransactionHistoryPage() {
         ))}
 
         {filteredTransactions.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-            <div className="bg-white p-10 rounded-full shadow-sm">
-                <History className="h-12 w-12 text-slate-200" />
+          <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
+            <div className="bg-white p-8 rounded-full shadow-sm">
+                <History className="h-10 w-10 text-slate-100" />
             </div>
-            <p className="text-slate-400 font-bold text-lg uppercase tracking-tight">No records found</p>
+            <p className="text-slate-400 font-bold text-sm uppercase">No Records Found</p>
           </div>
         )}
       </main>
