@@ -15,13 +15,13 @@ import { OrderStepper } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useCart } from '@/context/cart-context';
 
-function MenuHeader() {
+function MenuHeader({ isScrolled }: { isScrolled: boolean }) {
   const searchParams = useSearchParams();
   const tableNumber = searchParams.get('table');
 
   return (
-    <div className="sticky top-0 z-50 bg-white border-b shadow-sm">
-      <header className="flex items-center p-3">
+    <div className="sticky top-0 z-50 bg-white border-b shadow-sm transition-all duration-300">
+      <header className="flex items-center p-3 h-16">
         <Link href="/order-by-table" passHref>
           <Button variant="ghost" size="icon" className="text-slate-900 h-10 w-10 hover:bg-slate-100">
             <ArrowLeft className="h-6 w-6" />
@@ -36,7 +36,13 @@ function MenuHeader() {
           </Button>
         </Link>
       </header>
-      <OrderStepper currentStep={2} />
+      
+      <div className={cn(
+        "overflow-hidden transition-all duration-300 ease-in-out",
+        isScrolled ? "max-h-0 opacity-0" : "max-h-20 opacity-100"
+      )}>
+        <OrderStepper currentStep={2} />
+      </div>
     </div>
   );
 }
@@ -46,8 +52,18 @@ export default function MenuPage() {
   const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { cartItems } = useCart();
   const navRef = useRef<HTMLDivElement>(null);
+
+  // Scroll listener to hide/show stepper
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Auto-scroll the active category into view when it changes
   useEffect(() => {
@@ -89,11 +105,14 @@ export default function MenuPage() {
   return (
     <div className="bg-slate-50 min-h-screen">
       <Suspense fallback={<div>Loading header...</div>}>
-        <MenuHeader />
+        <MenuHeader isScrolled={isScrolled} />
       </Suspense>
 
-      {/* Section Navigation - Compact & Professional */}
-      <nav className="sticky top-[93px] z-40 bg-white/95 backdrop-blur-md py-2 px-4 border-b flex items-center gap-2 shadow-sm">
+      {/* Section Navigation - Sticky with dynamic top based on scroll */}
+      <nav className={cn(
+        "sticky z-40 bg-white/95 backdrop-blur-md py-2 px-4 border-b flex items-center gap-2 shadow-sm transition-all duration-300",
+        isScrolled ? "top-[64px]" : "top-[118px]"
+      )}>
         {!isSearchOpen ? (
           <>
             <Button 
