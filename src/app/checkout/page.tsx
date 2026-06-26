@@ -53,7 +53,7 @@ export default function CheckoutPage() {
                 <ArrowLeft className="h-6 w-6" />
               </Button>
             </Link>
-            <h1 className="text-lg font-bold mx-auto text-slate-900 tracking-tight uppercase">Review Selection</h1>
+            <h1 className="text-lg font-bold mx-auto text-slate-900 tracking-tight uppercase">Review Order</h1>
             <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
               <Avatar className="h-10 w-10 border-2 border-primary/10">
                 {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
@@ -70,11 +70,11 @@ export default function CheckoutPage() {
                 <ShoppingBag className="h-16 w-16 text-slate-200" />
             </div>
             <div className="space-y-2">
-                <h2 className="text-xl font-bold text-slate-900">Your cart is empty</h2>
-                <p className="text-sm text-slate-500 max-w-[240px]">Browse our menu to add some delicious items to your order.</p>
+                <h2 className="text-xl font-bold text-slate-900">Order is empty</h2>
+                <p className="text-sm text-slate-500 max-w-[240px]">Go back to the menu to select items for this table.</p>
             </div>
             <Link href="/menu" passHref className="w-full max-w-xs">
-              <Button className="w-full h-14 text-lg font-bold rounded-xl bg-primary">GO TO MENU</Button>
+              <Button className="w-full h-14 text-lg font-bold rounded-xl bg-primary uppercase">Return to Menu</Button>
             </Link>
           </div>
         ) : (
@@ -82,7 +82,7 @@ export default function CheckoutPage() {
             <main className="p-4 flex-grow pb-48 animate-in fade-in duration-500">
               <div className="space-y-6">
                 <div className="flex justify-between items-center px-1">
-                  <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Current Selection</h2>
+                  <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Current Order</h2>
                   <Link href="/menu" passHref>
                     <Button variant="ghost" className="h-10 text-xs font-bold text-primary hover:bg-primary/5 uppercase tracking-widest">
                       + Add Items
@@ -99,7 +99,7 @@ export default function CheckoutPage() {
                                 <div className="flex justify-between items-start gap-4">
                                     <div className="flex-grow">
                                         <span className="text-base font-bold text-slate-900 block leading-tight tracking-tight">{item.name}</span>
-                                        <span className="text-[10px] font-bold text-slate-400 block mt-1 uppercase tracking-widest">${displayPrice.toFixed(2)} each</span>
+                                        <span className="text-[10px] font-bold text-slate-400 block mt-1 uppercase tracking-widest">${displayPrice.toFixed(2)} unit</span>
                                         {variationString && (
                                           <div className="mt-2 flex flex-wrap gap-1">
                                             <span className="bg-slate-100 text-slate-600 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md">
@@ -133,7 +133,7 @@ export default function CheckoutPage() {
                     <Card className="p-4 bg-primary/[0.03] border-primary/10 rounded-2xl">
                         <div className="flex items-center gap-2 mb-2">
                              <MessageSquareText className="h-4 w-4 text-primary" />
-                             <h3 className="text-[10px] font-bold text-primary uppercase tracking-widest">Overall Kitchen Note</h3>
+                             <h3 className="text-[10px] font-bold text-primary uppercase tracking-widest">Kitchen Prep Note</h3>
                         </div>
                         <p className="text-sm text-slate-700 font-medium italic">"{orderInstructions}"</p>
                     </Card>
@@ -151,7 +151,7 @@ export default function CheckoutPage() {
                     <div className="h-px bg-slate-100 my-2" />
                     <div className="flex justify-between items-end">
                         <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Amount</span>
-                        <span className="text-3xl font-bold text-slate-900 tabular-nums tracking-tighter">${total.toFixed(2)}</span>
+                        <span className="text-3xl font-bold text-slate-900 tracking-tighter tabular-nums">${total.toFixed(2)}</span>
                     </div>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export default function CheckoutPage() {
                     <Loader2 className="h-6 w-6 animate-spin" />
                   ) : (
                     <>
-                        <span>PLACE ORDER</span>
+                        <span>SEND TO KITCHEN</span>
                         <span className="bg-white/20 px-3 py-1 rounded-lg text-sm">${total.toFixed(2)}</span>
                     </>
                   )}

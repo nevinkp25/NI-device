@@ -1,24 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose } from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { useCart } from '@/context/cart-context';
-import type { MenuItem, ItemVariation, CartItemVariationSelection } from '@/lib/data';
-import { Minus, Plus, X } from 'lucide-react';
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { cn } from '@/lib/utils';
-
-
-interface VariationPickerSheetProps {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  item: MenuItem;
-}
-
-export function VariationPickerSheet({ isOpen, onOpenChange, item }: VariationPickerSheetProps) {
+import { useState, useEffect, useMemo } from 'export function VariationPickerSheet({ isOpen, onOpenChange, item }: VariationPickerSheetProps) {
   const { addToCart } = useCart();
   const [selectedVariations, setSelectedVariations] = useState<CartItemVariationSelection>({});
   const [quantity, setQuantity] = useState(1);
@@ -161,7 +144,7 @@ export function VariationPickerSheet({ isOpen, onOpenChange, item }: VariationPi
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-[90dvh] flex flex-col p-0">
         <SheetHeader className="p-4 border-b flex-row items-center justify-between">
-          <SheetTitle className="text-xl">{item.name}</SheetTitle>
+          <SheetTitle className="text-xl">Prep Instructions: {item.name}</SheetTitle>
           <SheetClose asChild>
             <Button variant="ghost" size="icon"><X className="h-5 w-5" /></Button>
           </SheetClose>
@@ -172,7 +155,7 @@ export function VariationPickerSheet({ isOpen, onOpenChange, item }: VariationPi
             <div key={variation.id}>
               <h3 className="text-lg font-semibold mb-2 flex items-center">
                 {variation.name} 
-                {variation.type === 'required' && <span className="text-xs text-primary ml-2">(Required)</span>}
+                {variation.type === 'required' && <span className="text-xs text-primary ml-2">(Mandatory)</span>}
               </h3>
               {renderVariationGroup(variation)}
             </div>
@@ -197,9 +180,9 @@ export function VariationPickerSheet({ isOpen, onOpenChange, item }: VariationPi
             <Button
               onClick={handleAddToCart}
               disabled={!areAllRequiredSelected}
-              className="w-full h-14 bg-primary hover:bg-primary/90 text-white text-lg"
+              className="w-full h-14 bg-primary hover:bg-primary/90 text-white text-lg uppercase font-bold tracking-tight"
             >
-              Add to Cart (${finalPrice.toFixed(2)})
+              Confirm Prep & Add (${finalPrice.toFixed(2)})
             </Button>
           </div>
         </SheetFooter>

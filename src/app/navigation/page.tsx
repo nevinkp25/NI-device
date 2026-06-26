@@ -54,7 +54,7 @@ export default function NavigationPage() {
       {/* Header */}
       <header className="px-8 pt-10 pb-6">
         <h1 className="text-3xl font-bold text-white tracking-tight">Bella Cucina</h1>
-        <p className="text-white/60 text-sm mt-1">Staff Dashboard</p>
+        <p className="text-white/60 text-sm mt-1">POS Terminal Dashboard</p>
       </header>
 
       {/* Main Content Card */}
@@ -68,7 +68,7 @@ export default function NavigationPage() {
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconOrderMenu />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Order Menu</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">New Order</span>
             </button>
 
             <button
@@ -78,7 +78,7 @@ export default function NavigationPage() {
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconPayByTable />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Pay by Table</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Table Settlement</span>
             </button>
 
             <button
@@ -88,7 +88,7 @@ export default function NavigationPage() {
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconScanQR />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Scan Table QR</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Scan QR</span>
             </button>
 
             <button
@@ -98,7 +98,7 @@ export default function NavigationPage() {
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconManualSale />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Manual Sale</span>
+              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Direct Sale</span>
             </button>
           </div>
 
@@ -108,7 +108,7 @@ export default function NavigationPage() {
                 variant="outline" 
                 className="w-full h-20 text-xl font-black border-4 border-[#FF0000] text-[#FF0000] rounded-[1.5rem] bg-white hover:bg-red-50 hover:text-red-700 transition-all shadow-md active:scale-[0.98] uppercase tracking-tighter"
               >
-                Finish Shift
+                End Shift
               </Button>
             </Link>
           </div>

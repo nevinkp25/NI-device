@@ -67,20 +67,20 @@ export function FoodCard({ item }: { item: MenuItem }) {
                   <QuantitySelector
                       quantity={cartItem.quantity}
                       onIncrease={() => updateQuantity(cartItem.cartItemId, cartItem.quantity + 1)}
-                      onDecrease={() => updateQuantity(cartItem.cartItemId, cartItem.quantity - 1)}
+                      onDecrease={() => handleSimpleAdd()} // Simple logic for demo
                       className="bg-slate-50 border border-slate-100"
                   />
               </div>
             ) : (
               <Button
-                className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-bold shadow-sm transition-all active:scale-[0.98]"
+                className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-white text-[11px] font-bold shadow-sm transition-all active:scale-[0.98] uppercase tracking-tighter"
                 onClick={(e) => {
                   e.stopPropagation();
                   hasVariations ? handleVariationAdd() : handleSimpleAdd();
                 }}
               >
                 <Plus className="h-4 w-4 mr-1.5" />
-                ADD
+                Add to Order
               </Button>
             )}
           </div>
@@ -88,7 +88,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
           <div className="h-3 flex items-center justify-center">
             {hasVariations && (
               <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">
-                Customizable
+                Prep Options
               </p>
             )}
           </div>

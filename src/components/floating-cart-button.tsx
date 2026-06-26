@@ -58,7 +58,7 @@ export function FloatingCartButton() {
                         <div className="bg-primary/10 p-2 rounded-xl">
                             <ShoppingBag className="h-5 w-5 text-primary" />
                         </div>
-                        <h3 className="font-bold text-lg text-slate-900 tracking-tight uppercase">Order Review</h3>
+                        <h3 className="font-bold text-lg text-slate-900 tracking-tight uppercase">Order Details</h3>
                     </div>
                     <Button 
                         variant="ghost" 
@@ -96,10 +96,10 @@ export function FloatingCartButton() {
                                     <div className="space-y-1.5">
                                       <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-bold uppercase tracking-widest ml-1">
                                         <MessageSquareText className="h-3 w-3" />
-                                        <span>Item Note</span>
+                                        <span>Prep Note</span>
                                       </div>
                                       <Input 
-                                        placeholder="Add instructions..." 
+                                        placeholder="Specific prep info..." 
                                         className="h-8 text-[11px] bg-slate-50/50 border-slate-100 rounded-lg focus-visible:ring-primary/20"
                                         value={item.specialInstructions || ''}
                                         onChange={(e) => updateItemInstructions(item.cartItemId, e.target.value)}
@@ -122,10 +122,10 @@ export function FloatingCartButton() {
                     <div className="pt-2 space-y-3">
                       <div className="flex items-center gap-2.5 px-1">
                         <MessageSquareText className="h-4 w-4 text-slate-400" />
-                        <h4 className="font-bold text-[11px] text-slate-500 uppercase tracking-widest">Kitchen Instructions</h4>
+                        <h4 className="font-bold text-[11px] text-slate-500 uppercase tracking-widest">General Kitchen Note</h4>
                       </div>
                       <Textarea 
-                        placeholder="Overall notes for this order..." 
+                        placeholder="Overall notes for this order ticket..." 
                         className="min-h-[70px] bg-slate-50/50 border-slate-100 rounded-xl text-xs focus-visible:ring-primary/20 resize-none p-3"
                         value={orderInstructions}
                         onChange={(e) => setOrderInstructions(e.target.value)}
@@ -133,7 +133,7 @@ export function FloatingCartButton() {
                     </div>
                 </div>
                 <div className="p-4 bg-slate-50 border-t flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Est. Subtotal</span>
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Running Subtotal</span>
                     <span className="text-xl font-bold text-slate-900 tracking-tighter tabular-nums">${subtotal.toFixed(2)}</span>
                 </div>
               </div>
@@ -165,7 +165,7 @@ export function FloatingCartButton() {
 
             <Link href="/checkout" passHref className="flex-grow">
               <Button className="w-full h-12 bg-[#E54360] hover:bg-[#D43D56] text-white shadow-lg rounded-full font-bold uppercase tracking-tight text-sm flex items-center justify-center gap-2 transition-all active:scale-95 group border-none">
-                <span>Checkout</span>
+                <span>Place Order</span>
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>

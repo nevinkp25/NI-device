@@ -42,7 +42,7 @@ export default function OrderByTablePage() {
       toast({
         variant: 'destructive',
         title: 'Empty Table ID',
-        description: 'Please enter a table number.',
+        description: 'Please enter a valid table ID to proceed.',
       });
     }
   };
@@ -65,7 +65,7 @@ export default function OrderByTablePage() {
               <ArrowLeft className="h-6 w-6 text-primary" />
             </Button>
           </Link>
-          <h1 className="text-xl font-bold mx-auto uppercase tracking-tight text-slate-900">Table Number</h1>
+          <h1 className="text-xl font-bold mx-auto uppercase tracking-tight text-slate-900">Identify Table</h1>
           <div className="w-10"></div>
         </div>
         <OrderStepper currentStep={1} />
@@ -155,7 +155,7 @@ export default function OrderByTablePage() {
                </div>
                <div>
                   <SheetTitle className="text-lg font-bold uppercase tracking-tight">Table {tableNumber.toUpperCase()}</SheetTitle>
-                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">New Order</p>
+                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Initialization</p>
                </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsGuestSheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
@@ -165,7 +165,7 @@ export default function OrderByTablePage() {
 
           <div className="p-8 space-y-6">
              <div className="space-y-4 text-center">
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Guest Count</p>
+                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Cover Count</p>
                 <div className="flex items-center justify-center gap-8">
                    <Button 
                       variant="outline" 
@@ -191,7 +191,7 @@ export default function OrderByTablePage() {
                 onClick={handleFinalConfirm}
                 className="w-full h-16 text-2xl font-bold bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
              >
-                GO TO MENU
+                Confirm Covers
              </Button>
           </SheetFooter>
         </SheetContent>

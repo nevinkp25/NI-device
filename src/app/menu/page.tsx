@@ -71,7 +71,7 @@ export default function MenuPage() {
         <MenuHeader />
       </Suspense>
 
-      {/* Categories Navigation */}
+      {/* Sections Navigation */}
       <nav className="sticky top-[112px] z-40 bg-white/60 backdrop-blur-md py-4 px-4 border-b flex items-center gap-3">
         <Button 
           variant="outline" 
@@ -112,7 +112,7 @@ export default function MenuPage() {
                 {activeCategoryName}
             </h2>
             <p className="text-xs font-medium text-slate-500 uppercase tracking-widest mt-1">
-                {filteredItems.length} options available
+                {filteredItems.length} items available
             </p>
         </div>
 
@@ -127,14 +127,14 @@ export default function MenuPage() {
             <div className="bg-white p-6 rounded-full shadow-sm">
                 <Utensils className="h-10 w-10 text-slate-200" />
             </div>
-            <p className="text-slate-400 font-medium">No items in this category yet.</p>
+            <p className="text-slate-400 font-medium">No items in this section.</p>
           </div>
         )}
       </main>
 
       <FloatingCartButton />
 
-      {/* Category Selection Bottom Sheet */}
+      {/* Section Selection Bottom Sheet */}
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
         <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2rem] border-t-0 bg-slate-50 z-[100]" hideCloseButton>
           <div className="mx-auto w-12 h-1.5 bg-slate-200 rounded-full mt-3 mb-1" />
@@ -144,7 +144,7 @@ export default function MenuPage() {
                   <LayoutGrid className="h-5 w-5 text-slate-600" />
                </div>
                <div>
-                  <SheetTitle className="text-lg font-bold text-slate-900">Categories</SheetTitle>
+                  <SheetTitle className="text-lg font-bold text-slate-900">Sections</SheetTitle>
                   <p className="text-xs text-slate-500">Jump to a section</p>
                </div>
             </div>
