@@ -5,8 +5,16 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, UserCheck, Store } from 'lucide-react';
+import { Loader2, UserCheck, Store, Menu, ShieldAlert, DollarSign, Settings, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function StaffLoginPage() {
   const [staffId, setStaffId] = useState('');
@@ -48,8 +56,61 @@ export default function StaffLoginPage() {
     }, 800);
   };
 
+  const handleManualSale = () => {
+    toast({
+      title: "Manual Sales Mode",
+      description: "Entering transaction history and manual sale terminal.",
+    });
+    router.push('/transaction-history');
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-8 relative">
+      {/* Quick Access Menu - Top Right */}
+      <div className="fixed top-8 right-8 z-50">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-slate-900 hover:bg-slate-100 rounded-full h-12 w-12 border-2 border-slate-100">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64 rounded-2xl p-2 border-slate-200 shadow-2xl">
+            <DropdownMenuLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-3 py-2">Terminal Systems</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            
+            <DropdownMenuItem 
+              className="rounded-xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
+              onClick={() => toast({ title: "Supervisor Mode", description: "Manager credential override required." })}
+            >
+              <div className="h-10 w-10 bg-amber-50 rounded-lg flex items-center justify-center">
+                <ShieldAlert className="h-5 w-5 text-amber-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Supervisor Menu</span>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem 
+              className="rounded-xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
+              onClick={handleManualSale}
+            >
+              <div className="h-10 w-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-blue-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Manual Sales</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem 
+              className="rounded-xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
+              onClick={() => router.push('/settings')}
+            >
+              <div className="h-10 w-10 bg-slate-100 rounded-lg flex items-center justify-center">
+                <Settings className="h-5 w-5 text-slate-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Settings</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       <div className="text-center mb-12 animate-in fade-in duration-700">
         <div className="h-20 w-20 bg-primary/5 rounded-3xl flex items-center justify-center mx-auto mb-6">
             <Store className="h-10 w-10 text-primary" />
@@ -58,7 +119,7 @@ export default function StaffLoginPage() {
         <h1 className="text-3xl font-bold text-slate-900">Staff Login</h1>
       </div>
       
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-8">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
         <div className="space-y-4">
           <Input
             id="staffId"
@@ -79,20 +140,33 @@ export default function StaffLoginPage() {
           <p className="text-center text-xs text-slate-400 font-medium">Enter your 6-digit employee identification number</p>
         </div>
         
-        <Button
-          type="submit"
-          disabled={isLoading || staffId.length !== 6}
-          className="w-full h-16 text-lg font-bold bg-primary text-white hover:bg-primary/90 rounded-2xl shadow-xl transition-all active:scale-[0.98]"
-        >
-          {isLoading ? (
-            <Loader2 className="animate-spin h-6 w-6" />
-          ) : (
-            <div className="flex items-center gap-2">
-              <UserCheck className="h-6 w-6" />
-              <span>START SHIFT</span>
-            </div>
-          )}
-        </Button>
+        <div className="space-y-4 pt-2">
+          <Button
+            type="submit"
+            disabled={isLoading || staffId.length !== 6}
+            className="w-full h-16 text-lg font-bold bg-primary text-white hover:bg-primary/90 rounded-2xl shadow-xl transition-all active:scale-[0.98]"
+          >
+            {isLoading ? (
+              <Loader2 className="animate-spin h-6 w-6" />
+            ) : (
+              <div className="flex items-center gap-2">
+                <UserCheck className="h-6 w-6" />
+                <span>START SHIFT</span>
+              </div>
+            )}
+          </Button>
+
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={handleManualSale}
+            className="w-full h-14 text-slate-400 font-bold uppercase text-[10px] tracking-[0.25em] hover:bg-slate-50 hover:text-primary transition-all flex items-center justify-center gap-2"
+          >
+            <DollarSign className="h-4 w-4" />
+            <span>Manual Sales Mode</span>
+            <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </Button>
+        </div>
       </form>
 
       <div className="mt-20 text-center opacity-30">
