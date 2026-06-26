@@ -117,6 +117,17 @@ export const menuItems: MenuItem[] = [
     description: 'Toasted ciabatta topped with vine-ripened tomatoes, fresh basil, and extra virgin olive oil.',
     nutrition: { kcal: 320, protein: 6, carbs: 42, fat: 14 },
     allergens: ['Gluten'],
+    variations: [
+      {
+        id: 'bread-type',
+        name: 'Bread Choice',
+        type: 'required',
+        options: [
+          { id: 'ciabatta', name: 'Standard Ciabatta', priceModifier: 0 },
+          { id: 'gf', name: 'Gluten-Free Bread', priceModifier: 2.00 },
+        ],
+      }
+    ]
   },
   {
     id: 'starter-2',
@@ -127,6 +138,18 @@ export const menuItems: MenuItem[] = [
     description: 'Lightly battered baby squid served with a zesty lemon aioli and fresh parsley.',
     nutrition: { kcal: 450, protein: 18, carbs: 24, fat: 32 },
     allergens: ['Molluscs', 'Gluten', 'Egg'],
+    variations: [
+      {
+        id: 'sauce',
+        name: 'Dipping Sauce',
+        type: 'required',
+        options: [
+          { id: 'aioli', name: 'Lemon Aioli', priceModifier: 0 },
+          { id: 'marinara', name: 'Spicy Marinara', priceModifier: 0 },
+          { id: 'tartar', name: 'House Tartar', priceModifier: 0 },
+        ],
+      }
+    ]
   },
 
   // --- SALADS ---

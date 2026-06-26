@@ -36,27 +36,29 @@ export function FoodCard({ item }: { item: MenuItem }) {
     <>
       <Card 
         className={cn(
-          "group flex flex-col overflow-hidden transition-all duration-300 rounded-[1.75rem] bg-white border h-full shadow-sm hover:shadow-md cursor-pointer",
+          "group relative flex flex-col overflow-hidden transition-all duration-300 rounded-[1.75rem] bg-white border h-full shadow-sm hover:shadow-md cursor-pointer",
           (itemsInCart.length > 0) 
             ? "border-primary/30 ring-1 ring-primary/10 bg-primary/[0.02]" 
             : "border-slate-100 hover:border-slate-200"
         )}
         onClick={handleCardClick}
       >
+        {/* Professional "Customizable" Identifier Badge */}
+        {hasVariations && !cartItem && (
+          <div className="absolute top-3 right-3 z-10 animate-in fade-in zoom-in duration-500">
+            <div className="flex items-center gap-1 bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-full shadow-sm">
+              <Settings2 className="h-2.5 w-2.5" />
+              <span className="text-[8px] font-black uppercase tracking-tight">Customizable</span>
+            </div>
+          </div>
+        )}
+
         <CardHeader className="p-5 pb-2 flex-grow">
-          <CardTitle className="text-lg font-bold text-slate-900 tracking-tight leading-snug uppercase">
+          <CardTitle className="text-lg font-bold text-slate-900 tracking-tight leading-snug uppercase pr-8">
             {item.name}
           </CardTitle>
-           
-           {/* Customizable Indicator - Only show if not in cart yet */}
-           {hasVariations && !cartItem && (
-             <div className="flex items-center gap-1.5 text-[9px] font-bold text-primary/70 uppercase tracking-widest mt-1.5 animate-in fade-in slide-in-from-left-1 duration-500">
-               <Settings2 className="h-3 w-3" />
-               <span>Options Available</span>
-             </div>
-           )}
 
-           {/* Current Selections if in cart */}
+           {/* Current Selections if already in cart */}
            {cartItem && cartItem.selectedVariations && Object.keys(cartItem.selectedVariations).length > 0 && (
             <div className="text-[10px] text-primary/70 font-bold uppercase tracking-tight mt-1.5 bg-primary/5 px-2 py-0.5 rounded-md w-fit">
               {Object.values(cartItem.selectedVariations).join(', ')}
