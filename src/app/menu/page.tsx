@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { foodCategories, menuItems } from '@/lib/data';
 import { FoodCard } from '@/components/food-card';
 import { FloatingCartButton } from '@/components/floating-cart-button';
-import { Utensils, ArrowLeft, LayoutGrid, Check, X, Search, Home } from 'lucide-react';
+import { Utensils, ArrowLeft, LayoutGrid, Check, X, Search, Home, Command } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -82,19 +82,25 @@ export default function MenuPage() {
 
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
-      const matchesCategory = item.category === activeCategory;
-      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      if (searchQuery) return matchesSearch;
-      return matchesCategory;
+      return item.category === activeCategory;
     });
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory]);
+
+  const searchResults = useMemo(() => {
+    if (!searchQuery) return [];
+    const q = searchQuery.toLowerCase();
+    return menuItems.filter(item => 
+      item.name.toLowerCase().includes(q) || 
+      item.description?.toLowerCase().includes(q) ||
+      item.category.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
 
   const activeCategoryName = foodCategories.find(c => c.id === activeCategory)?.name || '';
 
   const handleCategorySelect = (id: string) => {
     setActiveCategory(id);
     setIsCategorySheetOpen(false);
-    setSearchQuery('');
     setIsSearchOpen(false);
     // Smooth scroll to top when category changes
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -102,7 +108,9 @@ export default function MenuPage() {
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
-    if (isSearchOpen) setSearchQuery('');
+    if (!isSearchOpen) {
+      setSearchQuery('');
+    }
   };
 
   return (
@@ -113,99 +121,142 @@ export default function MenuPage() {
           <MenuHeader isScrolled={isScrolled} />
         </Suspense>
 
-        {/* Category Navigation - Always pinned below the main header line */}
+        {/* Category Navigation */}
         <nav className="bg-white/95 backdrop-blur-md py-2 px-4 border-b flex items-center gap-2 shadow-sm">
-          {!isSearchOpen ? (
-            <>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={() => setIsCategorySheetOpen(true)}
-                className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
-              >
-                <LayoutGrid className="h-5 w-5" />
-              </Button>
-              
-              <div 
-                ref={navRef}
-                className="flex space-x-2 overflow-x-auto no-scrollbar flex-grow py-1 scroll-smooth"
-              >
-                {foodCategories.map((category) => {
-                  const hasItemsInCart = cartItems.some(item => item.category === category.id);
-                  return (
-                    <button
-                      key={category.id}
-                      id={`nav-item-${category.id}`}
-                      onClick={() => handleCategorySelect(category.id)}
-                      className={cn(
-                        "relative px-4 py-2 rounded-xl text-[10px] font-black whitespace-nowrap transition-all duration-300 tracking-[0.1em] uppercase",
-                        activeCategory === category.id
-                          ? "bg-primary text-white shadow-md ring-2 ring-primary/10"
-                          : "bg-white border border-slate-200 text-slate-500 hover:border-slate-300"
-                      )}
-                    >
-                      {category.name}
-                      {hasItemsInCart && (
-                        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-600 rounded-full border border-white shadow-sm" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={() => setIsCategorySheetOpen(true)}
+            className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
+          >
+            <LayoutGrid className="h-5 w-5" />
+          </Button>
+          
+          <div 
+            ref={navRef}
+            className="flex space-x-2 overflow-x-auto no-scrollbar flex-grow py-1 scroll-smooth"
+          >
+            {foodCategories.map((category) => {
+              const hasItemsInCart = cartItems.some(item => item.category === category.id);
+              return (
+                <button
+                  key={category.id}
+                  id={`nav-item-${category.id}`}
+                  onClick={() => handleCategorySelect(category.id)}
+                  className={cn(
+                    "relative px-4 py-2 rounded-xl text-[10px] font-black whitespace-nowrap transition-all duration-300 tracking-[0.1em] uppercase",
+                    activeCategory === category.id
+                      ? "bg-primary text-white shadow-md ring-2 ring-primary/10"
+                      : "bg-white border border-slate-200 text-slate-500 hover:border-slate-300"
+                  )}
+                >
+                  {category.name}
+                  {hasItemsInCart && (
+                    <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-600 rounded-full border border-white shadow-sm" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={toggleSearch}
-                className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
-              >
-                <Search className="h-5 w-5" />
-              </Button>
-            </>
-          ) : (
-            <div className="flex items-center w-full gap-2 animate-in slide-in-from-right-4 duration-300 h-10">
-              <div className="relative flex-grow">
-                <Input 
-                  autoFocus
-                  placeholder="Find item..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-9 pl-9 pr-4 rounded-xl bg-slate-50 border-slate-200 text-xs font-bold text-slate-900 focus-visible:ring-primary/20"
-                />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              </div>
-              <Button variant="ghost" size="sm" onClick={toggleSearch} className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2 h-9">
-                Cancel
-              </Button>
-            </div>
-          )}
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={toggleSearch}
+            className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
+          >
+            <Search className="h-5 w-5" />
+          </Button>
         </nav>
       </div>
+
+      {/* FULL SCREEN SEARCH OVERLAY */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 z-[100] bg-slate-50 flex flex-col animate-in slide-in-from-bottom duration-300">
+          <header className="bg-[#0051B5] text-white p-4 shadow-xl">
+            <div className="flex items-center gap-3 mb-4">
+               <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(false)} className="text-white hover:bg-white/10 rounded-full">
+                  <ArrowLeft className="h-6 w-6" />
+               </Button>
+               <div>
+                  <h2 className="text-lg font-bold tracking-tight uppercase">Smart Search</h2>
+                  <p className="text-[9px] font-bold text-white/60 uppercase tracking-widest">Global Menu Discovery</p>
+               </div>
+            </div>
+            <div className="relative">
+              <Input 
+                autoFocus
+                placeholder="Dishes, ingredients or categories..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-14 pl-12 pr-4 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-2xl focus-visible:ring-white/30 text-base font-bold"
+              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+            </div>
+          </header>
+
+          <main className="flex-grow overflow-y-auto p-4 pb-32 no-scrollbar">
+            {searchQuery ? (
+              searchResults.length > 0 ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 px-1">
+                    <Command className="h-3 w-3 text-slate-400" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Found {searchResults.length} {searchResults.length === 1 ? 'match' : 'matches'} across all sections
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {searchResults.map((item) => (
+                      <FoodCard key={item.id} item={item} />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                  <div className="h-20 w-20 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <Search className="h-8 w-8 text-slate-200" />
+                  </div>
+                  <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest">No matching results for "{searchQuery}"</p>
+                </div>
+              )
+            ) : (
+              <div className="flex flex-col items-center justify-center py-24 text-center space-y-4 opacity-40">
+                <Utensils className="h-12 w-12 text-slate-300" />
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest max-w-[180px]">
+                  Start typing to find dishes across our entire menu
+                </p>
+              </div>
+            )}
+          </main>
+          
+          <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-50 to-transparent pointer-events-none">
+             <div className="max-w-[420px] mx-auto pointer-events-auto">
+                <Button 
+                  onClick={() => setIsSearchOpen(false)} 
+                  className="w-full h-14 bg-white border border-slate-200 text-slate-900 rounded-2xl font-bold uppercase tracking-tight shadow-lg"
+                >
+                  Close Search
+                </Button>
+             </div>
+          </div>
+        </div>
+      )}
 
       <main className="p-4 pb-48 animate-in fade-in duration-500 min-h-screen">
         <div className="mb-4 px-1">
             <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">
-                {searchQuery ? `Search: ${searchQuery}` : activeCategoryName}
+                {activeCategoryName}
             </h2>
             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">
-                {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} available
+                {filteredItems.length} items in this section
             </p>
         </div>
 
-        {filteredItems.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3">
-            {filteredItems.map((item) => (
-              <FoodCard key={item.id} item={item} />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-            <div className="bg-white p-8 rounded-full shadow-sm">
-                <Utensils className="h-12 w-12 text-slate-200" />
-            </div>
-            <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest">No matching items</p>
-          </div>
-        )}
+        <div className="grid grid-cols-2 gap-3">
+          {filteredItems.map((item) => (
+            <FoodCard key={item.id} item={item} />
+          ))}
+        </div>
       </main>
 
       <FloatingCartButton />
