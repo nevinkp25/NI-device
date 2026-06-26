@@ -55,6 +55,7 @@ export default function MenuPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { cartItems } = useCart();
   const navRef = useRef<HTMLDivElement>(null);
+  const searchNavRef = useRef<HTMLDivElement>(null);
 
   // Scroll listener to manage sticky behavior
   useEffect(() => {
@@ -70,6 +71,8 @@ export default function MenuPage() {
   useEffect(() => {
     if (activeCategory) {
       const element = document.getElementById(`nav-item-${activeCategory}`);
+      const searchElement = document.getElementById(`search-nav-item-${activeCategory}`);
+      
       if (element) {
         element.scrollIntoView({
           behavior: 'smooth',
@@ -77,8 +80,15 @@ export default function MenuPage() {
           block: 'nearest'
         });
       }
+      if (searchElement) {
+        searchElement.scrollIntoView({
+          behavior: 'smooth',
+          inline: 'center',
+          block: 'nearest'
+        });
+      }
     }
-  }, [activeCategory]);
+  }, [activeCategory, isSearchOpen]);
 
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
@@ -87,6 +97,20 @@ export default function MenuPage() {
   }, [activeCategory]);
 
   const searchResults = useMemo(() => {
+    if (!searchQuery) {
+        // If searching but no query, show items in the active category within search overlay
+        return menuItems.filter(item => item.category === activeCategory);
+    }
+    const q = searchQuery.toLowerCase();
+    return menuItems.filter(item => 
+      (item.name.toLowerCase().includes(q) || 
+      item.description?.toLowerCase().includes(q) ||
+      item.category.toLowerCase().includes(q)) &&
+      (activeCategory ? item.category === activeCategory : true)
+    );
+  }, [searchQuery, activeCategory]);
+
+  const globalSearchResults = useMemo(() => {
     if (!searchQuery) return [];
     const q = searchQuery.toLowerCase();
     return menuItems.filter(item => 
@@ -101,9 +125,10 @@ export default function MenuPage() {
   const handleCategorySelect = (id: string) => {
     setActiveCategory(id);
     setIsCategorySheetOpen(false);
-    setIsSearchOpen(false);
     // Smooth scroll to top when category changes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!isSearchOpen) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const toggleSearch = () => {
@@ -173,7 +198,7 @@ export default function MenuPage() {
       {/* FULL SCREEN SEARCH OVERLAY */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-[100] bg-slate-50 flex flex-col animate-in slide-in-from-bottom duration-300">
-          <header className="bg-[#0051B5] text-white p-4 shadow-xl">
+          <header className="bg-[#0051B5] text-white p-4 shadow-xl shrink-0">
             <div className="flex items-center gap-3 mb-4">
                <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(false)} className="text-white hover:bg-white/10 rounded-full">
                   <ArrowLeft className="h-6 w-6" />
@@ -183,7 +208,7 @@ export default function MenuPage() {
                   <p className="text-[9px] font-bold text-white/60 uppercase tracking-widest">Global Menu Discovery</p>
                </div>
             </div>
-            <div className="relative">
+            <div className="relative mb-2">
               <Input 
                 autoFocus
                 placeholder="Dishes, ingredients or categories..."
@@ -192,6 +217,34 @@ export default function MenuPage() {
                 className="h-14 pl-12 pr-4 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-2xl focus-visible:ring-white/30 text-base font-bold"
               />
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+            </div>
+
+            {/* Integrated Category Nav in Search */}
+            <div 
+                ref={searchNavRef}
+                className="flex space-x-2 overflow-x-auto no-scrollbar py-2 scroll-smooth"
+            >
+                {foodCategories.map((category) => {
+                    const hasItemsInCart = cartItems.some(item => item.category === category.id);
+                    return (
+                        <button
+                            key={category.id}
+                            id={`search-nav-item-${category.id}`}
+                            onClick={() => handleCategorySelect(category.id)}
+                            className={cn(
+                                "relative px-4 py-2 rounded-xl text-[10px] font-black whitespace-nowrap transition-all duration-300 tracking-[0.1em] uppercase border",
+                                activeCategory === category.id
+                                    ? "bg-white text-[#0051B5] border-white shadow-md"
+                                    : "bg-white/10 border-white/20 text-white/70 hover:bg-white/20"
+                            )}
+                        >
+                            {category.name}
+                            {hasItemsInCart && (
+                                <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-600 rounded-full border border-white shadow-sm" />
+                            )}
+                        </button>
+                    );
+                })}
             </div>
           </header>
 
@@ -202,7 +255,7 @@ export default function MenuPage() {
                   <div className="flex items-center gap-2 px-1">
                     <Command className="h-3 w-3 text-slate-400" />
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Found {searchResults.length} {searchResults.length === 1 ? 'match' : 'matches'} across all sections
+                      Found {searchResults.length} {searchResults.length === 1 ? 'match' : 'matches'} in {activeCategoryName}
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -216,15 +269,23 @@ export default function MenuPage() {
                   <div className="h-20 w-20 bg-white rounded-full flex items-center justify-center shadow-sm">
                     <Search className="h-8 w-8 text-slate-200" />
                   </div>
-                  <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest">No matching results for "{searchQuery}"</p>
+                  <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest">No matching results for "{searchQuery}" in {activeCategoryName}</p>
+                  <Button variant="link" onClick={() => setSearchQuery('')} className="text-primary font-bold uppercase text-xs">Clear Search</Button>
                 </div>
               )
             ) : (
-              <div className="flex flex-col items-center justify-center py-24 text-center space-y-4 opacity-40">
-                <Utensils className="h-12 w-12 text-slate-300" />
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest max-w-[180px]">
-                  Start typing to find dishes across our entire menu
-                </p>
+              <div className="space-y-6">
+                 <div className="flex items-center gap-2 px-1">
+                    <LayoutGrid className="h-3 w-3 text-slate-400" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Browsing {activeCategoryName}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {filteredItems.map((item) => (
+                      <FoodCard key={item.id} item={item} />
+                    ))}
+                  </div>
               </div>
             )}
           </main>
@@ -235,7 +296,7 @@ export default function MenuPage() {
                   onClick={() => setIsSearchOpen(false)} 
                   className="w-full h-14 bg-white border border-slate-200 text-slate-900 rounded-2xl font-bold uppercase tracking-tight shadow-lg"
                 >
-                  Close Search
+                  Return to Menu
                 </Button>
              </div>
           </div>
