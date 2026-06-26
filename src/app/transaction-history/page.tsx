@@ -14,7 +14,8 @@ import {
   ChevronDown,
   Hash,
   Search,
-  X
+  X,
+  ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
@@ -105,13 +106,13 @@ export default function TransactionHistoryPage() {
         <div className="flex items-center justify-between p-4 h-16">
           <div className="flex items-center gap-3">
             <Link href="/navigation" passHref>
-              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full h-9 w-9">
-                <ArrowLeft className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full h-10 w-10">
+                <ArrowLeft className="h-6 w-6" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-base font-bold tracking-tight">Audit Log</h1>
-              <p className="text-[10px] font-medium text-white/50 leading-none">Terminal History</p>
+              <h1 className="text-lg font-bold tracking-tight">Audit Log</h1>
+              <p className="text-xs font-medium text-white/60 leading-none">Terminal History</p>
             </div>
           </div>
           
@@ -120,7 +121,7 @@ export default function TransactionHistoryPage() {
             size="icon" 
             onClick={() => setIsSearchVisible(!isSearchVisible)}
             className={cn(
-              "text-white rounded-full h-9 w-9 transition-all",
+              "text-white rounded-full h-10 w-10 transition-all",
               isSearchVisible ? "bg-white/20" : "hover:bg-white/10"
             )}
           >
@@ -136,25 +137,25 @@ export default function TransactionHistoryPage() {
                 placeholder="Search Order or Table..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-10 pl-9 pr-4 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl focus-visible:ring-white/30 text-sm"
+                className="h-11 pl-10 pr-4 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl focus-visible:ring-white/30 text-sm"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
             </div>
           </div>
         )}
 
-        <div className="px-4 pb-4 flex items-center justify-between gap-2">
+        <div className="px-4 pb-4 flex items-center justify-between gap-3">
           <Popover>
             <PopoverTrigger asChild>
               <Button 
                 variant="ghost" 
-                className="h-10 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white px-3 gap-2 flex-grow justify-start"
+                className="h-11 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white px-4 gap-2 flex-grow justify-start"
               >
-                <CalendarIcon className="h-3.5 w-3.5 opacity-70" />
-                <span className="text-xs font-bold">
+                <CalendarIcon className="h-4 w-4 opacity-70" />
+                <span className="text-sm font-bold">
                   {date ? (date.toDateString() === new Date().toDateString() ? 'Today' : format(date, "MMM d, yyyy")) : 'Select Date'}
                 </span>
-                <ChevronDown className="h-3.5 w-3.5 ml-auto opacity-50" />
+                <ChevronDown className="h-4 w-4 ml-auto opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 rounded-2xl border-none shadow-2xl" align="start">
@@ -168,35 +169,35 @@ export default function TransactionHistoryPage() {
             </PopoverContent>
           </Popover>
 
-          <div className="bg-white/10 border border-white/20 rounded-xl px-3 h-10 flex items-center gap-2 shrink-0">
-             <Hash className="h-3.5 w-3.5 text-white/50" />
-             <span className="text-xs font-bold">{orderCount} {orderCount === 1 ? 'Record' : 'Records'}</span>
+          <div className="bg-white/10 border border-white/20 rounded-xl px-4 h-11 flex items-center gap-2 shrink-0">
+             <Hash className="h-4 w-4 text-white/50" />
+             <span className="text-sm font-bold">{orderCount} {orderCount === 1 ? 'Record' : 'Records'}</span>
           </div>
         </div>
       </header>
 
-      <main className="p-3 space-y-3 pb-24 animate-in fade-in duration-500">
+      <main className="p-4 space-y-4 pb-24 animate-in fade-in duration-500">
         {filteredTransactions.map((tx) => (
           <Card key={tx.id} className="rounded-2xl border-slate-200 shadow-sm overflow-hidden bg-white hover:border-primary/20 transition-all border">
-            <div className="p-3.5 space-y-3">
+            <div className="p-4 space-y-4">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Ref:</span>
-                  <span className="text-base font-bold text-slate-900">#{tx.id}</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">Ref</span>
+                  <span className="text-lg font-bold text-slate-900 leading-none">#{tx.id}</span>
                 </div>
-                <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Table:</span>
-                  <span className="text-sm font-bold text-slate-900">{tx.table}</span>
+                <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 shadow-inner">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">Table</span>
+                  <span className="text-base font-black text-slate-900 leading-none">{tx.table}</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
-                <div className="flex items-center gap-1.5">
-                  <User className="h-3 w-3 text-slate-400" />
+              <div className="grid grid-cols-2 gap-4 text-sm font-semibold text-slate-500">
+                <div className="flex items-center gap-2 bg-slate-50/50 p-2 rounded-lg">
+                  <User className="h-4 w-4 text-primary/60" />
                   <span>{tx.waiter}</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Clock className="h-3 w-3 text-slate-400" />
+                <div className="flex items-center gap-2 bg-slate-50/50 p-2 rounded-lg justify-end">
+                  <Clock className="h-4 w-4 text-primary/60" />
                   <span>{tx.time}</span>
                 </div>
               </div>
@@ -204,35 +205,41 @@ export default function TransactionHistoryPage() {
               <Separator className="opacity-50" />
 
               <div className="flex justify-between items-center">
-                <div className="flex gap-1.5">
+                <div className="flex gap-2">
                   <Badge className={cn(
-                    "shadow-none text-[9px] font-bold px-2 py-0.5 rounded-md border",
+                    "shadow-none text-xs font-bold px-3 py-1 rounded-lg border",
                     tx.status === 'Paid' ? "bg-green-50 text-green-700 border-green-100" : 
                     tx.status === 'Pending' ? "bg-amber-50 text-amber-700 border-amber-100" :
                     "bg-blue-50 text-blue-700 border-blue-100"
                   )}>
-                    {tx.status}
+                    {tx.status.toUpperCase()}
                   </Badge>
                   {tx.method !== 'None' && (
-                    <Badge variant="outline" className="border-slate-200 bg-white text-slate-500 flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-md">
-                      {tx.method === 'Card' ? <CreditCard className="h-3 w-3" /> : <Landmark className="h-3 w-3" />}
-                      {tx.method}
+                    <Badge variant="outline" className="border-slate-200 bg-white text-slate-500 flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-lg">
+                      {tx.method === 'Card' ? <CreditCard className="h-3.5 w-3.5" /> : <Landmark className="h-3.5 w-3.5" />}
+                      {tx.method.toUpperCase()}
                     </Badge>
                   )}
                 </div>
-                <span className="text-lg font-bold text-[#0051B5] tracking-tight tabular-nums">
-                  ${tx.finalAmount.toFixed(2)}
-                </span>
+                <div className="text-right">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Final Amount</p>
+                    <span className="text-2xl font-black text-[#0051B5] tracking-tighter tabular-nums">
+                        ${tx.finalAmount.toFixed(2)}
+                    </span>
+                </div>
               </div>
 
-              <div className="bg-slate-50/50 rounded-xl p-2.5 flex justify-between items-center text-[10px] border border-slate-100/50">
-                <div className="flex items-center gap-1">
-                  <span className="text-slate-400 font-bold uppercase">Initial:</span>
-                  <span className="text-slate-600 font-bold">${tx.initiatedAmount.toFixed(2)}</span>
+              <div className="bg-slate-50 rounded-2xl p-4 flex justify-between items-center border border-slate-100">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">Initial Bill</span>
+                  <span className="text-base font-bold text-slate-700">${tx.initiatedAmount.toFixed(2)}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-slate-400 font-bold uppercase">Pending:</span>
-                  <span className={cn("font-bold", tx.pendingAmount > 0 ? "text-red-500" : "text-green-600")}>
+                <div className="flex items-center px-2">
+                    <ArrowRight className="h-5 w-5 text-slate-300" />
+                </div>
+                <div className="flex flex-col gap-0.5 text-right">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">Balance Due</span>
+                  <span className={cn("text-base font-black", tx.pendingAmount > 0 ? "text-red-500" : "text-green-600")}>
                     ${tx.pendingAmount.toFixed(2)}
                   </span>
                 </div>
@@ -242,11 +249,14 @@ export default function TransactionHistoryPage() {
         ))}
 
         {filteredTransactions.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
+          <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
             <div className="bg-white p-8 rounded-full shadow-sm">
-                <History className="h-10 w-10 text-slate-100" />
+                <History className="h-12 w-12 text-slate-200" />
             </div>
-            <p className="text-slate-400 font-bold text-sm uppercase">No Records Found</p>
+            <div className="space-y-1">
+                <p className="text-slate-900 font-bold text-lg uppercase tracking-tight">No Records Found</p>
+                <p className="text-slate-400 text-sm font-medium">Try adjusting your search or date filter</p>
+            </div>
           </div>
         )}
       </main>
