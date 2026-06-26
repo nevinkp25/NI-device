@@ -4,12 +4,12 @@ import { PlaceHolderImages } from './placeholder-images';
 export interface VariationOption {
   id: string;
   name: string;
-  priceModifier: number; // e.g., 0 for default, 3 for +$3.00
+  priceModifier: number;
 }
 
 export interface ItemVariation {
   id: string;
-  name: string; // e.g., "Size", "Extras"
+  name: string;
   type: 'required' | 'optional' | 'multiple' | 'incremental';
   options: VariationOption[];
 }
@@ -33,8 +33,6 @@ export interface MenuItem {
   variations?: ItemVariation[];
 }
 
-// A unique ID for a cart item is its base ID plus its selected variations.
-// Incremental values are stored as "id:qty" within the selection string.
 export type CartItemVariationSelection = Record<string, string>; 
 
 export interface CartItem extends MenuItem {
@@ -106,215 +104,92 @@ export const TABLES_BY_FLOOR: Record<string, TableData[]> = {
 
 export const ALL_TABLES = Object.values(TABLES_BY_FLOOR).flat();
 
-export const menuItems: MenuItem[] = [
-  // --- STARTERS ---
-  {
-    id: 'starter-1',
-    name: 'Bruschetta Classica',
-    price: 8.50,
-    category: 'starters',
-    image: PlaceHolderImages.find(p => p.id === 'sushi')!,
-    description: 'Toasted ciabatta topped with vine-ripened tomatoes, fresh basil, and extra virgin olive oil.',
-    nutrition: { kcal: 320, protein: 6, carbs: 42, fat: 14 },
-    allergens: ['Gluten'],
-    variations: [
-      {
-        id: 'bread-type',
-        name: 'Bread Choice',
-        type: 'required',
-        options: [
-          { id: 'ciabatta', name: 'Standard Ciabatta', priceModifier: 0 },
-          { id: 'gf', name: 'Gluten-Free Bread', priceModifier: 2.00 },
-        ],
-      }
-    ]
-  },
-  {
-    id: 'starter-2',
-    name: 'Crispy Calamari',
-    price: 12.00,
-    category: 'starters',
-    image: PlaceHolderImages.find(p => p.id === 'sushi')!,
-    description: 'Lightly battered baby squid served with a zesty lemon aioli and fresh parsley.',
-    nutrition: { kcal: 450, protein: 18, carbs: 24, fat: 32 },
-    allergens: ['Molluscs', 'Gluten', 'Egg'],
-    variations: [
-      {
-        id: 'sauce',
-        name: 'Dipping Sauce',
-        type: 'required',
-        options: [
-          { id: 'aioli', name: 'Lemon Aioli', priceModifier: 0 },
-          { id: 'marinara', name: 'Spicy Marinara', priceModifier: 0 },
-          { id: 'tartar', name: 'House Tartar', priceModifier: 0 },
-        ],
-      }
-    ]
-  },
+const createMenuItems = (): MenuItem[] => {
+  const items: MenuItem[] = [];
 
-  // --- SALADS ---
-  {
-    id: 'salad-1',
-    name: 'Classic Caesar',
-    price: 11.50,
-    category: 'salads',
-    image: PlaceHolderImages.find(p => p.id === 'salad')!,
-    description: 'Crisp romaine, sourdough croutons, Parmigiano-Reggiano, and house-made creamy dressing.',
-    nutrition: { kcal: 420, protein: 14, carbs: 18, fat: 34 },
-    allergens: ['Dairy', 'Gluten', 'Egg', 'Fish'],
-    variations: [
-      {
-        id: 'protein',
-        name: 'Add Protein',
-        type: 'optional',
-        options: [
-          { id: 'chicken', name: 'Grilled Chicken', priceModifier: 5.00 },
-          { id: 'shrimp', name: 'Garlic Shrimp', priceModifier: 7.00 },
-          { id: 'salmon', name: 'Seared Salmon', priceModifier: 9.00 },
-        ],
-      }
-    ]
-  },
+  // Helper to generate items for a category
+  const addItems = (categoryId: string, names: string[], basePrice: number, imageId: string) => {
+    const image = PlaceHolderImages.find(p => p.id === imageId) || PlaceHolderImages[0];
+    names.forEach((name, index) => {
+      items.push({
+        id: `${categoryId}-${index + 1}`,
+        name,
+        price: basePrice + (index * 0.5),
+        category: categoryId,
+        image,
+        description: `Experience the authentic taste of our house-special ${name.toLowerCase()}, prepared fresh daily.`,
+        nutrition: { kcal: 300 + (index * 20), protein: 10 + index, carbs: 30 + index, fat: 12 + index },
+        allergens: index % 3 === 0 ? ['Gluten', 'Dairy'] : []
+      });
+    });
+  };
 
-  // --- PIZZA ---
-  { 
-    id: 'pizza-1', 
-    name: 'Buffalo Margherita', 
-    price: 16.50, 
-    category: 'pizza', 
-    image: PlaceHolderImages.find(p => p.id === 'pizza')!,
-    description: 'DOP Buffalo Mozzarella, San Marzano tomatoes, and fresh basil leaves.',
-    nutrition: { kcal: 920, protein: 32, carbs: 110, fat: 38 },
-    allergens: ['Gluten', 'Dairy'],
-    variations: [
-      {
-        id: 'pizza-size',
-        name: 'Size Selection',
-        type: 'required',
-        options: [
-          { id: 'reg', name: 'Regular 12"', priceModifier: 0 },
-          { id: 'large', name: 'Large 16"', priceModifier: 5.50 },
-        ],
-      },
-      {
-        id: 'toppings',
-        name: 'Extra Toppings',
-        type: 'incremental',
-        options: [
-          { id: 'cheese', name: 'Extra Mozzarella', priceModifier: 2.00 },
-          { id: 'pepperoni', name: 'Pepperoni Slices', priceModifier: 2.50 },
-          { id: 'mushrooms', name: 'Fresh Mushrooms', priceModifier: 1.50 },
-          { id: 'olives', name: 'Black Olives', priceModifier: 1.00 },
-        ],
-      }
-    ]
-  },
+  addItems('starters', [
+    'Bruschetta Classica', 'Crispy Calamari', 'Garlic Bread', 'Stuffed Mushrooms', 
+    'Arancini Balls', 'Caprese Skewers', 'Shrimp Cocktail', 'Onion Rings', 
+    'Buffalo Wings', 'Mozzarella Sticks', 'Spinach Dip', 'Potato Skins', 
+    'Chicken Tenders', 'Quesadilla', 'Spring Rolls'
+  ], 8.00, 'sushi');
 
-  // --- BURGERS ---
-  { 
-    id: 'burger-1', 
-    name: 'The Wagyu Signature', 
-    price: 22.00, 
-    category: 'burgers', 
-    image: PlaceHolderImages.find(p => p.id === 'burger')!,
-    description: '200g Wagyu patty, aged cheddar, truffle mayo, and balsamic glazed onions.',
-    nutrition: { kcal: 980, protein: 48, carbs: 52, fat: 64 },
-    allergens: ['Gluten', 'Dairy', 'Egg'],
-    variations: [
-      {
-        id: 'doneness',
-        name: 'Cooking Level',
-        type: 'required',
-        options: [
-          { id: 'rare', name: 'Rare', priceModifier: 0 },
-          { id: 'med-rare', name: 'Medium Rare', priceModifier: 0 },
-          { id: 'medium', name: 'Medium', priceModifier: 0 },
-          { id: 'well', name: 'Well Done', priceModifier: 0 },
-        ],
-      },
-      {
-        id: 'condiments',
-        name: 'Add-ons & Condiments',
-        type: 'incremental',
-        options: [
-          { id: 'bacon', name: 'Crispy Bacon', priceModifier: 3.50 },
-          { id: 'avocado', name: 'Avocado Slice', priceModifier: 2.50 },
-          { id: 'cheese', name: 'Extra Cheddar', priceModifier: 1.50 },
-          { id: 'sauce-bbq', name: 'Side BBQ Sauce', priceModifier: 0.75 },
-          { id: 'sauce-truffle', name: 'Side Truffle Mayo', priceModifier: 1.25 },
-        ],
-      }
-    ]
-  },
+  addItems('salads', [
+    'Classic Caesar', 'Greek Salad', 'Garden Salad', 'Cobb Salad', 
+    'Quinoa Salad', 'Waldorf Salad', 'Wedge Salad', 'Caprese Salad', 
+    'Nicoise Salad', 'Spinach Salad', 'Fruit Salad', 'Coleslaw', 
+    'Potato Salad', 'Pasta Salad', 'Asian Noodle Salad'
+  ], 10.00, 'salad');
 
-  // --- GRILL ---
-  { 
-    id: 'grill-1', 
-    name: 'Ribeye Steak 300g', 
-    price: 34.00, 
-    category: 'grill', 
-    image: PlaceHolderImages.find(p => p.id === 'steak')!,
-    description: 'USDA Prime 35-day dry-aged ribeye, seasoned with sea salt and cracked pepper.',
-    nutrition: { kcal: 850, protein: 72, carbs: 0, fat: 62 },
-    allergens: [],
-    variations: [
-      {
-        id: 'steak-temp',
-        name: 'Doneness',
-        type: 'required',
-        options: [
-          { id: 'rare', name: 'Rare', priceModifier: 0 },
-          { id: 'mr', name: 'Med Rare', priceModifier: 0 },
-          { id: 'm', name: 'Medium', priceModifier: 0 },
-          { id: 'mw', name: 'Med Well', priceModifier: 0 },
-          { id: 'w', name: 'Well Done', priceModifier: 0 },
-        ],
-      }
-    ]
-  },
+  addItems('pizza', [
+    'Buffalo Margherita', 'Pepperoni Feast', 'BBQ Chicken', 'Veggie Supreme', 
+    'Hawaiian Classic', 'Meat Lovers', 'Four Cheese', 'Truffle Mushroom', 
+    'Pesto Chicken', 'Spicy Salami', 'Seafood Special', 'White Pizza', 
+    'Anchovy Salt', 'Mediterranean', 'Breakfast Pizza'
+  ], 15.00, 'pizza');
 
-  // --- PASTA ---
-  {
-    id: 'pasta-1',
-    name: 'Truffle Tagliatelle',
-    price: 18.50,
-    category: 'pasta',
-    image: PlaceHolderImages.find(p => p.id === 'pasta')!,
-    description: 'Fresh handmade pasta with black truffle cream and wild mushrooms.',
-    nutrition: { kcal: 680, protein: 14, carbs: 72, fat: 38 },
-    allergens: ['Gluten', 'Dairy', 'Egg'],
-  },
+  addItems('pasta', [
+    'Truffle Tagliatelle', 'Carbonara Classic', 'Lasagna Tradizionale', 'Penne Arrabbiata', 
+    'Fettuccine Alfredo', 'Spaghetti Bolognese', 'Seafood Linguine', 'Ravioli Ricotta', 
+    'Gnocchi Pesto', 'Mac & Cheese', 'Tortellini Broth', 'Pasta Primavera', 
+    'Fusilli Pink Sauce', 'Rigatoni Ragu', 'Angel Hair Garlic'
+  ], 14.00, 'pasta');
 
-  // --- DESSERTS ---
-  { 
-    id: 'dessert-1', 
-    name: 'Vanilla Bean Panna Cotta', 
-    price: 9.00, 
-    category: 'desserts', 
-    image: PlaceHolderImages.find(p => p.id === 'cake')!,
-    description: 'Silky smooth panna cotta with Madagascan vanilla and a mixed berry coulis.',
-    nutrition: { kcal: 380, protein: 4, carbs: 32, fat: 26 },
-    allergens: ['Dairy'],
-  },
+  addItems('burgers', [
+    'The Wagyu Signature', 'Classic Cheeseburger', 'Bacon King', 'Mushroom Swiss', 
+    'Veggie Garden', 'Crispy Chicken', 'Zesty Fish', 'BBQ Western', 
+    'Spicy Jalapeno', 'Turkey Lean', 'Breakfast Burger', 'Double Stack', 
+    'Slider Trio', 'Blue Cheese', 'Hawaiian Burger'
+  ], 18.00, 'burger');
 
-  // --- BEVERAGES ---
-  { 
-    id: 'drink-1', 
-    name: 'Double Espresso', 
-    price: 4.50, 
-    category: 'drinks', 
-    image: PlaceHolderImages.find(p => p.id === 'coffee')!,
-    description: 'Arabica house-blend espresso. Strong and aromatic.',
-    nutrition: { kcal: 10, protein: 0, carbs: 1, fat: 0 },
-  },
-];
+  addItems('grill', [
+    'Ribeye Steak 300g', 'Filet Mignon', 'Grilled Salmon', 'BBQ Pork Ribs', 
+    'Lamb Chops', 'Grilled Chicken Breast', 'T-Bone Steak', 'Mixed Grill', 
+    'Grilled Sea Bass', 'Pork Chops', 'Garlic Shrimp', 'Grilled Veggies', 
+    'Turkey Steak', 'Duck Confit', 'Venison Steak'
+  ], 25.00, 'steak');
 
-// Sample Order Data
+  addItems('desserts', [
+    'Vanilla Panna Cotta', 'Lava Cake', 'Tiramisu', 'NY Cheesecake', 
+    'Warm Apple Pie', 'Brownie Sundae', 'Gelato Selection', 'Fruit Tart', 
+    'Creme Brulee', 'Sicilian Cannoli', 'French Macarons', 'Berry Sorbet', 
+    'Churros Con Chocolate', 'Red Velvet', 'Bread Pudding'
+  ], 7.00, 'cake');
+
+  addItems('drinks', [
+    'Double Espresso', 'Cappuccino', 'Caffe Latte', 'Iced Coffee', 
+    'English Breakfast Tea', 'Peach Iced Tea', 'Orange Juice', 'Lemonade', 
+    'Classic Cola', 'Diet Soda', 'Mineral Water', 'Sparkling Water', 
+    'Chocolate Milkshake', 'Mango Smoothie', 'Berry Mocktail'
+  ], 4.00, 'coffee');
+
+  return items;
+};
+
+export const menuItems: MenuItem[] = createMenuItems();
+
 export const sampleOrder: Order = {
   id: '2536',
   tableNumber: '3',
   date: '2025-12-04T02:16:00Z',
   items: [
-    { ...menuItems.find(i => i.id === 'pizza-1')!, cartItemId: 'pizza-1', quantity: 1, selectedVariations: { 'pizza-size': 'reg' } },
+    { ...menuItems.find(i => i.id === 'pizza-1')!, cartItemId: 'pizza-1', quantity: 1, selectedVariations: {} },
   ]
 }
