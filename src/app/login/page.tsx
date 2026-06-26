@@ -100,7 +100,7 @@ export default function StaffLoginPage() {
               variant="outline" 
               className="w-full h-16 text-lg font-bold border-2 border-primary text-primary hover:bg-primary/5 rounded-2xl shadow-sm transition-all active:scale-[0.98] uppercase tracking-tight"
             >
-              Switch Branch
+              Manual Sale
             </Button>
           </Link>
         </div>
