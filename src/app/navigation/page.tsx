@@ -106,7 +106,7 @@ export default function NavigationPage() {
             <Link href="/login" passHref className="w-full">
               <Button 
                 variant="outline" 
-                className="w-full h-20 text-xl font-black border-4 border-[#FF0000] text-[#FF0000] rounded-[1.5rem] bg-white hover:bg-red-50 hover:text-red-700 transition-all shadow-md active:scale-[0.98] uppercase tracking-tighter"
+                className="w-full h-20 text-xl font-black border border-[#FF0000] text-[#FF0000] rounded-[1.5rem] bg-white hover:bg-red-50 hover:text-red-700 transition-all shadow-md active:scale-[0.98] uppercase tracking-tighter"
               >
                 Logout
               </Button>
