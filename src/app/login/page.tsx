@@ -63,7 +63,7 @@ export default function StaffLoginPage() {
         <div className="space-y-4">
           <div className="text-center">
             <label htmlFor="staffId" className="inline-block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1">
-                Input Employee PIN
+                Enter Employee ID
             </label>
           </div>
           
