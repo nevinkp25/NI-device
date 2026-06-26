@@ -47,7 +47,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
             {item.name}
           </CardTitle>
            {cartItem && cartItem.selectedVariations && Object.keys(cartItem.selectedVariations).length > 0 && (
-            <div className="text-[10px] text-primary/70 font-bold uppercase tracking-widest mt-1">
+            <div className="text-[10px] text-primary/70 font-bold uppercase tracking-tight mt-1">
               {Object.values(cartItem.selectedVariations).join(', ')}
             </div>
           )}
@@ -71,7 +71,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
               </div>
             ) : (
               <Button
-                className="w-full h-12 rounded-[1rem] bg-primary hover:bg-primary/90 text-white text-[11px] font-black shadow-md transition-all active:scale-[0.98] uppercase tracking-widest"
+                className="w-full h-12 rounded-[1rem] bg-primary hover:bg-primary/90 text-white text-[11px] font-black shadow-md transition-all active:scale-[0.98] uppercase tracking-tight"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleQuickAdd();
@@ -83,7 +83,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
             )}
           </div>
           
-          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] text-center w-full">
+          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight text-center w-full">
             Tap for Details
           </p>
         </CardFooter>
