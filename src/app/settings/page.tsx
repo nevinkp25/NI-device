@@ -21,7 +21,7 @@ export default function SettingsPage() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('staffId');
     }
-    router.push('/');
+    router.push('/login');
   };
 
   return (
@@ -80,7 +80,7 @@ export default function SettingsPage() {
       <footer className="p-4">
           <Button variant="outline" className="w-full" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
-              Log Out
+              End Shift
           </Button>
       </footer>
     </div>
