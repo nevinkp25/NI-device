@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, UserCheck, ShieldCheck } from 'lucide-react';
+import { Loader2, UserCheck, ShieldCheck, Store } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
@@ -45,6 +45,9 @@ export default function StaffLoginPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-8">
       <div className="text-center mb-12 animate-in fade-in duration-700">
+        <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/20 shadow-sm">
+            <Store className="h-8 w-8 text-primary" />
+        </div>
         <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-2">{restaurantName || 'BRANCH TERMINAL'}</p>
         <h1 className="text-4xl font-black text-slate-900 tracking-tighter">STAFF PORTAL</h1>
         <div className="flex items-center justify-center gap-2 mt-2 opacity-40">
