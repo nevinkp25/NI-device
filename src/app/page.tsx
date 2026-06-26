@@ -113,7 +113,7 @@ export default function RestaurantEntryPage() {
               <Input
                 id="restaurantSlug"
                 type="text"
-                placeholder="RESTAURANT-CODE"
+                placeholder="Restaurant-Slug"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 disabled={isLoading}
