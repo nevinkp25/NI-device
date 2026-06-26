@@ -1,9 +1,29 @@
+
 "use client";
 
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { 
+  Menu, 
+  ShieldAlert, 
+  FileBarChart, 
+  RefreshCcw, 
+  History, 
+  Settings, 
+  DollarSign, 
+  LogOut 
+} from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from '@/hooks/use-toast';
 
 // Bespoke, polished SVG Icons
 const IconOrderMenu = () => (
@@ -43,17 +63,85 @@ const IconManualSale = () => (
 
 export default function NavigationPage() {
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleNavigation = (path: string) => {
     router.push(path);
   };
 
+  const handleSyncData = () => {
+    toast({
+      title: "Syncing Terminal",
+      description: "Fetching latest menu and restaurant configuration...",
+    });
+  };
+
+  const handleZReport = () => {
+    toast({
+      title: "Generating Z-Report",
+      description: "Calculating daily totals and shift data...",
+    });
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-[#0051B5]">
       {/* Header */}
-      <header className="px-8 pt-10 pb-6">
-        <h1 className="text-3xl font-bold text-white tracking-tight">Bella Cucina</h1>
-        <p className="text-white/60 text-sm mt-1">POS Terminal Dashboard</p>
+      <header className="px-8 pt-10 pb-6 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white tracking-tight">Bella Cucina</h1>
+          <p className="text-white/60 text-sm mt-1">POS Terminal Dashboard</p>
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-white/10 text-white hover:bg-white/20 border-2 border-white/20">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64 rounded-2xl p-2 border-slate-200 shadow-2xl">
+            <DropdownMenuLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-3 py-2">System Controls</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => toast({ title: "Supervisor Access", description: "Credential override required." })}>
+              <ShieldAlert className="h-4 w-4 text-amber-600" />
+              <span className="font-bold text-slate-700 text-sm">Supervisor Menu</span>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={handleZReport}>
+              <FileBarChart className="h-4 w-4 text-slate-600" />
+              <span className="font-bold text-slate-700 text-sm">Z-Report</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={handleSyncData}>
+              <RefreshCcw className="h-4 w-4 text-blue-600" />
+              <span className="font-bold text-slate-700 text-sm">Re-sync Restaurant Data</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => router.push('/transaction-history')}>
+              <History className="h-4 w-4 text-slate-600" />
+              <span className="font-bold text-slate-700 text-sm">History</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => router.push('/settings')}>
+              <Settings className="h-4 w-4 text-slate-600" />
+              <span className="font-bold text-slate-700 text-sm">Settings</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => router.push('/transaction-history')}>
+              <DollarSign className="h-4 w-4 text-green-600" />
+              <span className="font-bold text-slate-700 text-sm">Manual Sale</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-700" onClick={() => router.push('/')}>
+              <LogOut className="h-4 w-4" />
+              <span className="font-bold text-sm">Admin Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
 
       {/* Main Content Card */}
