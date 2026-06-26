@@ -166,11 +166,22 @@ export const menuItems: MenuItem[] = [
     variations: [
       {
         id: 'pizza-size',
-        name: 'Size',
+        name: 'Size Selection',
         type: 'required',
         options: [
           { id: 'reg', name: 'Regular 12"', priceModifier: 0 },
           { id: 'large', name: 'Large 16"', priceModifier: 5.50 },
+        ],
+      },
+      {
+        id: 'toppings',
+        name: 'Extra Toppings',
+        type: 'incremental',
+        options: [
+          { id: 'cheese', name: 'Extra Mozzarella', priceModifier: 2.00 },
+          { id: 'pepperoni', name: 'Pepperoni Slices', priceModifier: 2.50 },
+          { id: 'mushrooms', name: 'Fresh Mushrooms', priceModifier: 1.50 },
+          { id: 'olives', name: 'Black Olives', priceModifier: 1.00 },
         ],
       }
     ]
@@ -237,6 +248,18 @@ export const menuItems: MenuItem[] = [
         ],
       }
     ]
+  },
+
+  // --- PASTA ---
+  {
+    id: 'pasta-1',
+    name: 'Truffle Tagliatelle',
+    price: 18.50,
+    category: 'pasta',
+    image: PlaceHolderImages.find(p => p.id === 'pasta')!,
+    description: 'Fresh handmade pasta with black truffle cream and wild mushrooms.',
+    nutrition: { kcal: 680, protein: 14, carbs: 72, fat: 38 },
+    allergens: ['Gluten', 'Dairy', 'Egg'],
   },
 
   // --- DESSERTS ---
