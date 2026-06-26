@@ -44,21 +44,17 @@ export function FoodCard({ item }: { item: MenuItem }) {
         onClick={handleCardClick}
       >
         <CardHeader className="p-5 pb-2 flex-grow">
-          <div className="flex justify-between items-start gap-2">
-            <CardTitle className="text-lg font-bold text-slate-900 tracking-tight leading-tight uppercase flex-grow">
-              {item.name}
-            </CardTitle>
-            
-            {/* Professional "Customizable" Identifier Badge - Now inside the flex flow to prevent overlap */}
-            {hasVariations && !cartItem && (
-              <div className="shrink-0 animate-in fade-in zoom-in duration-500">
-                <div className="flex items-center gap-1 bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-full shadow-sm backdrop-blur-sm">
-                  <Settings2 className="h-2.5 w-2.5" />
-                  <span className="text-[8px] font-black uppercase tracking-tight">Options</span>
-                </div>
-              </div>
-            )}
-          </div>
+          <CardTitle className="text-lg font-bold text-slate-900 tracking-tight leading-tight uppercase">
+            {item.name}
+          </CardTitle>
+          
+          {/* Simple, clean "Customizable" identifier below the name */}
+          {hasVariations && !cartItem && (
+            <div className="flex items-center gap-1.5 mt-1.5 text-primary">
+              <Settings2 className="h-3 w-3" />
+              <span className="text-[10px] font-bold uppercase tracking-tight">Customizable</span>
+            </div>
+          )}
 
            {/* Current Selections if already in cart */}
            {cartItem && cartItem.selectedVariations && Object.keys(cartItem.selectedVariations).length > 0 && (
@@ -86,7 +82,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
               </div>
             ) : (
               <Button
-                className="w-full h-12 rounded-[1rem] bg-primary hover:bg-primary/90 text-white text-[11px] font-black shadow-md transition-all active:scale-[0.98] uppercase tracking-tight"
+                className="w-full h-12 rounded-[1rem] bg-primary hover:bg-primary/90 text-white text-[11px] font-bold shadow-md transition-all active:scale-[0.98] uppercase tracking-tight"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleQuickAdd();
@@ -98,7 +94,8 @@ export function FoodCard({ item }: { item: MenuItem }) {
             )}
           </div>
           
-          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight text-center w-full">
+          {/* Clean "Tap for Details" footer hint */}
+          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight text-center w-full mt-1">
             Tap for Details
           </p>
         </CardFooter>
