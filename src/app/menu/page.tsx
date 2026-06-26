@@ -6,14 +6,11 @@ import { useSearchParams } from 'next/navigation';
 import { foodCategories, menuItems } from '@/lib/data';
 import { FoodCard } from '@/components/food-card';
 import { FloatingCartButton } from '@/components/floating-cart-button';
-import { Utensils, ArrowLeft, LayoutGrid, Check, X, Search } from 'lucide-react';
+import { Utensils, ArrowLeft, LayoutGrid, Check, X, Search, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
 import { OrderStepper } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useCart } from '@/context/cart-context';
@@ -21,14 +18,11 @@ import { useCart } from '@/context/cart-context';
 function MenuHeader() {
   const searchParams = useSearchParams();
   const tableNumber = searchParams.get('table');
-  const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
-  const [isWaiterProfileOpen, setIsWaiterProfileOpen] = useState(false);
 
   return (
-    <>
     <div className="sticky top-0 z-50 bg-white border-b shadow-sm">
       <header className="flex items-center p-4">
-        <Link href="/navigation" passHref>
+        <Link href="/order-by-table" passHref>
           <Button variant="ghost" size="icon" className="text-slate-900 h-12 w-12 hover:bg-slate-100">
             <ArrowLeft className="h-7 w-7" />
           </Button>
@@ -36,20 +30,14 @@ function MenuHeader() {
         <h1 className="text-xl font-bold mx-auto flex items-center gap-2 text-slate-900 tracking-tight uppercase">
           {tableNumber ? `Table ${tableNumber}` : 'Current Order'}
         </h1>
-        <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer active:scale-95 transition-transform">
-          <Avatar className="h-12 w-12 border-2 border-primary shadow-sm">
-            {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Staff" />}
-            <AvatarFallback>W</AvatarFallback>
-          </Avatar>
-        </button>
+        <Link href="/navigation" passHref>
+          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-slate-100 text-slate-900 border-2 border-primary/20 hover:bg-slate-200 active:scale-95 transition-transform shadow-sm">
+            <Home className="h-6 w-6" />
+          </Button>
+        </Link>
       </header>
       <OrderStepper currentStep={2} />
     </div>
-    <WaiterProfileDialog
-        isOpen={isWaiterProfileOpen}
-        onOpenChange={setIsWaiterProfileOpen}
-    />
-    </>
   );
 }
 
@@ -110,10 +98,10 @@ export default function MenuPage() {
                     key={category.id}
                     onClick={() => handleCategorySelect(category.id)}
                     className={cn(
-                      "relative px-6 py-3 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-200 tracking-wide",
+                      "relative px-6 py-3 rounded-full text-base font-bold whitespace-nowrap transition-all duration-200 tracking-wide",
                       activeCategory === category.id
                         ? "bg-primary text-white shadow-xl ring-2 ring-primary/20 scale-105"
-                        : "bg-white border-2 border-slate-300 text-slate-900 hover:border-slate-500"
+                        : "bg-white border-2 border-slate-400 text-slate-900 hover:border-slate-600"
                     )}
                   >
                     {category.name}

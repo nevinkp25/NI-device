@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
@@ -7,7 +6,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { SegmentedControl, SegmentedControlItem } from '@/components/segmented-control';
-import { ArrowLeft, HandCoins } from 'lucide-react';
+import { ArrowLeft, HandCoins, Home } from 'lucide-react';
 import Link from 'next/link';
 import { sampleOrder, type Order } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
@@ -15,11 +14,7 @@ import { format } from 'date-fns';
 import { TipSheet } from '@/components/tip-sheet';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { SplitBillSheet } from '@/components/split-bill-sheet';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Separator } from '@/components/ui/separator';
-import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
-
 
 function OrderStatusContent() {
   const router = useRouter();
@@ -29,9 +24,6 @@ function OrderStatusContent() {
   const [order, setOrder] = useState<Order | null>(null);
   const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
-  const [isWaiterProfileOpen, setIsWaiterProfileOpen] = useState(false);
-  const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
-
 
   const tableNumber = searchParams.get('table');
 
@@ -120,7 +112,6 @@ function OrderStatusContent() {
     router.push(`/${method}-payment?${params.toString()}`);
   }
 
-
   return (
     <>
       <div className="flex flex-col min-h-screen bg-background">
@@ -131,12 +122,11 @@ function OrderStatusContent() {
             </Button>
           </Link>
           <h1 className="text-xl font-semibold mx-auto">Order Status</h1>
-          <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
-            <Avatar className="h-10 w-10">
-              {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
-              <AvatarFallback>W</AvatarFallback>
-            </Avatar>
-          </button>
+          <Link href="/navigation" passHref>
+            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-100 text-slate-900 border-2 border-primary/20 hover:bg-slate-200">
+              <Home className="h-5 w-5" />
+            </Button>
+          </Link>
         </header>
 
         <main className="p-4 flex-grow pb-56">
@@ -231,10 +221,6 @@ function OrderStatusContent() {
               baseReturnUrl={`${pathname}?table=${tableNumber}`}
           />
       </div>
-      <WaiterProfileDialog
-        isOpen={isWaiterProfileOpen}
-        onOpenChange={setIsWaiterProfileOpen}
-      />
     </>
   );
 }

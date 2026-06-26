@@ -6,20 +6,15 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, ShoppingBag, Loader2, Info, MessageSquareText } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Loader2, Info, MessageSquareText, Home } from 'lucide-react';
 import Link from 'next/link';
 import { QuantitySelector } from '@/components/quantity-selector';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { WaiterProfileDialog } from '@/components/waiter-profile-dialog';
 import { OrderStepper } from '@/components/order-stepper';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, getDisplayPrice, orderInstructions } = useCart();
-  const [isWaiterProfileOpen, setIsWaiterProfileOpen] = useState(false);
   const [isPlacing, setIsPlacing] = useState(false);
   const router = useRouter();
-  const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
 
   const vatRate = 0.05;
   const vatAmount = subtotal * vatRate;
@@ -54,12 +49,11 @@ export default function CheckoutPage() {
               </Button>
             </Link>
             <h1 className="text-lg font-bold mx-auto text-slate-900 tracking-tight uppercase">Review Order</h1>
-            <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
-              <Avatar className="h-10 w-10 border-2 border-primary/10">
-                {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Waiter" />}
-                <AvatarFallback>W</AvatarFallback>
-              </Avatar>
-            </button>
+            <Link href="/navigation" passHref>
+              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-100 text-slate-900 border-2 border-primary/20 hover:bg-slate-200">
+                <Home className="h-5 w-5" />
+              </Button>
+            </Link>
           </div>
           <OrderStepper currentStep={3} />
         </header>
@@ -181,7 +175,6 @@ export default function CheckoutPage() {
             </footer>
           </>
         )}
-        <WaiterProfileDialog isOpen={isWaiterProfileOpen} onOpenChange={setIsWaiterProfileOpen} />
     </div>
   );
 }
