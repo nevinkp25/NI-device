@@ -62,10 +62,14 @@ export interface TableData {
 }
 
 export const foodCategories: FoodCategory[] = [
-  { id: 'mains', name: 'Mains' },
-  { id: 'starters', name: 'Starters' },
-  { id: 'desserts', name: 'Desserts' },
-  { id: 'drinks', name: 'Drinks' },
+  { id: 'starters', name: 'STARTERS' },
+  { id: 'salads', name: 'SALADS' },
+  { id: 'pizza', name: 'PIZZA' },
+  { id: 'pasta', name: 'PASTA' },
+  { id: 'burgers', name: 'BURGERS' },
+  { id: 'grill', name: 'GRILL' },
+  { id: 'desserts', name: 'DESSERTS' },
+  { id: 'drinks', name: 'BEVERAGES' },
 ];
 
 export const TABLES_BY_FLOOR: Record<string, TableData[]> = {
@@ -102,15 +106,148 @@ export const TABLES_BY_FLOOR: Record<string, TableData[]> = {
 export const ALL_TABLES = Object.values(TABLES_BY_FLOOR).flat();
 
 export const menuItems: MenuItem[] = [
+  // --- STARTERS ---
+  {
+    id: 'starter-1',
+    name: 'Bruschetta Classica',
+    price: 8.50,
+    category: 'starters',
+    image: PlaceHolderImages.find(p => p.id === 'sushi')!,
+    description: 'Toasted ciabatta topped with vine-ripened tomatoes, fresh basil, and extra virgin olive oil.',
+    nutrition: { kcal: 320, protein: 6, carbs: 42, fat: 14 },
+    allergens: ['Gluten'],
+  },
+  {
+    id: 'starter-2',
+    name: 'Crispy Calamari',
+    price: 12.00,
+    category: 'starters',
+    image: PlaceHolderImages.find(p => p.id === 'sushi')!,
+    description: 'Lightly battered baby squid served with a zesty lemon aioli and fresh parsley.',
+    nutrition: { kcal: 450, protein: 18, carbs: 24, fat: 32 },
+    allergens: ['Molluscs', 'Gluten', 'Egg'],
+  },
+  {
+    id: 'starter-3',
+    name: 'Truffle Arancini',
+    price: 10.50,
+    category: 'starters',
+    image: PlaceHolderImages.find(p => p.id === 'sushi')!,
+    description: 'Sicilian risotto balls filled with mozzarella and black truffle, served with marinara.',
+    nutrition: { kcal: 580, protein: 12, carbs: 54, fat: 36 },
+    allergens: ['Gluten', 'Dairy'],
+  },
+
+  // --- SALADS ---
+  {
+    id: 'salad-1',
+    name: 'Classic Caesar',
+    price: 11.50,
+    category: 'salads',
+    image: PlaceHolderImages.find(p => p.id === 'salad')!,
+    description: 'Crisp romaine, sourdough croutons, Parmigiano-Reggiano, and house-made creamy dressing.',
+    nutrition: { kcal: 420, protein: 14, carbs: 18, fat: 34 },
+    allergens: ['Dairy', 'Gluten', 'Egg', 'Fish'],
+    variations: [
+      {
+        id: 'protein',
+        name: 'Add Protein',
+        type: 'optional',
+        options: [
+          { id: 'chicken', name: 'Grilled Chicken', priceModifier: 5.00 },
+          { id: 'shrimp', name: 'Garlic Shrimp', priceModifier: 7.00 },
+          { id: 'salmon', name: 'Seared Salmon', priceModifier: 9.00 },
+        ],
+      }
+    ]
+  },
+  {
+    id: 'salad-2',
+    name: 'Greek Garden',
+    price: 10.00,
+    category: 'salads',
+    image: PlaceHolderImages.find(p => p.id === 'salad')!,
+    description: 'Vine tomatoes, cucumbers, Kalamata olives, and block feta with dried oregano.',
+    nutrition: { kcal: 310, protein: 8, carbs: 12, fat: 26 },
+    allergens: ['Dairy'],
+  },
+
+  // --- PIZZA ---
   { 
-    id: 'item-1', 
-    name: 'Gourmet Burger', 
-    price: 15.99, 
-    category: 'mains', 
+    id: 'pizza-1', 
+    name: 'Buffalo Margherita', 
+    price: 16.50, 
+    category: 'pizza', 
+    image: PlaceHolderImages.find(p => p.id === 'pizza')!,
+    description: 'DOP Buffalo Mozzarella, San Marzano tomatoes, and fresh basil leaves.',
+    nutrition: { kcal: 920, protein: 32, carbs: 110, fat: 38 },
+    allergens: ['Gluten', 'Dairy'],
+    variations: [
+      {
+        id: 'pizza-size',
+        name: 'Size',
+        type: 'required',
+        options: [
+          { id: 'reg', name: 'Regular 12"', priceModifier: 0 },
+          { id: 'large', name: 'Large 16"', priceModifier: 5.50 },
+        ],
+      }
+    ]
+  },
+  {
+    id: 'pizza-2',
+    name: 'Spicy Diavola',
+    price: 18.00,
+    category: 'pizza',
+    image: PlaceHolderImages.find(p => p.id === 'pizza')!,
+    description: 'Spicy Calabrese salami, nduja, mozzarella, and chili-infused honey.',
+    nutrition: { kcal: 1150, protein: 44, carbs: 115, fat: 54 },
+    allergens: ['Gluten', 'Dairy'],
+  },
+
+  // --- PASTA ---
+  {
+    id: 'pasta-1',
+    name: 'Pappardelle Ragu',
+    price: 19.50,
+    category: 'pasta',
+    image: PlaceHolderImages.find(p => p.id === 'pasta')!,
+    description: 'Wide egg pasta tossed in a 6-hour slow-cooked beef and veal ragu.',
+    nutrition: { kcal: 780, protein: 42, carbs: 85, fat: 28 },
+    allergens: ['Gluten', 'Egg', 'Dairy'],
+    variations: [
+      {
+        id: 'pasta-type',
+        name: 'Pasta Choice',
+        type: 'required',
+        options: [
+          { id: 'classic', name: 'Hand-cut Pappardelle', priceModifier: 0 },
+          { id: 'gluten-free', name: 'Gluten-Free Penne', priceModifier: 2.00 },
+        ],
+      }
+    ]
+  },
+  {
+    id: 'pasta-2',
+    name: 'Lobster Ravioli',
+    price: 24.00,
+    category: 'pasta',
+    image: PlaceHolderImages.find(p => p.id === 'pasta')!,
+    description: 'Handmade ravioli filled with Maine lobster, served in a light saffron cream sauce.',
+    nutrition: { kcal: 640, protein: 34, carbs: 58, fat: 32 },
+    allergens: ['Crustaceans', 'Gluten', 'Dairy', 'Egg'],
+  },
+
+  // --- BURGERS ---
+  { 
+    id: 'burger-1', 
+    name: 'The Wagyu Signature', 
+    price: 22.00, 
+    category: 'burgers', 
     image: PlaceHolderImages.find(p => p.id === 'burger')!,
-    description: 'Juicy 100% Wagyu beef patty with caramelized onions, swiss cheese, and our secret sauce on a toasted brioche bun.',
-    nutrition: { kcal: 850, protein: 42, carbs: 54, fat: 38 },
-    allergens: ['Gluten', 'Dairy', 'Sesame'],
+    description: '200g Wagyu patty, aged cheddar, truffle mayo, and balsamic glazed onions.',
+    nutrition: { kcal: 980, protein: 48, carbs: 52, fat: 64 },
+    allergens: ['Gluten', 'Dairy', 'Egg'],
     variations: [
       {
         id: 'doneness',
@@ -118,86 +255,45 @@ export const menuItems: MenuItem[] = [
         type: 'required',
         options: [
           { id: 'rare', name: 'Rare', priceModifier: 0 },
-          { id: 'med-rare', name: 'Med Rare', priceModifier: 0 },
+          { id: 'med-rare', name: 'Medium Rare', priceModifier: 0 },
           { id: 'medium', name: 'Medium', priceModifier: 0 },
           { id: 'well', name: 'Well Done', priceModifier: 0 },
-        ],
-      },
-      {
-        id: 'sides',
-        name: 'Add-on Sides',
-        type: 'multiple',
-        options: [
-          { id: 'fries', name: 'Fries', priceModifier: 4.50 },
-          { id: 'salad', name: 'Side Salad', priceModifier: 3.50 },
-          { id: 'truffle', name: 'Truffle Dip', priceModifier: 2.00 },
         ],
       }
     ]
   },
-  { 
-    id: 'item-2', 
-    name: 'Pepperoni Pizza', 
-    price: 18.50, 
-    category: 'mains', 
-    image: PlaceHolderImages.find(p => p.id === 'pizza')!,
-    description: 'Crispy hand-stretched dough topped with spicy pepperoni, premium mozzarella, and our signature herb-infused tomato sauce.',
-    nutrition: { kcal: 1120, protein: 48, carbs: 124, fat: 42 },
-    allergens: ['Gluten', 'Dairy'],
-    variations: [
-      {
-        id: 'size',
-        name: 'Pizza Size',
-        type: 'required',
-        options: [
-          { id: 'small', name: 'Small (10")', priceModifier: -2 },
-          { id: 'medium', name: 'Medium (12")', priceModifier: 0 },
-          { id: 'large', name: 'Large (14")', priceModifier: 3 },
-        ],
-      },
-      {
-        id: 'crust',
-        name: 'Crust Style',
-        type: 'required',
-        options: [
-          { id: 'classic', name: 'Classic Hand-Tossed', priceModifier: 0 },
-          { id: 'thin', name: 'Thin & Crispy', priceModifier: 0 },
-          { id: 'stuffed', name: 'Stuffed Crust', priceModifier: 2.5 },
-        ],
-      },
-      {
-        id: 'toppings',
-        name: 'Extra Toppings',
-        type: 'multiple',
-        options: [
-          { id: 'extra-cheese', name: 'Extra Mozzarella', priceModifier: 1.5 },
-          { id: 'olives', name: 'Black Olives', priceModifier: 1.0 },
-          { id: 'jalapenos', name: 'Spicy Jalapenos', priceModifier: 1.0 },
-          { id: 'mushrooms', name: 'Forest Mushrooms', priceModifier: 1.5 },
-        ],
-      },
-    ],
+  {
+    id: 'burger-2',
+    name: 'Crispy Pollo',
+    price: 16.50,
+    category: 'burgers',
+    image: PlaceHolderImages.find(p => p.id === 'burger')!,
+    description: 'Buttermilk fried chicken breast, chipotle slaw, and house pickles on brioche.',
+    nutrition: { kcal: 740, protein: 36, carbs: 58, fat: 38 },
+    allergens: ['Gluten', 'Dairy', 'Egg'],
   },
+
+  // --- GRILL ---
   { 
-    id: 'item-3', 
-    name: 'Grilled Steak', 
-    price: 25.00, 
-    category: 'mains', 
+    id: 'grill-1', 
+    name: 'Ribeye Steak 300g', 
+    price: 34.00, 
+    category: 'grill', 
     image: PlaceHolderImages.find(p => p.id === 'steak')!,
-    description: 'Prime 250g ribeye steak grilled to your preference, served with rosemary-garlic butter and roasted vegetables.',
-    nutrition: { kcal: 680, protein: 62, carbs: 12, fat: 45 },
-    allergens: ['Dairy'],
+    description: 'USDA Prime 35-day dry-aged ribeye, seasoned with sea salt and cracked pepper.',
+    nutrition: { kcal: 850, protein: 72, carbs: 0, fat: 62 },
+    allergens: [],
     variations: [
       {
-        id: 'steak-doneness',
+        id: 'steak-temp',
         name: 'Doneness',
         type: 'required',
         options: [
           { id: 'rare', name: 'Rare', priceModifier: 0 },
-          { id: 'med-rare', name: 'Med Rare', priceModifier: 0 },
-          { id: 'medium', name: 'Medium', priceModifier: 0 },
-          { id: 'med-well', name: 'Med Well', priceModifier: 0 },
-          { id: 'well', name: 'Well Done', priceModifier: 0 },
+          { id: 'mr', name: 'Med Rare', priceModifier: 0 },
+          { id: 'm', name: 'Medium', priceModifier: 0 },
+          { id: 'mw', name: 'Med Well', priceModifier: 0 },
+          { id: 'w', name: 'Well Done', priceModifier: 0 },
         ],
       },
       {
@@ -205,81 +301,85 @@ export const menuItems: MenuItem[] = [
         name: 'House Sauce',
         type: 'required',
         options: [
-          { id: 'peppercorn', name: 'Peppercorn', priceModifier: 0 },
-          { id: 'mushroom', name: 'Mushroom Cream', priceModifier: 0 },
-          { id: 'garlic-butter', name: 'Garlic Butter', priceModifier: 0 },
+          { id: 'pepper', name: 'Green Peppercorn', priceModifier: 0 },
+          { id: 'chimichurri', name: 'Chimichurri', priceModifier: 0 },
+          { id: 'blue', name: 'Gorgonzola Butter', priceModifier: 2.50 },
         ],
       }
     ]
   },
-  { 
-    id: 'item-4', 
-    name: 'Spaghetti Bolognese', 
-    price: 16.00, 
-    category: 'mains', 
-    image: PlaceHolderImages.find(p => p.id === 'pasta')!,
-    description: 'Slow-cooked beef ragu with fresh basil, oregano, and San Marzano tomatoes over artisanal egg spaghetti.',
-    nutrition: { kcal: 720, protein: 34, carbs: 88, fat: 24 },
-    allergens: ['Gluten', 'Egg'],
+  {
+    id: 'grill-2',
+    name: 'Grilled Sea Bass',
+    price: 26.50,
+    category: 'grill',
+    image: PlaceHolderImages.find(p => p.id === 'steak')!,
+    description: 'Whole deboned sea bass grilled with lemon, thyme, and Mediterranean caper butter.',
+    nutrition: { kcal: 480, protein: 54, carbs: 4, fat: 28 },
+    allergens: ['Fish', 'Dairy'],
   },
+
+  // --- DESSERTS ---
   { 
-    id: 'item-5', 
-    name: 'Caesar Salad', 
-    price: 9.50, 
-    category: 'starters', 
-    image: PlaceHolderImages.find(p => p.id === 'salad')!,
-    description: 'Fresh romaine hearts, parmesan shavings, and house-made sourdough croutons with traditional caesar dressing.',
-    nutrition: { kcal: 320, protein: 12, carbs: 24, fat: 22 },
-    allergens: ['Dairy', 'Gluten', 'Egg', 'Fish'],
-  },
-  { 
-    id: 'item-6', 
-    name: 'Sushi Platter', 
-    price: 12.00, 
-    category: 'starters', 
-    image: PlaceHolderImages.find(p => p.id === 'sushi')!,
-    description: 'Selection of fresh nigiri and maki rolls featuring premium Atlantic salmon and bluefin tuna.',
-    nutrition: { kcal: 450, protein: 28, carbs: 62, fat: 8 },
-    allergens: ['Fish', 'Soy', 'Sesame'],
-  },
-  { 
-    id: 'item-8', 
-    name: 'Chocolate Lava Cake', 
-    price: 8.00, 
+    id: 'dessert-1', 
+    name: 'Vanilla Bean Panna Cotta', 
+    price: 9.00, 
     category: 'desserts', 
     image: PlaceHolderImages.find(p => p.id === 'cake')!,
-    description: 'Warm, gooey dark chocolate center cake served with a scoop of Madagascan vanilla bean ice cream.',
-    nutrition: { kcal: 540, protein: 8, carbs: 64, fat: 32 },
-    allergens: ['Dairy', 'Gluten', 'Egg'],
+    description: 'Silky smooth panna cotta with Madagascan vanilla and a mixed berry coulis.',
+    nutrition: { kcal: 380, protein: 4, carbs: 32, fat: 26 },
+    allergens: ['Dairy'],
   },
+  {
+    id: 'dessert-2',
+    name: 'Molten Chocolate Cake',
+    price: 11.00,
+    category: 'desserts',
+    image: PlaceHolderImages.find(p => p.id === 'cake')!,
+    description: 'Warm dark chocolate cake with a melting center, served with salted caramel ice cream.',
+    nutrition: { kcal: 620, protein: 8, carbs: 58, fat: 42 },
+    allergens: ['Gluten', 'Dairy', 'Egg'],
+  },
+
+  // --- BEVERAGES ---
   { 
-    id: 'item-9', 
-    name: 'Espresso', 
-    price: 3.50, 
+    id: 'drink-1', 
+    name: 'Double Espresso', 
+    price: 4.50, 
     category: 'drinks', 
     image: PlaceHolderImages.find(p => p.id === 'coffee')!,
-    description: 'Rich, full-bodied double shot of our specialty house-blend Arabica beans.',
-    nutrition: { kcal: 5, protein: 0, carbs: 1, fat: 0 },
+    description: 'Arabica house-blend espresso. Strong and aromatic.',
+    nutrition: { kcal: 10, protein: 0, carbs: 1, fat: 0 },
     variations: [
-        {
-            id: 'milk',
-            name: 'Milk Type',
-            type: 'optional',
-            options: [
-                {id: 'splash-milk', name: 'Splash of Milk', priceModifier: 0.50},
-                {id: 'oat-milk', name: 'Oat Milk', priceModifier: 1.00}
-            ]
-        }
+      {
+        id: 'milk-type',
+        name: 'Milk Preference',
+        type: 'optional',
+        options: [
+          { id: 'soy', name: 'Soy Milk', priceModifier: 0.50 },
+          { id: 'oat', name: 'Oat Milk', priceModifier: 1.00 },
+          { id: 'cream', name: 'Heavy Cream', priceModifier: 0.75 },
+        ],
+      }
     ]
   },
-  { 
-    id: 'item-10', 
-    name: 'Fresh Orange Juice', 
-    price: 5.00, 
-    category: 'drinks', 
+  {
+    id: 'drink-2',
+    name: 'Hibiscus Iced Tea',
+    price: 5.50,
+    category: 'drinks',
     image: PlaceHolderImages.find(p => p.id === 'juice')!,
-    description: '100% pure Valencia oranges, cold-pressed daily. No added sugar.',
-    nutrition: { kcal: 110, protein: 2, carbs: 26, fat: 0 },
+    description: 'Refreshing cold-brewed hibiscus flowers with honey and fresh mint.',
+    nutrition: { kcal: 85, protein: 0, carbs: 22, fat: 0 },
+  },
+  {
+    id: 'drink-3',
+    name: 'Chardonnay 175ml',
+    price: 9.50,
+    category: 'drinks',
+    image: PlaceHolderImages.find(p => p.id['juice'])!,
+    description: 'Crisp white wine with notes of green apple and citrus.',
+    nutrition: { kcal: 125, protein: 0, carbs: 4, fat: 0 },
   },
 ];
 
@@ -289,6 +389,6 @@ export const sampleOrder: Order = {
   tableNumber: '3',
   date: '2025-12-04T02:16:00Z',
   items: [
-    { ...menuItems.find(i => i.id === 'item-2')!, cartItemId: 'item-2', quantity: 1, selectedVariations: { size: 'medium', crust: 'classic' } },
+    { ...menuItems.find(i => i.id === 'pizza-1')!, cartItemId: 'pizza-1', quantity: 1, selectedVariations: { 'pizza-size': 'reg' } },
   ]
 }
