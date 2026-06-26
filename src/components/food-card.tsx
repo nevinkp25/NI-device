@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCart } from '@/context/cart-context';
 import type { MenuItem } from '@/lib/data';
-import { Plus } from 'lucide-react';
+import { Plus, Settings2 } from 'lucide-react';
 import { QuantitySelector } from './quantity-selector';
 import { ProductDetailSheet } from './product-detail-sheet';
 import { cn } from '@/lib/utils';
@@ -17,10 +17,11 @@ export function FoodCard({ item }: { item: MenuItem }) {
 
   const itemsInCart = cartItems.filter(ci => ci.id === item.id);
   const cartItem = itemsInCart.length > 0 ? itemsInCart[0] : undefined;
+  const hasVariations = item.variations && item.variations.length > 0;
 
   const handleQuickAdd = () => {
     // If it has variations, always open sheet
-    if (item.variations && item.variations.length > 0) {
+    if (hasVariations) {
         setDetailSheetOpen(true);
     } else {
         addToCart(item, {});
@@ -46,8 +47,18 @@ export function FoodCard({ item }: { item: MenuItem }) {
           <CardTitle className="text-lg font-bold text-slate-900 tracking-tight leading-snug uppercase">
             {item.name}
           </CardTitle>
+           
+           {/* Customizable Indicator - Only show if not in cart yet */}
+           {hasVariations && !cartItem && (
+             <div className="flex items-center gap-1.5 text-[9px] font-bold text-primary/70 uppercase tracking-widest mt-1.5 animate-in fade-in slide-in-from-left-1 duration-500">
+               <Settings2 className="h-3 w-3" />
+               <span>Options Available</span>
+             </div>
+           )}
+
+           {/* Current Selections if in cart */}
            {cartItem && cartItem.selectedVariations && Object.keys(cartItem.selectedVariations).length > 0 && (
-            <div className="text-[10px] text-primary/70 font-bold uppercase tracking-tight mt-1">
+            <div className="text-[10px] text-primary/70 font-bold uppercase tracking-tight mt-1.5 bg-primary/5 px-2 py-0.5 rounded-md w-fit">
               {Object.values(cartItem.selectedVariations).join(', ')}
             </div>
           )}
