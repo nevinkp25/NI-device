@@ -243,7 +243,7 @@ export default function NavigationPage() {
               <ShieldAlert className="h-8 w-8 text-red-600" />
             </div>
             <DialogTitle className="text-xl font-black uppercase tracking-tight">Admin Authorization</DialogTitle>
-            <DialogDescription className="text-xs font-medium text-slate-500 uppercase tracking-widest leading-relaxed">
+            <DialogDescription className="text-xs font-medium text-slate-500 leading-relaxed">
               Enter Staff ID to authorize terminal reset and branch logout.
             </DialogDescription>
           </DialogHeader>
