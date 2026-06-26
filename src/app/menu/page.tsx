@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { foodCategories, menuItems } from '@/lib/data';
 import { FoodCard } from '@/components/food-card';
 import { FloatingCartButton } from '@/components/floating-cart-button';
-import { Utensils, Home, LayoutGrid, Check, X, Search } from 'lucide-react';
+import { Utensils, ArrowLeft, LayoutGrid, Check, X, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,7 @@ function MenuHeader() {
       <header className="flex items-center p-4">
         <Link href="/navigation" passHref>
           <Button variant="ghost" size="icon" className="text-slate-900 h-12 w-12 hover:bg-slate-100">
-            <Home className="h-7 w-7" />
+            <ArrowLeft className="h-7 w-7" />
           </Button>
         </Link>
         <h1 className="text-xl font-bold mx-auto flex items-center gap-2 text-slate-900 tracking-tight uppercase">
