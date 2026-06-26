@@ -14,12 +14,22 @@ export interface ItemVariation {
   options: VariationOption[];
 }
 
+export interface NutritionInfo {
+  kcal: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
 export interface MenuItem {
   id: string;
   name: string;
   price: number;
   category: string;
   image: (typeof PlaceHolderImages)[0];
+  description?: string;
+  nutrition?: NutritionInfo;
+  allergens?: string[];
   variations?: ItemVariation[];
 }
 
@@ -97,7 +107,10 @@ export const menuItems: MenuItem[] = [
     name: 'Gourmet Burger', 
     price: 15.99, 
     category: 'mains', 
-    image: PlaceHolderImages.find(p => p.id === 'burger')! 
+    image: PlaceHolderImages.find(p => p.id === 'burger')!,
+    description: 'Juicy 100% Wagyu beef patty with caramelized onions, swiss cheese, and our secret sauce on a toasted brioche bun.',
+    nutrition: { kcal: 850, protein: 42, carbs: 54, fat: 38 },
+    allergens: ['Gluten', 'Dairy', 'Sesame'],
   },
   { 
     id: 'item-2', 
@@ -105,6 +118,9 @@ export const menuItems: MenuItem[] = [
     price: 18.50, 
     category: 'mains', 
     image: PlaceHolderImages.find(p => p.id === 'pizza')!,
+    description: 'Crispy hand-stretched dough topped with spicy pepperoni, premium mozzarella, and our signature herb-infused tomato sauce.',
+    nutrition: { kcal: 1120, protein: 48, carbs: 124, fat: 42 },
+    allergens: ['Gluten', 'Dairy'],
     variations: [
       {
         id: 'size',
@@ -137,26 +153,64 @@ export const menuItems: MenuItem[] = [
       },
     ],
   },
-  { id: 'item-3', name: 'Grilled Steak', price: 25.00, category: 'mains', image: PlaceHolderImages.find(p => p.id === 'steak')! },
-  { id: 'item-4', name: 'Spaghetti Bolognese', price: 16.00, category: 'mains', image: PlaceHolderImages.find(p => p.id === 'pasta')! },
-  
-  { id: 'item-5', name: 'Caesar Salad', price: 9.50, category: 'starters', image: PlaceHolderImages.find(p => p.id === 'salad')! },
-  { id: 'item-6', name: 'Sushi Platter', price: 12.00, category: 'starters', image: PlaceHolderImages.find(p => p.id === 'sushi')! },
-  { id: 'item-7', name: 'Crispy Calamaris', price: 29.28, category: 'starters', image: PlaceHolderImages.find(p => p.id === 'sushi')! },
-  { id: 'item-11', name: 'Roasted Tomato', price: 19.00, category: 'starters', image: PlaceHolderImages.find(p => p.id === 'salad')! },
-
-
-  { id: 'item-12', name: 'Grilled Salmon', price: 32.00, category: 'mains', image: PlaceHolderImages.find(p => p.id === 'steak')! },
-  { id: 'item-13', name: 'Chicken Alfredo', price: 26.56, category: 'mains', image: PlaceHolderImages.find(p => p.id === 'pasta')! },
-
-  { id: 'item-8', name: 'Chocolate Lava Cake', price: 8.00, category: 'desserts', image: PlaceHolderImages.find(p => p.id === 'cake')! },
-  
+  { 
+    id: 'item-3', 
+    name: 'Grilled Steak', 
+    price: 25.00, 
+    category: 'mains', 
+    image: PlaceHolderImages.find(p => p.id === 'steak')!,
+    description: 'Prime 250g ribeye steak grilled to your preference, served with rosemary-garlic butter and roasted vegetables.',
+    nutrition: { kcal: 680, protein: 62, carbs: 12, fat: 45 },
+    allergens: ['Dairy'],
+  },
+  { 
+    id: 'item-4', 
+    name: 'Spaghetti Bolognese', 
+    price: 16.00, 
+    category: 'mains', 
+    image: PlaceHolderImages.find(p => p.id === 'pasta')!,
+    description: 'Slow-cooked beef ragu with fresh basil, oregano, and San Marzano tomatoes over artisanal egg spaghetti.',
+    nutrition: { kcal: 720, protein: 34, carbs: 88, fat: 24 },
+    allergens: ['Gluten', 'Egg'],
+  },
+  { 
+    id: 'item-5', 
+    name: 'Caesar Salad', 
+    price: 9.50, 
+    category: 'starters', 
+    image: PlaceHolderImages.find(p => p.id === 'salad')!,
+    description: 'Fresh romaine hearts, parmesan shavings, and house-made sourdough croutons with traditional caesar dressing.',
+    nutrition: { kcal: 320, protein: 12, carbs: 24, fat: 22 },
+    allergens: ['Dairy', 'Gluten', 'Egg', 'Fish'],
+  },
+  { 
+    id: 'item-6', 
+    name: 'Sushi Platter', 
+    price: 12.00, 
+    category: 'starters', 
+    image: PlaceHolderImages.find(p => p.id === 'sushi')!,
+    description: 'Selection of fresh nigiri and maki rolls featuring premium Atlantic salmon and bluefin tuna.',
+    nutrition: { kcal: 450, protein: 28, carbs: 62, fat: 8 },
+    allergens: ['Fish', 'Soy', 'Sesame'],
+  },
+  { 
+    id: 'item-8', 
+    name: 'Chocolate Lava Cake', 
+    price: 8.00, 
+    category: 'desserts', 
+    image: PlaceHolderImages.find(p => p.id === 'cake')!,
+    description: 'Warm, gooey dark chocolate center cake served with a scoop of Madagascan vanilla bean ice cream.',
+    nutrition: { kcal: 540, protein: 8, carbs: 64, fat: 32 },
+    allergens: ['Dairy', 'Gluten', 'Egg'],
+  },
   { 
     id: 'item-9', 
     name: 'Espresso', 
     price: 3.50, 
     category: 'drinks', 
     image: PlaceHolderImages.find(p => p.id === 'coffee')!,
+    description: 'Rich, full-bodied double shot of our specialty house-blend Arabica beans.',
+    nutrition: { kcal: 5, protein: 0, carbs: 1, fat: 0 },
     variations: [
         {
             id: 'milk',
@@ -169,7 +223,15 @@ export const menuItems: MenuItem[] = [
         }
     ]
   },
-  { id: 'item-10', name: 'Fresh Orange Juice', price: 5.00, category: 'drinks', image: PlaceHolderImages.find(p => p.id === 'juice')! },
+  { 
+    id: 'item-10', 
+    name: 'Fresh Orange Juice', 
+    price: 5.00, 
+    category: 'drinks', 
+    image: PlaceHolderImages.find(p => p.id === 'juice')!,
+    description: '100% pure Valencia oranges, cold-pressed daily. No added sugar.',
+    nutrition: { kcal: 110, protein: 2, carbs: 26, fat: 0 },
+  },
 ];
 
 // Sample Order Data
@@ -178,9 +240,6 @@ export const sampleOrder: Order = {
   tableNumber: '3',
   date: '2025-12-04T02:16:00Z',
   items: [
-    { ...menuItems.find(i => i.id === 'item-11')!, cartItemId: 'item-11', quantity: 1, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'item-7')!, cartItemId: 'item-7', quantity: 1, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'item-12')!, cartItemId: 'item-12', quantity: 1, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'item-13')!, cartItemId: 'item-13', quantity: 1, selectedVariations: {} },
+    { ...menuItems.find(i => i.id === 'item-2')!, cartItemId: 'item-2', quantity: 1, selectedVariations: { size: 'medium', crust: 'classic' } },
   ]
 }

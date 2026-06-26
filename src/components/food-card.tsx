@@ -8,44 +8,42 @@ import { useCart } from '@/context/cart-context';
 import type { MenuItem } from '@/lib/data';
 import { Plus } from 'lucide-react';
 import { QuantitySelector } from './quantity-selector';
-import { VariationPickerSheet } from './variation-picker-sheet';
+import { ProductDetailSheet } from './product-detail-sheet';
 import { cn } from '@/lib/utils';
 
 export function FoodCard({ item }: { item: MenuItem }) {
   const { cartItems, addToCart, updateQuantity } = useCart();
-  const [isVariationSheetOpen, setVariationSheetOpen] = useState(false);
+  const [isDetailSheetOpen, setDetailSheetOpen] = useState(false);
 
-  const hasVariations = item.variations && item.variations.length > 0;
   const itemsInCart = cartItems.filter(ci => ci.id === item.id);
   const cartItem = itemsInCart.length > 0 ? itemsInCart[0] : undefined;
 
-  const handleSimpleAdd = () => {
-    addToCart(item, {});
-  };
-
-  const handleVariationAdd = () => {
-    setVariationSheetOpen(true);
+  const handleQuickAdd = () => {
+    // If it has variations, always open sheet
+    if (item.variations && item.variations.length > 0) {
+        setDetailSheetOpen(true);
+    } else {
+        addToCart(item, {});
+    }
   };
   
   const handleCardClick = () => {
-    if (hasVariations) {
-      setVariationSheetOpen(true);
-    }
+    setDetailSheetOpen(true);
   }
 
   return (
     <>
       <Card 
         className={cn(
-          "group flex flex-col overflow-hidden transition-all duration-300 rounded-[1.75rem] bg-white border h-full shadow-sm hover:shadow-md",
+          "group flex flex-col overflow-hidden transition-all duration-300 rounded-[1.75rem] bg-white border h-full shadow-sm hover:shadow-md cursor-pointer",
           (itemsInCart.length > 0) 
             ? "border-primary/30 ring-1 ring-primary/10 bg-primary/[0.02]" 
             : "border-slate-100 hover:border-slate-200"
         )}
         onClick={handleCardClick}
       >
-        <CardHeader className="p-4 pb-2 flex-grow">
-          <CardTitle className="text-base font-bold text-slate-900 tracking-tight leading-snug">
+        <CardHeader className="p-5 pb-2 flex-grow">
+          <CardTitle className="text-lg font-bold text-slate-900 tracking-tight leading-snug uppercase">
             {item.name}
           </CardTitle>
            {cartItem && cartItem.selectedVariations && Object.keys(cartItem.selectedVariations).length > 0 && (
@@ -54,29 +52,29 @@ export function FoodCard({ item }: { item: MenuItem }) {
             </div>
           )}
         </CardHeader>
-        <CardFooter className="p-4 pt-0 flex flex-col gap-2">
-          <div className="w-full flex items-center justify-between mb-1">
-            <p className="font-bold text-lg text-slate-800 tabular-nums">
+        <CardFooter className="p-5 pt-0 flex flex-col gap-3">
+          <div className="w-full flex items-center justify-between">
+            <p className="font-black text-xl text-slate-900 tracking-tighter tabular-nums">
               ${item.price.toFixed(2)}
             </p>
           </div>
           
-          <div className="w-full min-h-[44px]">
+          <div className="w-full min-h-[50px]">
             {cartItem ? (
               <div onClick={(e) => e.stopPropagation()} className="w-full">
                   <QuantitySelector
                       quantity={cartItem.quantity}
                       onIncrease={() => updateQuantity(cartItem.cartItemId, cartItem.quantity + 1)}
-                      onDecrease={() => handleSimpleAdd()} // Simple logic for demo
-                      className="bg-slate-50 border border-slate-100"
+                      onDecrease={() => updateQuantity(cartItem.cartItemId, cartItem.quantity - 1)}
+                      className="bg-slate-50 border border-slate-100 h-12"
                   />
               </div>
             ) : (
               <Button
-                className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-white text-[11px] font-bold shadow-sm transition-all active:scale-[0.98] uppercase tracking-tighter"
+                className="w-full h-12 rounded-[1rem] bg-primary hover:bg-primary/90 text-white text-[11px] font-black shadow-md transition-all active:scale-[0.98] uppercase tracking-widest"
                 onClick={(e) => {
                   e.stopPropagation();
-                  hasVariations ? handleVariationAdd() : handleSimpleAdd();
+                  handleQuickAdd();
                 }}
               >
                 <Plus className="h-4 w-4 mr-1.5" />
@@ -84,23 +82,18 @@ export function FoodCard({ item }: { item: MenuItem }) {
               </Button>
             )}
           </div>
-
-          <div className="h-3 flex items-center justify-center">
-            {hasVariations && (
-              <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">
-                Prep Options
-              </p>
-            )}
-          </div>
+          
+          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] text-center w-full">
+            Tap for Details
+          </p>
         </CardFooter>
       </Card>
-      {hasVariations && (
-        <VariationPickerSheet
-            isOpen={isVariationSheetOpen}
-            onOpenChange={setVariationSheetOpen}
-            item={item}
-        />
-      )}
+
+      <ProductDetailSheet
+          isOpen={isDetailSheetOpen}
+          onOpenChange={setDetailSheetOpen}
+          item={item}
+      />
     </>
   );
 }
