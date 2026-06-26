@@ -39,12 +39,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     let finalPrice = item.price;
     if (item.variations && item.selectedVariations) {
         for (const variation of item.variations) {
-            const selectedOptionId = item.selectedVariations[variation.id];
-            if (selectedOptionId) {
-                const selectedOption = variation.options.find(opt => opt.id === selectedOptionId);
-                if (selectedOption) {
-                    finalPrice += selectedOption.priceModifier;
-                }
+            const selectionValue = item.selectedVariations[variation.id];
+            if (selectionValue) {
+                // Variations are stored as comma-separated values.
+                // Incremental selections are stored as "id:qty".
+                const selectedParts = selectionValue.split(',');
+                selectedParts.forEach(part => {
+                    const [optionId, qtyStr] = part.split(':');
+                    const qty = qtyStr ? parseInt(qtyStr, 10) : 1;
+                    const option = variation.options.find(opt => opt.id === optionId);
+                    if (option) {
+                        finalPrice += (option.priceModifier * qty);
+                    }
+                });
             }
         }
     }

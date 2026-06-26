@@ -32,41 +32,36 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const variationRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Reset state when sheet opens
   useEffect(() => {
     if (isOpen) {
-      const defaultSelections: CartItemVariationSelection = {};
-      item.variations?.forEach(variation => {
-        if (variation.type === 'required' && variation.options.length > 0) {
-           // Waiters make manual selections
-        }
-      });
-      setSelectedVariations(defaultSelections);
+      setSelectedVariations({});
       setQuantity(1);
       setSpecialInstructions('');
     }
-  }, [isOpen, item.variations]);
+  }, [isOpen]);
 
-  const handleVariationSelect = (variationId: string, optionId: string, type: 'required' | 'optional' | 'multiple') => {
+  const handleVariationSelect = (variationId: string, optionId: string, type: 'required' | 'optional' | 'multiple' | 'incremental') => {
     setSelectedVariations(prev => {
       const newSelections = { ...prev };
+      const currentVal = prev[variationId] || '';
       
       if (type === 'multiple') {
-        const currentVals = prev[variationId] ? prev[variationId].split(',') : [];
-        if (currentVals.includes(optionId)) {
-          const filtered = currentVals.filter(v => v !== optionId);
+        const parts = currentVal ? currentVal.split(',') : [];
+        if (parts.includes(optionId)) {
+          const filtered = parts.filter(p => p !== optionId);
           if (filtered.length > 0) newSelections[variationId] = filtered.join(',');
           else delete newSelections[variationId];
         } else {
-          newSelections[variationId] = [...currentVals, optionId].join(',');
+          newSelections[variationId] = [...parts, optionId].join(',');
         }
+      } else if (type === 'incremental') {
+        // Handled separately by handleIncrementalChange for better clarity
       } else {
-        if (type === 'optional' && prev[variationId] === optionId) {
+        if (type === 'optional' && currentVal === optionId) {
           delete newSelections[variationId];
         } else {
           newSelections[variationId] = optionId;
           
-          // Auto-scroll logic for required fields
           if (type === 'required') {
              setTimeout(() => {
                 const currentIndex = item.variations?.findIndex(v => v.id === variationId) ?? -1;
@@ -85,6 +80,47 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
     });
   };
 
+  const handleIncrementalChange = (variationId: string, optionId: string, delta: number) => {
+    setSelectedVariations(prev => {
+        const newSelections = { ...prev };
+        const currentVal = prev[variationId] || '';
+        const parts = currentVal ? currentVal.split(',') : [];
+        
+        const partIndex = parts.findIndex(p => p.startsWith(`${optionId}:`));
+        let newQty = 0;
+        
+        if (partIndex !== -1) {
+            const [, qtyStr] = parts[partIndex].split(':');
+            newQty = Math.max(0, parseInt(qtyStr, 10) + delta);
+            if (newQty > 0) {
+                parts[partIndex] = `${optionId}:${newQty}`;
+            } else {
+                parts.splice(partIndex, 1);
+            }
+        } else if (delta > 0) {
+            newQty = delta;
+            parts.push(`${optionId}:${newQty}`);
+        }
+
+        if (parts.length > 0) {
+            newSelections[variationId] = parts.join(',');
+        } else {
+            delete newSelections[variationId];
+        }
+        
+        return newSelections;
+    });
+  };
+
+  const getIncrementalQty = (variationId: string, optionId: string) => {
+    const val = selectedVariations[variationId] || '';
+    const parts = val.split(',');
+    const part = parts.find(p => p.startsWith(`${optionId}:`));
+    if (!part) return 0;
+    const [, qtyStr] = part.split(':');
+    return parseInt(qtyStr, 10);
+  };
+
   const areAllRequiredSelected = useMemo(() => {
     return item.variations?.every(v => {
       if (v.type === 'required') {
@@ -97,12 +133,14 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
   const finalPrice = useMemo(() => {
     let price = item.price;
     item.variations?.forEach(variation => {
-      const selectedId = selectedVariations[variation.id];
-      if (selectedId) {
-        const selectedIds = selectedId.split(',');
-        selectedIds.forEach(id => {
-          const option = variation.options.find(o => o.id === id);
-          if (option) price += option.priceModifier;
+      const selectionValue = selectedVariations[variation.id];
+      if (selectionValue) {
+        const parts = selectionValue.split(',');
+        parts.forEach(part => {
+            const [optionId, qtyStr] = part.split(':');
+            const qty = qtyStr ? parseInt(qtyStr, 10) : 1;
+            const option = variation.options.find(o => o.id === optionId);
+            if (option) price += (option.priceModifier * qty);
         });
       }
     });
@@ -133,7 +171,6 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
         </SheetHeader>
 
         <div ref={scrollContainerRef} className="flex-grow overflow-y-auto p-6 space-y-10 no-scrollbar pb-24">
-          {/* Description Section */}
           <section className="space-y-3">
              <div className="flex items-center gap-2 text-slate-400">
                 <Info className="h-4 w-4" />
@@ -144,7 +181,6 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
              </p>
           </section>
 
-          {/* Nutritional Facts Grid - TOP PRIORITY */}
           {item.nutrition && (
             <section className="bg-slate-50/50 p-5 rounded-[2rem] border border-slate-100 space-y-4">
               <div className="flex items-center gap-2 text-slate-500">
@@ -159,7 +195,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                    { label: 'FAT', val: `${item.nutrition.fat}g`, icon: Scale, color: 'text-blue-500' }
                  ].map((stat, i) => (
                    <div key={i} className="flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm border border-slate-100">
-                      <span className={cn("text-[10px] font-bold tracking-tighter mb-1 opacity-60")}>{stat.label}</span>
+                      <span className="text-[10px] font-bold tracking-tighter mb-1 opacity-60">{stat.label}</span>
                       <span className="text-sm font-black text-slate-900">{stat.val}</span>
                    </div>
                  ))}
@@ -167,7 +203,6 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
             </section>
           )}
 
-          {/* Allergen Information - TOP PRIORITY */}
           {item.allergens && item.allergens.length > 0 && (
             <section className="space-y-3 px-1">
                <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
@@ -183,10 +218,11 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
             </section>
           )}
 
-          {/* Variations Sections */}
           {item.variations?.map((variation) => {
+             const isIncremental = variation.type === 'incremental';
              const isMultiple = variation.type === 'multiple';
-             const selectedIds = selectedVariations[variation.id]?.split(',') || [];
+             const selectedValue = selectedVariations[variation.id] || '';
+             const selectedIds = selectedValue.split(',').map(v => v.split(':')[0]);
 
              return (
                 <section 
@@ -197,48 +233,73 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                   <div className="flex items-center justify-between px-1">
                     <h3 className="text-xs font-bold text-slate-900 uppercase tracking-tight flex items-center gap-2">
                       {variation.name}
-                      {isMultiple && <span className="text-[9px] font-bold text-slate-400 normal-case">(Select multiple)</span>}
+                      {(isMultiple || isIncremental) && <span className="text-[9px] font-bold text-slate-400 normal-case">(Add multiples)</span>}
                     </h3>
-                    {variation.type === 'required' ? (
-                      <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-md uppercase">
-                        Mandatory
-                      </span>
-                    ) : (
-                      <span className="text-[9px] font-bold text-slate-400 border border-slate-200 px-2 py-0.5 rounded-md uppercase">
-                        Optional
-                      </span>
-                    )}
+                    <span className={cn(
+                        "text-[9px] font-bold px-2 py-0.5 rounded-md uppercase border",
+                        variation.type === 'required' ? "text-red-600 bg-red-50 border-red-100" : "text-slate-400 border-slate-200"
+                    )}>
+                        {variation.type === 'required' ? 'Mandatory' : 'Optional'}
+                    </span>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-3">
                     {variation.options.map(option => {
                       const isActive = selectedIds.includes(option.id);
+                      const qty = isIncremental ? getIncrementalQty(variation.id, option.id) : 0;
+                      
                       return (
-                        <Button
-                          key={option.id}
-                          variant="outline"
-                          onClick={() => handleVariationSelect(variation.id, option.id, variation.type)}
-                          className={cn(
-                            "h-20 flex-col rounded-2xl border-2 transition-all p-3 text-left items-start gap-1",
-                            isActive 
-                              ? "border-primary bg-primary/5 text-primary shadow-sm" 
-                              : "border-slate-100 bg-white text-slate-900 hover:border-slate-300"
-                          )}
-                        >
-                          <div className="flex justify-between w-full items-start">
-                             <span className="font-bold text-sm leading-tight">{option.name}</span>
-                             {isActive && <Check className="h-4 w-4 shrink-0 mt-0.5" />}
-                          </div>
-                          <span className={cn(
-                            "text-[10px] font-bold opacity-60",
-                            option.priceModifier > 0 ? "text-green-600" : ""
-                          )}>
-                            {option.priceModifier !== 0 
-                              ? `${option.priceModifier > 0 ? '+' : ''}$${option.priceModifier.toFixed(2)}` 
-                              : "Standard"
-                            }
-                          </span>
-                        </Button>
+                        <div key={option.id} className={cn(
+                            "flex items-center justify-between p-4 rounded-2xl border-2 transition-all",
+                            (isActive || qty > 0) ? "border-primary bg-primary/5 shadow-sm" : "border-slate-100 bg-white"
+                        )}>
+                            <div className="flex flex-col">
+                                <span className="font-bold text-sm leading-tight text-slate-900">{option.name}</span>
+                                <span className={cn(
+                                    "text-[10px] font-bold opacity-60",
+                                    option.priceModifier > 0 ? "text-green-600" : ""
+                                )}>
+                                    {option.priceModifier !== 0 ? `+$${option.priceModifier.toFixed(2)} unit` : "Standard"}
+                                </span>
+                            </div>
+
+                            {isIncremental ? (
+                                <div className="flex items-center gap-4 bg-white p-1 rounded-xl border border-slate-200">
+                                    <Button 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        className="h-10 w-10 rounded-lg text-slate-400" 
+                                        onClick={() => handleIncrementalChange(variation.id, option.id, -1)}
+                                        disabled={qty <= 0}
+                                    >
+                                        <Minus className="h-5 w-5 stroke-[3]" />
+                                    </Button>
+                                    <span className="w-6 text-center font-black text-xl text-slate-900 tabular-nums">{qty}</span>
+                                    <Button 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        className="h-10 w-10 rounded-lg text-primary" 
+                                        onClick={() => handleIncrementalChange(variation.id, option.id, 1)}
+                                    >
+                                        <Plus className="h-5 w-5 stroke-[3]" />
+                                    </Button>
+                                </div>
+                            ) : (
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => handleVariationSelect(variation.id, option.id, variation.type)}
+                                    className="h-12 w-12 rounded-full hover:bg-transparent"
+                                >
+                                    {isActive ? (
+                                        <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center text-white shadow-md">
+                                            <Check className="h-5 w-5 stroke-[3]" />
+                                        </div>
+                                    ) : (
+                                        <div className="h-8 w-8 rounded-full border-2 border-slate-200" />
+                                    )}
+                                </Button>
+                            )}
+                        </div>
                       )
                     })}
                   </div>
@@ -246,7 +307,6 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
              )
           })}
 
-          {/* Special Kitchen Request - ALWAYS BOTTOM */}
           <section className="space-y-3 pb-8">
             <div className="flex items-center gap-2 text-slate-500 px-1">
                 <MessageSquareText className="h-4 w-4" />
@@ -265,7 +325,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
           <div className="w-full space-y-6">
             <div className="flex items-center justify-between px-2">
                 <div className="space-y-0.5">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Covers</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Batch Size</p>
                     <p className="text-lg font-bold text-slate-900 tracking-tight">Quantity</p>
                 </div>
                 <div className="flex items-center gap-6 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
@@ -278,7 +338,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                     >
                         <Minus className="h-6 w-6 stroke-[3]" />
                     </Button>
-                    <span className="w-8 text-center font-black text-2xl tabular-nums tracking-tighter text-slate-900">{quantity}</span>
+                    <span className="w-8 text-center font-black text-2xl tabular-nums text-slate-900">{quantity}</span>
                     <Button 
                         variant="ghost" 
                         size="icon" 
@@ -294,7 +354,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
               onClick={handleAddToCart}
               disabled={!areAllRequiredSelected}
               className={cn(
-                "w-full h-20 text-white text-xl font-bold rounded-[1.75rem] shadow-xl transition-all active:scale-[0.98] uppercase tracking-tight flex items-center justify-center gap-4 border-none",
+                "w-full h-20 text-white text-xl font-bold rounded-[1.75rem] shadow-xl uppercase tracking-tight flex items-center justify-center gap-4",
                 areAllRequiredSelected ? "bg-[#E54360] hover:bg-[#D43D56]" : "bg-slate-300"
               )}
             >
