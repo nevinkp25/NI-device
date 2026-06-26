@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { foodCategories, menuItems } from '@/lib/data';
 import { FoodCard } from '@/components/food-card';
 import { FloatingCartButton } from '@/components/floating-cart-button';
-import { Utensils, ArrowLeft, LayoutGrid, Check, X, Search, Home, Command } from 'lucide-react';
+import { Utensils, ArrowLeft, LayoutGrid, Check, X, Search, Home, Command, SearchCode } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -98,8 +98,8 @@ export default function MenuPage() {
 
   const searchResults = useMemo(() => {
     if (!searchQuery) {
-        // If searching but no query, show items in the active category within search overlay
-        return menuItems.filter(item => item.category === activeCategory);
+        // Return empty array by default if no query is present
+        return [];
     }
     const q = searchQuery.toLowerCase();
     return menuItems.filter(item => 
@@ -109,16 +109,6 @@ export default function MenuPage() {
       (activeCategory ? item.category === activeCategory : true)
     );
   }, [searchQuery, activeCategory]);
-
-  const globalSearchResults = useMemo(() => {
-    if (!searchQuery) return [];
-    const q = searchQuery.toLowerCase();
-    return menuItems.filter(item => 
-      item.name.toLowerCase().includes(q) || 
-      item.description?.toLowerCase().includes(q) ||
-      item.category.toLowerCase().includes(q)
-    );
-  }, [searchQuery]);
 
   const activeCategoryName = foodCategories.find(c => c.id === activeCategory)?.name || '';
 
@@ -274,18 +264,27 @@ export default function MenuPage() {
                 </div>
               )
             ) : (
-              <div className="space-y-6">
-                 <div className="flex items-center gap-2 px-1">
-                    <LayoutGrid className="h-3 w-3 text-slate-400" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Browsing {activeCategoryName}
+              <div className="flex flex-col items-center justify-center py-32 text-center space-y-6">
+                 <div className="h-24 w-24 bg-white rounded-[2rem] flex items-center justify-center shadow-xl border-2 border-slate-100/50">
+                    <SearchCode className="h-10 w-10 text-slate-300" />
+                 </div>
+                 <div className="space-y-2">
+                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">Ready to Search</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] max-w-[200px] mx-auto">
+                        Type ingredients, dish names, or categories to find items.
                     </p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    {filteredItems.map((item) => (
-                      <FoodCard key={item.id} item={item} />
+                 </div>
+                 <div className="flex flex-wrap justify-center gap-2 max-w-[280px]">
+                    {['Wagyu', 'Pizza', 'Pasta', 'Spicy', 'Truffle'].map(tag => (
+                        <button 
+                            key={tag}
+                            onClick={() => setSearchQuery(tag)}
+                            className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-[9px] font-black text-slate-500 uppercase tracking-widest hover:border-primary/30 transition-colors"
+                        >
+                            {tag}
+                        </button>
                     ))}
-                  </div>
+                 </div>
               </div>
             )}
           </main>
