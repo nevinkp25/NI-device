@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, UserCheck, ArrowLeft } from 'lucide-react';
+import { Loader2, UserCheck, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
@@ -33,8 +33,8 @@ export default function StaffLoginPage() {
     }
     
     toast({
-        title: "Staff ID Recognized",
-        description: `Welcome back, User ${staffId}`,
+        title: "ID Recognized",
+        description: `Welcome back, Terminal User ${staffId}`,
     });
 
     setTimeout(() => {
@@ -45,22 +45,28 @@ export default function StaffLoginPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-8">
       <Link href="/" className="fixed top-8 left-8">
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full hover:bg-slate-100">
-              <ArrowLeft className="h-7 w-7 text-slate-400" />
+          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-slate-100">
+              <ArrowLeft className="h-6 w-6 text-slate-400" />
           </Button>
       </Link>
 
-      <div className="text-center mb-16 animate-in fade-in duration-700">
-        <p className="text-xs font-black text-primary uppercase tracking-[0.4em] mb-2">{restaurantName || 'RESTAURANT'}</p>
-        <h1 className="text-6xl font-black text-slate-900 tracking-tighter">STAFF PORTAL</h1>
-        <p className="text-sm font-bold text-muted-foreground mt-2 uppercase tracking-widest">Shift Management System</p>
+      <div className="text-center mb-12 animate-in fade-in duration-700">
+        <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-2">{restaurantName || 'BRANCH TERMINAL'}</p>
+        <h1 className="text-4xl font-black text-slate-900 tracking-tighter">STAFF PORTAL</h1>
+        <div className="flex items-center justify-center gap-2 mt-2 opacity-40">
+            <ShieldCheck className="h-3 w-3" />
+            <p className="text-[9px] font-bold uppercase tracking-widest">Secure Shift Entry</p>
+        </div>
       </div>
       
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-8">
         <div className="space-y-4">
-          <label htmlFor="staffId" className="block text-xl font-bold text-center text-slate-600 uppercase tracking-tight">
-            Input Employee PIN
-          </label>
+          <div className="text-center">
+            <label htmlFor="staffId" className="inline-block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1">
+                Input Employee PIN
+            </label>
+          </div>
+          
           <Input
             id="staffId"
             type="number"
@@ -68,7 +74,7 @@ export default function StaffLoginPage() {
             value={staffId}
             onChange={(e) => setStaffId(e.target.value)}
             disabled={isLoading}
-            className="text-center text-5xl h-24 font-black border-4 border-slate-200 rounded-3xl shadow-inner focus-visible:ring-primary tabular-nums tracking-tighter"
+            className="text-center text-3xl h-20 font-black border-2 border-slate-200 rounded-2xl shadow-sm focus-visible:ring-primary/20 tabular-nums tracking-tighter"
             autoFocus
           />
         </div>
@@ -76,21 +82,22 @@ export default function StaffLoginPage() {
         <Button
           type="submit"
           disabled={isLoading || !staffId}
-          className="w-full h-24 text-2xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-3xl shadow-2xl flex items-center justify-center gap-4 active:scale-95 transition-all"
+          className="w-full h-16 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
         >
           {isLoading ? (
-            <Loader2 className="animate-spin h-10 w-10" />
+            <Loader2 className="animate-spin h-6 w-6" />
           ) : (
             <>
-              <UserCheck className="h-10 w-10" />
+              <UserCheck className="h-6 w-6" />
               <span>START SHIFT</span>
             </>
           )}
         </Button>
       </form>
 
-      <div className="mt-12 text-center opacity-40">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em]">Hardware Terminal ID: 882-991</p>
+      <div className="mt-12 text-center opacity-30">
+          <p className="text-[9px] font-bold uppercase tracking-[0.3em]">Hardware ID: 882-991-POS</p>
+          <div className="h-1 w-16 bg-slate-200 rounded-full mx-auto mt-2" />
       </div>
     </div>
   );
