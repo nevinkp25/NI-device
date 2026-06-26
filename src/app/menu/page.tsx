@@ -56,10 +56,11 @@ export default function MenuPage() {
   const { cartItems } = useCart();
   const navRef = useRef<HTMLDivElement>(null);
 
-  // Scroll listener to hide/show stepper
+  // Scroll listener to hide/show stepper and stick nav
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      // Threshold for sticking. 54 is the approx height of the stepper.
+      setIsScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -108,11 +109,13 @@ export default function MenuPage() {
         <MenuHeader isScrolled={isScrolled} />
       </Suspense>
 
-      {/* Section Navigation - Sticky with dynamic top based on scroll */}
-      <nav className={cn(
-        "sticky z-40 bg-white/95 backdrop-blur-md py-2 px-4 border-b flex items-center gap-2 shadow-sm transition-all duration-300",
-        isScrolled ? "top-[64px]" : "top-[118px]"
-      )}>
+      {/* Category Navigation - Sticky with dynamic top based on scroll */}
+      <nav 
+        className={cn(
+          "sticky z-40 bg-white/95 backdrop-blur-md py-2 px-4 border-b flex items-center gap-2 shadow-sm transition-all duration-300",
+          isScrolled ? "top-[64px]" : "top-[118px]"
+        )}
+      >
         {!isSearchOpen ? (
           <>
             <Button 
