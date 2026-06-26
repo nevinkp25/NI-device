@@ -11,6 +11,7 @@ import { ShieldCheck, Lock, User } from 'lucide-react';
  * 
  * Provides a secure login layer for the application design.
  * Requires specific credentials to access the terminal design.
+ * Styled to be distinct from the application branding.
  */
 export function DesignGuard({ children }: { children: React.ReactNode }) {
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -44,14 +45,14 @@ export function DesignGuard({ children }: { children: React.ReactNode }) {
 
   if (!isAuthorized) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#0051B5] text-white p-6">
-        <div className="w-full max-w-[340px] space-y-8 animate-in fade-in zoom-in-95 duration-500">
-          <div className="text-center space-y-2">
-            <div className="h-16 w-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-white/20 shadow-xl">
-               <ShieldCheck className="h-8 w-8 text-white" />
+      <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-100 p-6">
+        <div className="w-full max-w-[360px] space-y-8 animate-in fade-in zoom-in-95 duration-500">
+          <div className="text-center space-y-3">
+            <div className="h-20 w-20 bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-slate-800 shadow-2xl">
+               <ShieldCheck className="h-10 w-10 text-slate-400" />
             </div>
-            <h2 className="text-2xl font-black tracking-tighter uppercase">Design Guard</h2>
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-50">Enterprise Access Required</p>
+            <h2 className="text-2xl font-bold tracking-tight">Authorization Required</h2>
+            <p className="text-sm text-slate-500">Please verify your identity to access the terminal design.</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -62,10 +63,10 @@ export function DesignGuard({ children }: { children: React.ReactNode }) {
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-14 rounded-2xl pl-12 font-bold focus-visible:ring-white/30"
+                  className="bg-slate-900 border-slate-800 text-slate-100 placeholder:text-slate-600 h-14 rounded-2xl pl-12 font-medium focus-visible:ring-slate-700"
                   autoFocus
                 />
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 opacity-40" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-600" />
               </div>
               <div className="relative">
                 <Input
@@ -73,30 +74,30 @@ export function DesignGuard({ children }: { children: React.ReactNode }) {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-14 rounded-2xl pl-12 font-bold focus-visible:ring-white/30"
+                  className="bg-slate-900 border-slate-800 text-slate-100 placeholder:text-slate-600 h-14 rounded-2xl pl-12 font-medium focus-visible:ring-slate-700"
                 />
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 opacity-40" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-600" />
               </div>
             </div>
 
             {error && (
-              <div className="bg-red-500/20 border border-red-500/30 p-3 rounded-xl">
-                <p className="text-red-200 text-[9px] font-black uppercase tracking-[0.2em] text-center">
-                  Invalid Security Credentials
+              <div className="bg-red-950/30 border border-red-900/50 p-3 rounded-xl animate-in shake duration-300">
+                <p className="text-red-400 text-xs font-medium text-center">
+                  Invalid security credentials
                 </p>
               </div>
             )}
 
             <Button 
               type="submit"
-              className="w-full h-16 bg-white text-[#0051B5] hover:bg-white/90 font-black uppercase tracking-widest rounded-2xl shadow-2xl transition-all active:scale-95 text-sm"
+              className="w-full h-16 bg-slate-100 text-slate-950 hover:bg-white font-bold rounded-2xl shadow-xl transition-all active:scale-[0.97] text-base"
             >
               Verify Identity
             </Button>
           </form>
 
           <div className="pt-12 text-center opacity-20">
-            <p className="text-[8px] font-black uppercase tracking-[0.5em]">Terminal Node Secure Protocol</p>
+            <p className="text-[10px] font-medium uppercase tracking-[0.2em]">Restricted Access Protocol</p>
           </div>
         </div>
       </div>
