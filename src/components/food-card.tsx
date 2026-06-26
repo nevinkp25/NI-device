@@ -43,21 +43,22 @@ export function FoodCard({ item }: { item: MenuItem }) {
         )}
         onClick={handleCardClick}
       >
-        {/* Professional "Customizable" Identifier Badge */}
-        {hasVariations && !cartItem && (
-          <div className="absolute top-3 right-3 z-10 animate-in fade-in zoom-in duration-500">
-            <div className="flex items-center gap-1 bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-full shadow-sm backdrop-blur-sm">
-              <Settings2 className="h-2.5 w-2.5" />
-              <span className="text-[8px] font-black uppercase tracking-tight">Options</span>
-            </div>
-          </div>
-        )}
-
         <CardHeader className="p-5 pb-2 flex-grow">
-          {/* Added pr-20 to ensure title never overlaps with the top-right badge */}
-          <CardTitle className="text-lg font-bold text-slate-900 tracking-tight leading-tight uppercase pr-20">
-            {item.name}
-          </CardTitle>
+          <div className="flex justify-between items-start gap-2">
+            <CardTitle className="text-lg font-bold text-slate-900 tracking-tight leading-tight uppercase flex-grow">
+              {item.name}
+            </CardTitle>
+            
+            {/* Professional "Customizable" Identifier Badge - Now inside the flex flow to prevent overlap */}
+            {hasVariations && !cartItem && (
+              <div className="shrink-0 animate-in fade-in zoom-in duration-500">
+                <div className="flex items-center gap-1 bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-full shadow-sm backdrop-blur-sm">
+                  <Settings2 className="h-2.5 w-2.5" />
+                  <span className="text-[8px] font-black uppercase tracking-tight">Options</span>
+                </div>
+              </div>
+            )}
+          </div>
 
            {/* Current Selections if already in cart */}
            {cartItem && cartItem.selectedVariations && Object.keys(cartItem.selectedVariations).length > 0 && (
