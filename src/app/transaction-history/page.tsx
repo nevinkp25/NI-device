@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { 
   ArrowLeft, 
@@ -12,7 +12,9 @@ import {
   CreditCard, 
   Landmark, 
   ChevronDown,
-  Hash
+  Hash,
+  Search,
+  X
 } from 'lucide-react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
@@ -25,6 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 interface TransactionRecord {
@@ -81,29 +84,72 @@ const detailedTransactions: TransactionRecord[] = [
 
 export default function TransactionHistoryPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const orderCount = detailedTransactions.length;
+  const filteredTransactions = useMemo(() => {
+    return detailedTransactions.filter(tx => {
+      const matchesSearch = 
+        tx.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tx.table.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // In a real app, we would also filter by date here
+      return matchesSearch;
+    });
+  }, [searchQuery]);
+
+  const orderCount = filteredTransactions.length;
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50/50">
       {/* Professional Terminal Header */}
       <header className="sticky top-0 z-50 bg-[#0051B5] text-white shadow-lg">
-        <div className="flex items-center p-4">
-          <Link href="/navigation" passHref>
-            <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full">
-              <ArrowLeft className="h-6 w-6" />
-            </Button>
-          </Link>
-          <div className="flex flex-col ml-2">
-            <h1 className="text-lg font-black tracking-tight uppercase flex items-center gap-2">
-              <History className="h-5 w-5" />
-              History
-            </h1>
-            <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-none mt-1">
-              Terminal Audit Log
-            </p>
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center">
+            <Link href="/navigation" passHref>
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full">
+                <ArrowLeft className="h-6 w-6" />
+              </Button>
+            </Link>
+            <div className="flex flex-col ml-2">
+              <h1 className="text-lg font-black tracking-tight uppercase flex items-center gap-2">
+                <History className="h-5 w-5" />
+                History
+              </h1>
+              <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-none mt-1">
+                Terminal Audit Log
+              </p>
+            </div>
           </div>
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsSearchVisible(!isSearchVisible)}
+            className={cn(
+              "text-white rounded-full h-12 w-12 transition-all",
+              isSearchVisible ? "bg-white/20" : "hover:bg-white/10"
+            )}
+          >
+            {isSearchVisible ? <X className="h-6 w-6" /> : <Search className="h-6 w-6" />}
+          </Button>
         </div>
+
+        {/* Dynamic Search Bar */}
+        {isSearchVisible && (
+          <div className="px-4 pb-4 animate-in slide-in-from-top-2 duration-300">
+            <div className="relative">
+              <Input 
+                autoFocus
+                placeholder="SEARCH ORDER # OR TABLE..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-12 pl-10 pr-4 bg-white/10 border-white/20 text-white placeholder:text-white/40 font-bold rounded-2xl focus-visible:ring-white/40 uppercase text-xs"
+              />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+            </div>
+          </div>
+        )}
 
         {/* Filter Controls Row */}
         <div className="px-4 pb-5 flex items-center justify-between">
@@ -139,7 +185,7 @@ export default function TransactionHistoryPage() {
       </header>
 
       <main className="p-4 space-y-4 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        {detailedTransactions.map((tx) => (
+        {filteredTransactions.map((tx) => (
           <Card key={tx.id} className="rounded-[2rem] border-slate-200 shadow-sm overflow-hidden bg-white hover:border-primary/20 transition-all group">
             <div className="p-5 flex flex-col gap-4">
               {/* Header: Order & Table */}
@@ -231,12 +277,12 @@ export default function TransactionHistoryPage() {
           </Card>
         ))}
 
-        {detailedTransactions.length === 0 && (
+        {filteredTransactions.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
             <div className="bg-white p-10 rounded-full shadow-sm">
                 <History className="h-16 w-16 text-slate-200" />
             </div>
-            <p className="text-slate-400 font-black uppercase text-xs tracking-widest">No transactions found for this date</p>
+            <p className="text-slate-400 font-black uppercase text-xs tracking-widest">No matching transactions found</p>
           </div>
         )}
       </main>
