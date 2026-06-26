@@ -5,7 +5,7 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Hash, LayoutGrid, Users, Minus, Plus, X } from 'lucide-react';
+import { ArrowLeft, Hash, LayoutGrid, Users, Minus, Plus, X, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { OrderStepper } from '@/components/order-stepper';
@@ -24,10 +24,9 @@ export default function OrderByTablePage() {
   const suggestions = useMemo(() => {
     if (!tableNumber.trim()) return [];
     const search = tableNumber.toLowerCase();
-    // Increased limit to 20 to support larger table counts as requested
     return ALL_TABLES.filter(t => 
       t.id.toLowerCase().includes(search)
-    ).slice(0, 20);
+    ).slice(0, 8); // Keep list manageable for a dropdown
   }, [tableNumber]);
 
   const handleOpenGuestSheet = (id?: string) => {
@@ -73,54 +72,67 @@ export default function OrderByTablePage() {
       </header>
 
       <main className={cn(
-        "flex-grow flex flex-col items-center justify-start px-6 pb-40 transition-all duration-300",
-        isInputFocused ? "pt-4" : "pt-12"
+        "flex-grow flex flex-col items-center justify-start px-6 transition-all duration-300 pt-12"
       )}>
         <form 
           onSubmit={(e) => {
             e.preventDefault();
             handleOpenGuestSheet();
           }} 
-          className="w-full space-y-2"
+          className="w-full relative"
         >
-          <div className="text-center w-full max-w-sm mx-auto">
+          <div className="text-center w-full max-w-sm mx-auto relative">
             <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-300 mb-1">Enter Table ID</p>
-            <Input
-              type="text"
-              placeholder="0000"
-              maxLength={5}
-              value={tableNumber}
-              onFocus={() => setIsInputFocused(true)}
-              onBlur={() => setIsInputFocused(false)}
-              onChange={(e) => setTableNumber(e.target.value)}
-              className={cn(
-                "text-center font-bold border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter transition-all duration-300",
-                isInputFocused ? "text-5xl h-20" : "text-7xl h-32"
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="0000"
+                maxLength={5}
+                value={tableNumber}
+                onFocus={() => setIsInputFocused(true)}
+                onBlur={() => setTimeout(() => setIsInputFocused(false), 200)}
+                onChange={(e) => setTableNumber(e.target.value)}
+                className={cn(
+                  "text-center font-bold border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter transition-all duration-300 h-32 text-7xl"
+                )}
+                autoFocus
+              />
+              
+              {/* Dropdown Popup for Suggestions */}
+              {suggestions.length > 0 && tableNumber.length > 0 && (
+                <div className="absolute top-[80%] left-0 right-0 z-50 mt-4 bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
+                  <div className="p-2 space-y-1">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest p-3 text-left">Quick Matches</p>
+                    {suggestions.map((table) => (
+                      <button
+                        key={table.id}
+                        type="button"
+                        onClick={() => handleSuggestionClick(table)}
+                        className={cn(
+                          "w-full flex items-center justify-between p-4 rounded-2xl transition-all hover:bg-slate-50 active:scale-[0.98] text-left border border-transparent",
+                          table.isOccupied ? "bg-red-50/30" : "bg-white"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "h-3 w-3 rounded-full shadow-sm",
+                            table.isOccupied ? "bg-red-500" : "bg-green-500"
+                          )} />
+                          <span className="font-black text-lg text-slate-900 uppercase tracking-tighter">Table {table.id}</span>
+                        </div>
+                        <span className={cn(
+                          "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border",
+                          table.isOccupied 
+                            ? "bg-red-50 text-red-600 border-red-100" 
+                            : "bg-green-50 text-green-600 border-green-100"
+                        )}>
+                          {table.isOccupied ? 'Occupied' : 'Available'}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
-              autoFocus
-            />
-
-            {/* Professional Grid Layout for handling many tables (10-20+) */}
-            <div className={cn(
-              "grid gap-3 transition-all duration-300 w-full",
-              isInputFocused ? "grid-cols-3 mt-4 mb-6" : "grid-cols-2 mt-8 mb-10 min-h-[160px]"
-            )}>
-              {suggestions.map((table) => (
-                <button
-                  key={table.id}
-                  type="button"
-                  onClick={() => handleSuggestionClick(table)}
-                  className={cn(
-                    "rounded-2xl border-2 font-bold uppercase transition-all shadow-sm active:scale-95 animate-in fade-in zoom-in-95 duration-200 flex items-center justify-center",
-                    isInputFocused ? "h-14 text-sm" : "h-20 text-lg",
-                    table.isOccupied 
-                      ? "bg-destructive/5 border-destructive/10 text-destructive shadow-destructive/5" 
-                      : "bg-white border-primary/10 text-primary hover:border-primary shadow-slate-100"
-                  )}
-                >
-                  {table.id}
-                </button>
-              ))}
             </div>
           </div>
         </form>
