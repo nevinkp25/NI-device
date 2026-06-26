@@ -26,7 +26,7 @@ export default function OrderByTablePage() {
     const search = tableNumber.toLowerCase();
     return ALL_TABLES.filter(t => 
       t.id.toLowerCase().includes(search)
-    ).slice(0, 8); // Keep list manageable for a dropdown
+    ).slice(0, 8); // Limit to 8 for a clean grid (4 rows of 2)
   }, [tableNumber]);
 
   const handleOpenGuestSheet = (id?: string) => {
@@ -98,38 +98,42 @@ export default function OrderByTablePage() {
                 autoFocus
               />
               
-              {/* Dropdown Popup for Suggestions */}
+              {/* Dropdown Popup for Suggestions - Refined Grid Layout */}
               {suggestions.length > 0 && tableNumber.length > 0 && (
                 <div className="absolute top-[80%] left-0 right-0 z-50 mt-4 bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
-                  <div className="p-2 space-y-1">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest p-3 text-left">Quick Matches</p>
-                    {suggestions.map((table) => (
-                      <button
-                        key={table.id}
-                        type="button"
-                        onClick={() => handleSuggestionClick(table)}
-                        className={cn(
-                          "w-full flex items-center justify-between p-4 rounded-2xl transition-all hover:bg-slate-50 active:scale-[0.98] text-left border border-transparent",
-                          table.isOccupied ? "bg-red-50/30" : "bg-white"
-                        )}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={cn(
-                            "h-3 w-3 rounded-full shadow-sm",
-                            table.isOccupied ? "bg-red-500" : "bg-green-500"
-                          )} />
-                          <span className="font-black text-lg text-slate-900 uppercase tracking-tighter">Table {table.id}</span>
-                        </div>
-                        <span className={cn(
-                          "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border",
-                          table.isOccupied 
-                            ? "bg-red-50 text-red-600 border-red-100" 
-                            : "bg-green-50 text-green-600 border-green-100"
-                        )}>
-                          {table.isOccupied ? 'Occupied' : 'Available'}
-                        </span>
-                      </button>
-                    ))}
+                  <div className="p-4">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 text-left pl-1">Quick Matches</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {suggestions.map((table) => (
+                        <button
+                          key={table.id}
+                          type="button"
+                          onClick={() => handleSuggestionClick(table)}
+                          className={cn(
+                            "flex flex-col items-center justify-center p-4 rounded-2xl transition-all hover:bg-slate-50 active:scale-[0.98] border-2 text-center",
+                            table.isOccupied 
+                              ? "bg-red-50/30 border-red-100" 
+                              : "bg-white border-slate-100"
+                          )}
+                        >
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <div className={cn(
+                              "h-2 w-2 rounded-full shadow-sm",
+                              table.isOccupied ? "bg-red-500" : "bg-green-500"
+                            )} />
+                            <span className="font-black text-sm text-slate-900 uppercase tracking-tight">Table {table.id}</span>
+                          </div>
+                          <span className={cn(
+                            "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border",
+                            table.isOccupied 
+                              ? "bg-red-50 text-red-600 border-red-100" 
+                              : "bg-green-50 text-green-600 border-green-100"
+                          )}>
+                            {table.isOccupied ? 'Occupied' : 'Available'}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
