@@ -83,6 +83,18 @@ export default function NavigationPage() {
     });
   };
 
+  const handleAdminLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('restaurantSlug');
+      localStorage.removeItem('staffId');
+    }
+    toast({
+      title: "Terminal Reset",
+      description: "Returning to restaurant configuration...",
+    });
+    router.push('/');
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-[#0051B5]">
       {/* Header */}
@@ -136,7 +148,7 @@ export default function NavigationPage() {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-700" onClick={() => router.push('/')}>
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-700" onClick={handleAdminLogout}>
               <LogOut className="h-4 w-4" />
               <span className="font-bold text-sm">Admin Logout</span>
             </DropdownMenuItem>
