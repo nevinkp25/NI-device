@@ -26,18 +26,18 @@ function MenuHeader() {
 
   return (
     <>
-    <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b">
+    <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b shadow-sm">
       <header className="flex items-center p-4">
         <Link href="/order-by-table" passHref>
-          <Button variant="ghost" size="icon" className="text-slate-600">
-            <ArrowLeft className="h-6 w-6" />
+          <Button variant="ghost" size="icon" className="text-slate-700 h-11 w-11">
+            <ArrowLeft className="h-7 w-7" />
           </Button>
         </Link>
-        <h1 className="text-lg font-bold mx-auto flex items-center gap-2 text-slate-900 tracking-tight uppercase">
+        <h1 className="text-xl font-bold mx-auto flex items-center gap-2 text-slate-900 tracking-tight uppercase">
           {tableNumber ? `Table ${tableNumber}` : 'Order'}
         </h1>
-        <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer">
-          <Avatar className="h-10 w-10 border-2 border-primary/10">
+        <button onClick={() => setIsWaiterProfileOpen(true)} className="cursor-pointer active:scale-95 transition-transform">
+          <Avatar className="h-11 w-11 border-2 border-primary/20 shadow-sm">
             {waiterImage && <AvatarImage src={waiterImage.imageUrl} alt="Staff" />}
             <AvatarFallback>W</AvatarFallback>
           </Avatar>
@@ -64,9 +64,6 @@ export default function MenuPage() {
     return menuItems.filter((item) => {
       const matchesCategory = item.category === activeCategory;
       const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      // If searching, we show matches from all categories or prioritize current?
-      // Usually, in POS, global search is better.
       if (searchQuery) return matchesSearch;
       return matchesCategory;
     });
@@ -77,7 +74,7 @@ export default function MenuPage() {
   const handleCategorySelect = (id: string) => {
     setActiveCategory(id);
     setIsCategorySheetOpen(false);
-    setSearchQuery(''); // Clear search when switching sections
+    setSearchQuery('');
     setIsSearchOpen(false);
   };
 
@@ -87,25 +84,25 @@ export default function MenuPage() {
   };
 
   return (
-    <div className="bg-slate-50/50 min-h-screen">
+    <div className="bg-slate-50 min-h-screen">
       <Suspense fallback={<div>Loading header...</div>}>
         <MenuHeader />
       </Suspense>
 
       {/* Sections Navigation */}
-      <nav className="sticky top-[112px] z-40 bg-white/60 backdrop-blur-md py-4 px-4 border-b flex items-center gap-2">
+      <nav className="sticky top-[124px] z-40 bg-white/95 backdrop-blur-md py-4 px-4 border-b flex items-center gap-3 shadow-sm">
         {!isSearchOpen ? (
           <>
             <Button 
               variant="outline" 
               size="icon" 
               onClick={() => setIsCategorySheetOpen(true)}
-              className="h-10 w-10 shrink-0 rounded-full border-slate-200 text-slate-600 bg-white shadow-sm"
+              className="h-12 w-12 shrink-0 rounded-2xl border-slate-300 text-slate-700 bg-white shadow-sm hover:border-primary/50"
             >
-              <LayoutGrid className="h-5 w-5" />
+              <LayoutGrid className="h-6 w-6" />
             </Button>
             
-            <div className="flex space-x-2.5 overflow-x-auto no-scrollbar flex-grow py-1">
+            <div className="flex space-x-3 overflow-x-auto no-scrollbar flex-grow py-1">
               {foodCategories.map((category) => {
                 const hasItemsInCart = cartItems.some(item => item.category === category.id);
                 return (
@@ -113,15 +110,15 @@ export default function MenuPage() {
                     key={category.id}
                     onClick={() => handleCategorySelect(category.id)}
                     className={cn(
-                      "relative px-5 py-2 rounded-full text-[10px] font-bold whitespace-nowrap transition-all duration-200 uppercase tracking-widest",
+                      "relative px-6 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 uppercase tracking-wider",
                       activeCategory === category.id
-                        ? "bg-primary text-white shadow-md"
-                        : "bg-white border border-slate-200 text-slate-500 hover:bg-slate-50"
+                        ? "bg-primary text-white shadow-lg ring-2 ring-primary/20"
+                        : "bg-white border-2 border-slate-200 text-slate-700 hover:border-slate-400"
                     )}
                   >
                     {category.name}
                     {hasItemsInCart && (
-                      <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-500 rounded-full border border-white animate-in zoom-in-50 duration-300" />
+                      <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-600 rounded-full border-2 border-white shadow-sm" />
                     )}
                   </button>
                 );
@@ -132,24 +129,24 @@ export default function MenuPage() {
               variant="outline" 
               size="icon" 
               onClick={toggleSearch}
-              className="h-10 w-10 shrink-0 rounded-full border-slate-200 text-slate-600 bg-white shadow-sm"
+              className="h-12 w-12 shrink-0 rounded-2xl border-slate-300 text-slate-700 bg-white shadow-sm hover:border-primary/50"
             >
-              <Search className="h-5 w-5" />
+              <Search className="h-6 w-6" />
             </Button>
           </>
         ) : (
-          <div className="flex items-center w-full gap-2 animate-in slide-in-from-right-4 duration-300">
+          <div className="flex items-center w-full gap-3 animate-in slide-in-from-right-4 duration-300">
              <div className="relative flex-grow">
                <Input 
                 autoFocus
-                placeholder="Search Item..."
+                placeholder="Find item..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-10 pl-10 pr-4 rounded-full bg-white border-slate-200 text-sm font-medium focus-visible:ring-primary/20 uppercase tracking-tight"
+                className="h-12 pl-12 pr-4 rounded-2xl bg-slate-50 border-2 border-slate-200 text-base font-bold text-slate-900 focus-visible:ring-primary/20"
                />
-               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
              </div>
-             <Button variant="ghost" size="sm" onClick={toggleSearch} className="text-[10px] font-bold uppercase text-slate-500 tracking-widest px-2">
+             <Button variant="ghost" size="sm" onClick={toggleSearch} className="text-xs font-black uppercase text-slate-600 tracking-widest px-3 h-12">
                 Cancel
              </Button>
           </div>
@@ -158,10 +155,11 @@ export default function MenuPage() {
 
       <main className="p-4 pb-48 animate-in fade-in duration-500">
         <div className="mb-6 px-2">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight uppercase">
+            <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">
                 {searchQuery ? `Search: ${searchQuery}` : activeCategoryName}
             </h2>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">
+            <div className="h-1 w-12 bg-primary rounded-full mt-2 mb-1" />
+            <p className="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">
                 {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} available
             </p>
         </div>
@@ -174,10 +172,10 @@ export default function MenuPage() {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-            <div className="bg-white p-6 rounded-full shadow-sm">
-                <Utensils className="h-10 w-10 text-slate-200" />
+            <div className="bg-white p-8 rounded-full shadow-md">
+                <Utensils className="h-12 w-12 text-slate-300" />
             </div>
-            <p className="text-slate-400 font-medium uppercase text-[10px] tracking-widest">No matching items found</p>
+            <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">No matching items found</p>
           </div>
         )}
       </main>
@@ -187,23 +185,23 @@ export default function MenuPage() {
       {/* Section Selection Bottom Sheet */}
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
         <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-0 bg-slate-50 z-[100]" hideCloseButton>
-          <div className="mx-auto w-12 h-1.5 bg-slate-200 rounded-full mt-3 mb-1" />
-          <SheetHeader className="p-5 flex-row items-center justify-between bg-white border-b rounded-t-[2rem]">
+          <div className="mx-auto w-16 h-2 bg-slate-300 rounded-full mt-4 mb-2" />
+          <SheetHeader className="p-6 flex-row items-center justify-between bg-white border-b rounded-t-[2rem] shadow-sm">
             <div className="flex items-center gap-4 text-left">
-               <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center">
-                  <LayoutGrid className="h-5 w-5 text-slate-600" />
+               <div className="h-12 w-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+                  <LayoutGrid className="h-6 w-6 text-primary" />
                </div>
                <div>
-                  <SheetTitle className="text-lg font-bold text-slate-900 uppercase tracking-tight">Sections</SheetTitle>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-widest">Jump to a section</p>
+                  <SheetTitle className="text-xl font-black text-slate-900 uppercase tracking-tight">MENU SECTIONS</SheetTitle>
+                  <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Select to navigate</p>
                </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsCategorySheetOpen(false)} className="h-10 w-10 rounded-full bg-slate-100">
-               <X className="h-5 w-5" />
+            <Button variant="ghost" size="icon" onClick={() => setIsCategorySheetOpen(false)} className="h-12 w-12 rounded-full bg-slate-100">
+               <X className="h-6 w-6" />
             </Button>
           </SheetHeader>
 
-          <div className="p-4 space-y-2 max-h-[60vh] overflow-y-auto">
+          <div className="p-4 space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar">
             {foodCategories.map((category) => {
               const hasItemsInCart = cartItems.some(item => item.category === category.id);
               return (
@@ -212,24 +210,24 @@ export default function MenuPage() {
                   variant="ghost"
                   onClick={() => handleCategorySelect(category.id)}
                   className={cn(
-                    "w-full h-14 text-sm font-bold rounded-xl justify-between px-5 transition-all uppercase tracking-tight",
+                    "w-full h-16 text-base font-black rounded-2xl justify-between px-6 transition-all uppercase tracking-tight border-2",
                     activeCategory === category.id 
-                      ? "bg-primary/5 text-primary border-none" 
-                      : "text-slate-600 hover:bg-slate-100"
+                      ? "bg-primary text-white border-primary shadow-lg" 
+                      : "text-slate-700 bg-white border-slate-200 hover:border-slate-400"
                   )}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
                     <span>{category.name}</span>
                     {hasItemsInCart && (
-                      <span className="h-2 w-2 bg-red-500 rounded-full shadow-sm" />
+                      <span className="h-3 w-3 bg-red-600 rounded-full shadow-sm ring-2 ring-white" />
                     )}
                   </div>
-                  {activeCategory === category.id && <Check className="h-5 w-5 stroke-[2.5]" />}
+                  {activeCategory === category.id && <Check className="h-6 w-6 stroke-[4]" />}
                 </Button>
               );
             })}
           </div>
-          <div className="h-8 bg-slate-50" />
+          <div className="h-10 bg-slate-50" />
         </SheetContent>
       </Sheet>
     </div>
