@@ -13,10 +13,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Minus, Plus, X, Info, Flame, Scale, Wheat, Beef, MessageSquareText, Check } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import type { MenuItem, CartItemVariationSelection } from '@/lib/data';
+import { Textarea } from '@/components/ui/textarea';
 
 interface ProductDetailSheetProps {
   isOpen: boolean;
@@ -37,11 +36,9 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
   useEffect(() => {
     if (isOpen) {
       const defaultSelections: CartItemVariationSelection = {};
-      // Set defaults for required variations if they only have one option or we want a pre-select
       item.variations?.forEach(variation => {
         if (variation.type === 'required' && variation.options.length > 0) {
-           // We could optionally pre-select the first one, but better to let waiter choose
-           // defaultSelections[variation.id] = variation.options[0].id;
+           // Waiters make manual selections
         }
       });
       setSelectedVariations(defaultSelections);
@@ -64,14 +61,12 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
           newSelections[variationId] = [...currentVals, optionId].join(',');
         }
       } else {
-        // Toggle for optional single-select, or just set for required
         if (type === 'optional' && prev[variationId] === optionId) {
           delete newSelections[variationId];
         } else {
           newSelections[variationId] = optionId;
           
-          // Auto-scroll logic: If it's a required field and we just selected it, 
-          // find the next required variation that isn't filled and scroll to it.
+          // Auto-scroll logic for required fields
           if (type === 'required') {
              setTimeout(() => {
                 const currentIndex = item.variations?.findIndex(v => v.id === variationId) ?? -1;
@@ -82,7 +77,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                         block: 'center' 
                     });
                 }
-             }, 100);
+             }, 150);
           }
         }
       }
@@ -149,6 +144,45 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
              </p>
           </section>
 
+          {/* Nutritional Facts Grid - TOP PRIORITY */}
+          {item.nutrition && (
+            <section className="bg-slate-50/50 p-5 rounded-[2rem] border border-slate-100 space-y-4">
+              <div className="flex items-center gap-2 text-slate-500">
+                <Scale className="h-4 w-4" />
+                <h3 className="text-[10px] font-bold uppercase tracking-widest">Nutritional Info</h3>
+              </div>
+              <div className="grid grid-cols-4 gap-3">
+                 {[
+                   { label: 'KCAL', val: item.nutrition.kcal, icon: Flame, color: 'text-orange-500' },
+                   { label: 'PROT', val: `${item.nutrition.protein}g`, icon: Beef, color: 'text-red-500' },
+                   { label: 'CARB', val: `${item.nutrition.carbs}g`, icon: Wheat, color: 'text-amber-600' },
+                   { label: 'FAT', val: `${item.nutrition.fat}g`, icon: Scale, color: 'text-blue-500' }
+                 ].map((stat, i) => (
+                   <div key={i} className="flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm border border-slate-100">
+                      <span className={cn("text-[10px] font-bold tracking-tighter mb-1 opacity-60")}>{stat.label}</span>
+                      <span className="text-sm font-black text-slate-900">{stat.val}</span>
+                   </div>
+                 ))}
+              </div>
+            </section>
+          )}
+
+          {/* Allergen Information - TOP PRIORITY */}
+          {item.allergens && item.allergens.length > 0 && (
+            <section className="space-y-3 px-1">
+               <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                  Allergen Warnings
+               </h3>
+               <div className="flex flex-wrap gap-2">
+                  {item.allergens.map((allergen, i) => (
+                    <span key={i} className="px-4 py-2 bg-red-50 text-red-600 text-[10px] font-bold rounded-full border border-red-100 uppercase tracking-tight">
+                        {allergen}
+                    </span>
+                  ))}
+               </div>
+            </section>
+          )}
+
           {/* Variations Sections */}
           {item.variations?.map((variation) => {
              const isMultiple = variation.type === 'multiple';
@@ -212,46 +246,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
              )
           })}
 
-          {/* Nutritional Facts Grid */}
-          {item.nutrition && (
-            <section className="bg-slate-50/50 p-5 rounded-[2rem] border border-slate-100 space-y-4">
-              <div className="flex items-center gap-2 text-slate-500">
-                <Scale className="h-4 w-4" />
-                <h3 className="text-[10px] font-bold uppercase tracking-widest">Nutritional Info</h3>
-              </div>
-              <div className="grid grid-cols-4 gap-3">
-                 {[
-                   { label: 'KCAL', val: item.nutrition.kcal, icon: Flame, color: 'text-orange-500' },
-                   { label: 'PROT', val: `${item.nutrition.protein}g`, icon: Beef, color: 'text-red-500' },
-                   { label: 'CARB', val: `${item.nutrition.carbs}g`, icon: Wheat, color: 'text-amber-600' },
-                   { label: 'FAT', val: `${item.nutrition.fat}g`, icon: Scale, color: 'text-blue-500' }
-                 ].map((stat, i) => (
-                   <div key={i} className="flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm border border-slate-100">
-                      <span className={cn("text-[10px] font-bold tracking-tighter mb-1 opacity-60")}>{stat.label}</span>
-                      <span className="text-sm font-black text-slate-900">{stat.val}</span>
-                   </div>
-                 ))}
-              </div>
-            </section>
-          )}
-
-          {/* Allergen Information */}
-          {item.allergens && item.allergens.length > 0 && (
-            <section className="space-y-3 px-1">
-               <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                  Allergen Warnings
-               </h3>
-               <div className="flex flex-wrap gap-2">
-                  {item.allergens.map((allergen, i) => (
-                    <span key={i} className="px-4 py-2 bg-red-50 text-red-600 text-[10px] font-bold rounded-full border border-red-100 uppercase tracking-tight">
-                        {allergen}
-                    </span>
-                  ))}
-               </div>
-            </section>
-          )}
-
-          {/* Special Kitchen Request */}
+          {/* Special Kitchen Request - ALWAYS BOTTOM */}
           <section className="space-y-3 pb-8">
             <div className="flex items-center gap-2 text-slate-500 px-1">
                 <MessageSquareText className="h-4 w-4" />
