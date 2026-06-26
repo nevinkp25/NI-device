@@ -10,7 +10,7 @@ export interface VariationOption {
 export interface ItemVariation {
   id: string;
   name: string; // e.g., "Size", "Extras"
-  type: 'required' | 'optional';
+  type: 'required' | 'optional' | 'multiple';
   options: VariationOption[];
 }
 
@@ -34,7 +34,7 @@ export interface MenuItem {
 }
 
 // A unique ID for a cart item is its base ID plus its selected variations.
-export type CartItemVariationSelection = Record<string, string>; // e.g., { size: 'medium' }
+export type CartItemVariationSelection = Record<string, string>; // e.g., { size: 'medium', extras: 'extra-cheese,olives' }
 
 export interface CartItem extends MenuItem {
   cartItemId: string; // A unique identifier for this specific item configuration in the cart
@@ -111,6 +111,29 @@ export const menuItems: MenuItem[] = [
     description: 'Juicy 100% Wagyu beef patty with caramelized onions, swiss cheese, and our secret sauce on a toasted brioche bun.',
     nutrition: { kcal: 850, protein: 42, carbs: 54, fat: 38 },
     allergens: ['Gluten', 'Dairy', 'Sesame'],
+    variations: [
+      {
+        id: 'doneness',
+        name: 'Cooking Level',
+        type: 'required',
+        options: [
+          { id: 'rare', name: 'Rare', priceModifier: 0 },
+          { id: 'med-rare', name: 'Med Rare', priceModifier: 0 },
+          { id: 'medium', name: 'Medium', priceModifier: 0 },
+          { id: 'well', name: 'Well Done', priceModifier: 0 },
+        ],
+      },
+      {
+        id: 'sides',
+        name: 'Add-on Sides',
+        type: 'multiple',
+        options: [
+          { id: 'fries', name: 'Fries', priceModifier: 4.50 },
+          { id: 'salad', name: 'Side Salad', priceModifier: 3.50 },
+          { id: 'truffle', name: 'Truffle Dip', priceModifier: 2.00 },
+        ],
+      }
+    ]
   },
   { 
     id: 'item-2', 
@@ -124,31 +147,33 @@ export const menuItems: MenuItem[] = [
     variations: [
       {
         id: 'size',
-        name: 'Size',
+        name: 'Pizza Size',
         type: 'required',
         options: [
-          { id: 'small', name: 'Small', priceModifier: -2 },
-          { id: 'medium', name: 'Medium', priceModifier: 0 },
-          { id: 'large', name: 'Large', priceModifier: 3 },
+          { id: 'small', name: 'Small (10")', priceModifier: -2 },
+          { id: 'medium', name: 'Medium (12")', priceModifier: 0 },
+          { id: 'large', name: 'Large (14")', priceModifier: 3 },
         ],
       },
       {
         id: 'crust',
-        name: 'Crust',
+        name: 'Crust Style',
         type: 'required',
         options: [
-          { id: 'classic', name: 'Classic', priceModifier: 0 },
-          { id: 'thin', name: 'Thin', priceModifier: 0 },
-          { id: 'stuffed', name: 'Stuffed', priceModifier: 2.5 },
+          { id: 'classic', name: 'Classic Hand-Tossed', priceModifier: 0 },
+          { id: 'thin', name: 'Thin & Crispy', priceModifier: 0 },
+          { id: 'stuffed', name: 'Stuffed Crust', priceModifier: 2.5 },
         ],
       },
       {
-        id: 'extras',
-        name: 'Extras',
-        type: 'optional',
+        id: 'toppings',
+        name: 'Extra Toppings',
+        type: 'multiple',
         options: [
-          { id: 'extra-cheese', name: 'Extra Cheese', priceModifier: 1.5 },
-          { id: 'olives', name: 'Olives', priceModifier: 1.0 },
+          { id: 'extra-cheese', name: 'Extra Mozzarella', priceModifier: 1.5 },
+          { id: 'olives', name: 'Black Olives', priceModifier: 1.0 },
+          { id: 'jalapenos', name: 'Spicy Jalapenos', priceModifier: 1.0 },
+          { id: 'mushrooms', name: 'Forest Mushrooms', priceModifier: 1.5 },
         ],
       },
     ],
@@ -162,6 +187,30 @@ export const menuItems: MenuItem[] = [
     description: 'Prime 250g ribeye steak grilled to your preference, served with rosemary-garlic butter and roasted vegetables.',
     nutrition: { kcal: 680, protein: 62, carbs: 12, fat: 45 },
     allergens: ['Dairy'],
+    variations: [
+      {
+        id: 'steak-doneness',
+        name: 'Doneness',
+        type: 'required',
+        options: [
+          { id: 'rare', name: 'Rare', priceModifier: 0 },
+          { id: 'med-rare', name: 'Med Rare', priceModifier: 0 },
+          { id: 'medium', name: 'Medium', priceModifier: 0 },
+          { id: 'med-well', name: 'Med Well', priceModifier: 0 },
+          { id: 'well', name: 'Well Done', priceModifier: 0 },
+        ],
+      },
+      {
+        id: 'steak-sauce',
+        name: 'House Sauce',
+        type: 'required',
+        options: [
+          { id: 'peppercorn', name: 'Peppercorn', priceModifier: 0 },
+          { id: 'mushroom', name: 'Mushroom Cream', priceModifier: 0 },
+          { id: 'garlic-butter', name: 'Garlic Butter', priceModifier: 0 },
+        ],
+      }
+    ]
   },
   { 
     id: 'item-4', 
@@ -214,7 +263,7 @@ export const menuItems: MenuItem[] = [
     variations: [
         {
             id: 'milk',
-            name: 'Milk',
+            name: 'Milk Type',
             type: 'optional',
             options: [
                 {id: 'splash-milk', name: 'Splash of Milk', priceModifier: 0.50},
