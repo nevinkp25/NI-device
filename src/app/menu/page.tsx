@@ -21,18 +21,18 @@ function MenuHeader() {
 
   return (
     <div className="sticky top-0 z-50 bg-white border-b shadow-sm">
-      <header className="flex items-center p-4">
+      <header className="flex items-center p-3">
         <Link href="/order-by-table" passHref>
-          <Button variant="ghost" size="icon" className="text-slate-900 h-12 w-12 hover:bg-slate-100">
-            <ArrowLeft className="h-7 w-7" />
+          <Button variant="ghost" size="icon" className="text-slate-900 h-10 w-10 hover:bg-slate-100">
+            <ArrowLeft className="h-6 w-6" />
           </Button>
         </Link>
-        <h1 className="text-xl font-bold mx-auto flex items-center gap-2 text-slate-900 tracking-tight uppercase">
+        <h1 className="text-sm font-black mx-auto flex items-center gap-2 text-slate-900 tracking-tight uppercase">
           {tableNumber ? `Table ${tableNumber}` : 'Current Order'}
         </h1>
         <Link href="/navigation" passHref>
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-slate-100 text-slate-900 border-2 border-primary/20 hover:bg-slate-200 active:scale-95 transition-transform shadow-sm">
-            <Home className="h-6 w-6" />
+          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-100 text-slate-900 border-2 border-primary/20 hover:bg-slate-200 shadow-sm">
+            <Home className="h-5 w-5" />
           </Button>
         </Link>
       </header>
@@ -92,22 +92,22 @@ export default function MenuPage() {
         <MenuHeader />
       </Suspense>
 
-      {/* Section Navigation - Optimized for Visibility and Auto-centering */}
-      <nav className="sticky top-[128px] z-40 bg-white py-4 px-4 border-b flex items-center gap-3 shadow-md">
+      {/* Section Navigation - Compact & Professional */}
+      <nav className="sticky top-[93px] z-40 bg-white/95 backdrop-blur-md py-2 px-4 border-b flex items-center gap-2 shadow-sm">
         {!isSearchOpen ? (
           <>
             <Button 
               variant="outline" 
               size="icon" 
               onClick={() => setIsCategorySheetOpen(true)}
-              className="h-14 w-14 shrink-0 rounded-2xl border-slate-400 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
+              className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
             >
-              <LayoutGrid className="h-7 w-7" />
+              <LayoutGrid className="h-5 w-5" />
             </Button>
             
             <div 
               ref={navRef}
-              className="flex space-x-3 overflow-x-auto no-scrollbar flex-grow py-1 scroll-smooth"
+              className="flex space-x-2 overflow-x-auto no-scrollbar flex-grow py-1 scroll-smooth"
             >
               {foodCategories.map((category) => {
                 const hasItemsInCart = cartItems.some(item => item.category === category.id);
@@ -117,15 +117,15 @@ export default function MenuPage() {
                     id={`nav-item-${category.id}`}
                     onClick={() => handleCategorySelect(category.id)}
                     className={cn(
-                      "relative px-6 py-3 rounded-full text-base font-bold whitespace-nowrap transition-all duration-300 tracking-wide",
+                      "relative px-4 py-2 rounded-xl text-[10px] font-black whitespace-nowrap transition-all duration-300 tracking-[0.1em] uppercase",
                       activeCategory === category.id
-                        ? "bg-primary text-white shadow-xl ring-2 ring-primary/20 scale-105"
-                        : "bg-white border-2 border-slate-400 text-slate-900 hover:border-slate-600"
+                        ? "bg-primary text-white shadow-md ring-2 ring-primary/10"
+                        : "bg-white border border-slate-200 text-slate-500 hover:border-slate-300"
                     )}
                   >
                     {category.name}
                     {hasItemsInCart && (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-600 rounded-full border-2 border-white shadow-md" />
+                      <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-600 rounded-full border border-white shadow-sm" />
                     )}
                   </button>
                 );
@@ -136,24 +136,24 @@ export default function MenuPage() {
               variant="outline" 
               size="icon" 
               onClick={toggleSearch}
-              className="h-14 w-14 shrink-0 rounded-2xl border-slate-400 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
+              className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-900 bg-white shadow-sm hover:border-primary active:scale-95"
             >
-              <Search className="h-7 w-7" />
+              <Search className="h-5 w-5" />
             </Button>
           </>
         ) : (
-          <div className="flex items-center w-full gap-3 animate-in slide-in-from-right-4 duration-300">
+          <div className="flex items-center w-full gap-2 animate-in slide-in-from-right-4 duration-300 h-10">
              <div className="relative flex-grow">
                <Input 
                 autoFocus
                 placeholder="Find item..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-14 pl-12 pr-4 rounded-2xl bg-slate-50 border-2 border-slate-400 text-lg font-bold text-slate-900 focus-visible:ring-primary/20"
+                className="h-9 pl-9 pr-4 rounded-xl bg-slate-50 border-slate-200 text-xs font-bold text-slate-900 focus-visible:ring-primary/20"
                />
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-900" />
+               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
              </div>
-             <Button variant="ghost" size="sm" onClick={toggleSearch} className="text-sm font-bold uppercase text-slate-900 tracking-widest px-4 h-14">
+             <Button variant="ghost" size="sm" onClick={toggleSearch} className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2 h-9">
                 Cancel
              </Button>
           </div>
@@ -161,54 +161,53 @@ export default function MenuPage() {
       </nav>
 
       <main className="p-4 pb-48 animate-in fade-in duration-500">
-        <div className="mb-6 px-2">
-            <h2 className="text-3xl font-bold text-slate-900 tracking-tight uppercase">
+        <div className="mb-4 px-1">
+            <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">
                 {searchQuery ? `Search: ${searchQuery}` : activeCategoryName}
             </h2>
-            <div className="h-1.5 w-16 bg-primary rounded-full mt-2 mb-1" />
-            <p className="text-sm font-bold text-slate-600 uppercase tracking-widest">
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">
                 {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} available
             </p>
         </div>
 
         {filteredItems.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             {filteredItems.map((item) => (
               <FoodCard key={item.id} item={item} />
             ))}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-            <div className="bg-white p-10 rounded-full shadow-md">
-                <Utensils className="h-16 w-16 text-slate-300" />
+            <div className="bg-white p-8 rounded-full shadow-sm">
+                <Utensils className="h-12 w-12 text-slate-200" />
             </div>
-            <p className="text-slate-900 font-bold uppercase text-sm tracking-widest">No matching items found</p>
+            <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest">No matching items</p>
           </div>
         )}
       </main>
 
       <FloatingCartButton />
 
-      {/* Section Selection Bottom Sheet - High Visibility */}
+      {/* Section Selection Bottom Sheet - Compact */}
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
-        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-0 bg-slate-50 z-[100]" hideCloseButton>
-          <div className="mx-auto w-16 h-2 bg-slate-300 rounded-full mt-4 mb-2" />
-          <SheetHeader className="p-6 flex-row items-center justify-between bg-white border-b rounded-t-[2rem] shadow-sm">
-            <div className="flex items-center gap-4 text-left">
-               <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center">
-                  <LayoutGrid className="h-7 w-7 text-primary" />
+        <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2rem] border-t-0 bg-slate-50 z-[100]" hideCloseButton>
+          <div className="mx-auto w-10 h-1 bg-slate-200 rounded-full mt-3 mb-1" />
+          <SheetHeader className="p-4 flex-row items-center justify-between bg-white border-b rounded-t-[1.5rem] shadow-sm">
+            <div className="flex items-center gap-3 text-left">
+               <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <LayoutGrid className="h-5 w-5 text-primary" />
                </div>
                <div>
-                  <SheetTitle className="text-2xl font-bold text-slate-900 uppercase tracking-tight">MENU SECTIONS</SheetTitle>
-                  <p className="text-sm text-slate-600 font-bold uppercase tracking-widest">Select to navigate</p>
+                  <SheetTitle className="text-lg font-black text-slate-900 uppercase tracking-tight">MENU SECTIONS</SheetTitle>
+                  <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">Quick Navigation</p>
                </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsCategorySheetOpen(false)} className="h-12 w-12 rounded-full bg-slate-100">
-               <X className="h-7 w-7" />
+            <Button variant="ghost" size="icon" onClick={() => setIsCategorySheetOpen(false)} className="h-10 w-10 rounded-full bg-slate-100">
+               <X className="h-5 w-5" />
             </Button>
           </SheetHeader>
 
-          <div className="p-4 space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar">
+          <div className="p-4 space-y-2 max-h-[60vh] overflow-y-auto no-scrollbar">
             {foodCategories.map((category) => {
               const hasItemsInCart = cartItems.some(item => item.category === category.id);
               return (
@@ -217,24 +216,24 @@ export default function MenuPage() {
                   variant="ghost"
                   onClick={() => handleCategorySelect(category.id)}
                   className={cn(
-                    "w-full h-20 text-lg font-bold rounded-2xl justify-between px-8 transition-all uppercase tracking-tight border-2",
+                    "w-full h-14 text-sm font-black rounded-xl justify-between px-6 transition-all uppercase tracking-tight border",
                     activeCategory === category.id 
-                      ? "bg-primary text-white border-primary shadow-xl scale-[1.02]" 
-                      : "text-slate-900 bg-white border-slate-300 hover:border-slate-500"
+                      ? "bg-primary text-white border-primary shadow-md" 
+                      : "text-slate-900 bg-white border-slate-100 hover:border-slate-200"
                   )}
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <span>{category.name}</span>
                     {hasItemsInCart && (
-                      <span className="h-4 w-4 bg-red-600 rounded-full shadow-md ring-2 ring-white" />
+                      <span className="h-2 w-2 bg-red-600 rounded-full shadow-sm ring-2 ring-white" />
                     )}
                   </div>
-                  {activeCategory === category.id && <Check className="h-7 w-7 stroke-[4]" />}
+                  {activeCategory === category.id && <Check className="h-5 w-5 stroke-[4]" />}
                 </Button>
               );
             })}
           </div>
-          <div className="h-12 bg-slate-50" />
+          <div className="h-8 bg-slate-50" />
         </SheetContent>
       </Sheet>
     </div>
