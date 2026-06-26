@@ -56,10 +56,11 @@ export default function MenuPage() {
   const { cartItems } = useCart();
   const navRef = useRef<HTMLDivElement>(null);
 
-  // Scroll listener to manage header states
+  // Scroll listener to manage sticky behavior
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const scrollPos = window.scrollY || document.documentElement.scrollTop;
+      setIsScrolled(scrollPos > 20);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -181,7 +182,7 @@ export default function MenuPage() {
         </nav>
       </div>
 
-      <main className="p-4 pb-48 animate-in fade-in duration-500">
+      <main className="p-4 pb-48 animate-in fade-in duration-500 min-h-screen">
         <div className="mb-4 px-1">
             <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">
                 {searchQuery ? `Search: ${searchQuery}` : activeCategoryName}
