@@ -136,7 +136,7 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                                             className={cn(
                                                 "w-full h-14 rounded-xl border-2 flex flex-col items-center justify-center transition-all",
                                                 isActive
-                                                    ? "bg-primary text-white border-primary shadow-md"
+                                                    ? "bg-primary/10 text-primary border-primary shadow-sm"
                                                     : "bg-white border-slate-100 text-slate-900"
                                             )}
                                         >
@@ -164,11 +164,11 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                                     className={cn(
                                         "w-full h-14 rounded-xl border-2 flex flex-col items-center justify-center gap-0.5 transition-all",
                                         showCustomTip
-                                            ? "bg-primary text-white border-primary shadow-md"
+                                            ? "bg-primary/10 text-primary border-primary shadow-sm"
                                             : "bg-white border-slate-100 text-slate-900"
                                     )}
                                 >
-                                    <Pen className={cn("h-4 w-4", showCustomTip ? "text-white" : "text-slate-400")} />
+                                    <Pen className={cn("h-4 w-4", showCustomTip ? "text-primary" : "text-slate-400")} />
                                     <span className="text-[9px] font-bold uppercase leading-none">Custom</span>
                                 </Button>
                                 {showCustomTip && (
