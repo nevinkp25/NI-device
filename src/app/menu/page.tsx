@@ -27,9 +27,12 @@ function MenuHeader({ isScrolled }: { isScrolled: boolean }) {
             <ArrowLeft className="h-6 w-6" />
           </Button>
         </Link>
-        <h1 className="text-sm font-black mx-auto flex items-center gap-2 text-slate-900 tracking-tight uppercase">
-          {tableNumber ? `Table ${tableNumber}` : 'Current Order'}
-        </h1>
+        <div className="flex flex-col items-center mx-auto">
+            <h1 className="text-sm font-black flex items-center gap-2 text-slate-900 tracking-tight uppercase">
+            {tableNumber ? `Table ${tableNumber}` : 'Current Order'}
+            </h1>
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Branch Terminal v2.4</p>
+        </div>
         <Link href="/navigation" passHref>
           <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-100 text-slate-900 border-2 border-primary/20 hover:bg-slate-200 shadow-sm">
             <Home className="h-5 w-5" />
@@ -38,11 +41,16 @@ function MenuHeader({ isScrolled }: { isScrolled: boolean }) {
       </header>
       
       <div className={cn(
-        "overflow-hidden transition-all duration-300 ease-in-out",
-        isScrolled ? "max-h-0 opacity-0" : "max-h-20 opacity-100"
+        "transition-all duration-300 ease-in-out",
+        isScrolled ? "h-0 opacity-0 overflow-hidden" : "h-auto opacity-100"
       )}>
         <OrderStepper currentStep={2} />
       </div>
+      {isScrolled && (
+        <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+            <OrderStepper currentStep={2} compact />
+        </div>
+      )}
     </div>
   );
 }
@@ -60,7 +68,7 @@ export default function MenuPage() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY || document.documentElement.scrollTop;
-      setIsScrolled(scrollPos > 20);
+      setIsScrolled(scrollPos > 40);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);

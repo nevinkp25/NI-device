@@ -1,7 +1,7 @@
+
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
 import React from "react";
 
 export interface Step {
@@ -17,51 +17,46 @@ const DEFAULT_STEPS: Step[] = [
 
 export function OrderStepper({ 
   currentStep, 
-  steps = DEFAULT_STEPS 
+  steps = DEFAULT_STEPS,
+  compact = false
 }: { 
   currentStep: number; 
-  steps?: Step[] 
+  steps?: Step[];
+  compact?: boolean;
 }) {
   return (
-    <div className="w-full bg-background pt-1.5 pb-2.5">
-      <div className="flex items-center justify-center px-4 max-w-[360px] mx-auto relative">
+    <div className={cn(
+        "w-full bg-white transition-all duration-300",
+        compact ? "py-1 px-4" : "pt-1.5 pb-2.5 px-4"
+    )}>
+      <div className="flex items-center justify-center gap-1.5 max-w-[360px] mx-auto">
         {steps.map((step, index) => {
           const isCompleted = currentStep > step.id;
           const isActive = currentStep === step.id;
-          const isLast = index === steps.length - 1;
 
           return (
-            <React.Fragment key={step.id}>
-              {/* Step Circle & Label Group */}
-              <div className="flex flex-col items-center gap-1 z-10 relative flex-1 min-w-[60px]">
-                <div className={cn(
-                  "h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-black transition-all duration-300 border-2",
-                  isCompleted 
-                    ? "bg-green-600 border-green-600 text-white" 
-                    : isActive 
-                      ? "bg-primary border-primary text-white shadow-sm scale-105" 
-                      : "bg-white border-slate-300 text-slate-600"
-                )}>
-                  {isCompleted ? <Check className="h-3.5 w-3.5 stroke-[4]" /> : step.id}
+            <div key={step.id} className="flex-1 flex flex-col gap-1">
+                <div 
+                    className={cn(
+                        "h-1.5 rounded-full transition-all duration-500 relative",
+                        isCompleted ? "bg-green-600" : 
+                        isActive ? "bg-primary shadow-[0_0_10px_rgba(0,81,181,0.3)]" : 
+                        "bg-slate-100"
+                    )}
+                >
+                    {isActive && (
+                        <div className="absolute inset-0 bg-primary/20 animate-pulse rounded-full" />
+                    )}
                 </div>
-                <span className={cn(
-                  "text-[9px] font-black uppercase transition-colors duration-300",
-                  isActive ? "text-primary" : isCompleted ? "text-green-700" : "text-slate-600"
-                )}>
-                  {step.label}
-                </span>
-              </div>
-
-              {/* Progress Line */}
-              {!isLast && (
-                <div className="flex-grow h-[2px] -mt-4 bg-slate-200 mx-0 z-0">
-                   <div className={cn(
-                     "h-full transition-all duration-700 ease-in-out",
-                     isCompleted ? "bg-green-600 w-full" : "w-0"
-                   )} />
-                </div>
-              )}
-            </React.Fragment>
+                {!compact && (
+                    <span className={cn(
+                        "text-[8px] font-black text-center uppercase transition-colors duration-300 tracking-widest",
+                        isActive ? "text-primary" : isCompleted ? "text-green-700" : "text-slate-400"
+                    )}>
+                        {step.label}
+                    </span>
+                )}
+            </div>
           )
         })}
       </div>
