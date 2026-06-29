@@ -16,11 +16,19 @@ function CardPaymentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [countdown, setCountdown] = useState(PAYMENT_TIMEOUT);
+  const [staffId, setStaffId] = useState('000000');
 
   const amountParam = searchParams.get('amount');
   const returnUrl = searchParams.get('returnUrl') || '/success';
   const table = searchParams.get('table') || '---';
   const paymentAmount = amountParam ? parseFloat(amountParam) : subtotal;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const id = localStorage.getItem('staffId');
+      if (id) setStaffId(id);
+    }
+  }, []);
 
   // Stable transaction ID generated once
   const transactionId = useMemo(() => 
@@ -56,8 +64,8 @@ function CardPaymentContent() {
           </Button>
         </Link>
         <div className="flex flex-col items-center mx-auto">
-          <h1 className="text-sm font-bold uppercase text-slate-900 tracking-tight">Payment Processing</h1>
-          <p className="text-[10px] font-bold text-slate-400 uppercase leading-none mt-0.5">Terminal ID: #8822</p>
+          <h1 className="text-sm font-bold uppercase text-slate-900">Payment Processing</h1>
+          <p className="text-[10px] font-bold text-slate-400 uppercase leading-none mt-0.5">Emp ID: #{staffId}</p>
         </div>
         <div className="w-10"></div>
       </header>
@@ -71,13 +79,13 @@ function CardPaymentContent() {
         
         <div className="space-y-3 w-full max-w-xs">
           <div className="space-y-1">
-            <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Authorizing Charge</h2>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Do not remove card</p>
+            <h2 className="text-xl font-bold text-slate-900 uppercase">Authorizing Charge</h2>
+            <p className="text-xs font-bold text-slate-400 uppercase">Do not remove card</p>
           </div>
           
-          <Card className="p-6 border-none shadow-sm rounded-3xl bg-white space-y-1">
-            <p className="text-4xl font-bold text-primary tabular-nums tracking-tighter">${paymentAmount.toFixed(2)}</p>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Table {table} • {transactionId}</p>
+          <Card className="p-6 border-none shadow-sm rounded-[2rem] bg-white space-y-1">
+            <p className="text-4xl font-bold text-primary tabular-nums">${paymentAmount.toFixed(2)}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase">Table {table} • {transactionId}</p>
           </Card>
         </div>
         
@@ -94,11 +102,11 @@ function CardPaymentContent() {
 
       <footer className="p-6 space-y-3">
         <Link href={cancelHref} passHref className="w-full">
-          <Button variant="outline" className="w-full h-14 border-2 border-slate-200 rounded-2xl text-slate-500 font-bold uppercase text-xs tracking-widest hover:bg-white active:scale-95 transition-all">
+          <Button variant="outline" className="w-full h-14 border-2 border-slate-200 rounded-2xl text-slate-500 font-bold uppercase text-xs hover:bg-white active:scale-95 transition-all">
             Cancel Authorization
           </Button>
         </Link>
-        <p className="text-center text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+        <p className="text-center text-[10px] font-bold text-slate-300 uppercase">
             Network Dine POS Infrastructure
         </p>
       </footer>
