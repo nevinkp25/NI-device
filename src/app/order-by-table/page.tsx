@@ -76,7 +76,7 @@ function OrderByTableContent() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-background shadow-sm border-b">
+      <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-slate-100">
         <div className="flex items-center px-4 pt-4 pb-2">
           <Link href="/navigation" passHref>
             <Button variant="ghost" size="icon" className="h-10 w-10">
