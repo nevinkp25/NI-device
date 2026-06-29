@@ -60,6 +60,8 @@ function OrderStatusContent() {
   const [staffId, setStaffId] = useState('000000');
 
   const tableNumber = searchParams.get('table');
+  const activeSplit = searchParams.get('activeSplit');
+  const justPaid = searchParams.get('justPaid');
 
   useEffect(() => {
     if (tableNumber) {
@@ -72,6 +74,19 @@ function OrderStatusContent() {
       if (id) setStaffId(id);
     }
   }, [tableNumber, loadCart]);
+
+  // Handle split payment loop interactions
+  useEffect(() => {
+    if (activeSplit === 'equally') {
+        setIsSplitSheetOpen(true);
+    }
+    if (justPaid === 'true') {
+        toast({
+            title: "Payment Authorized",
+            description: "Transaction successful. Next payment required.",
+        });
+    }
+  }, [activeSplit, justPaid, toast]);
 
   const handleSyncOrder = () => {
     toast({
@@ -143,7 +158,7 @@ function OrderStatusContent() {
 
   const handlePaymentConfirmed = (finalAmount: number, method: 'card' | 'cash', returnUrl: string = '/success', table?: string) => {
     const params = new URLSearchParams({
-        amount: finalAmount.toString(),
+        amount: finalAmount.toFixed(2),
         returnUrl: encodeURIComponent(returnUrl),
     });
     if (table) {

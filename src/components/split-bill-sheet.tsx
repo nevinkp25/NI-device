@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from 'react';
@@ -32,7 +33,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { cartItems, removeFromCart, getDisplayPrice } = useCart();
+    const { cartItems, removeFromCart, getDisplayPrice, clearCart } = useCart();
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -52,29 +53,42 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     const handlePaymentConfirmed = (finalAmount: number, method: 'card' | 'cash', guestIndex: number | null) => {
         if (guestIndex === null) return;
         
+        // This is a "By Item" payment (process share button)
         if (guestIndex === -1) {
             itemsToPay.forEach(item => removeFromCart(item.cartItemId));
+            const successUrl = "/navigation";
+            router.push(`/${method}-payment?amount=${finalAmount.toFixed(2)}&returnUrl=${encodeURIComponent(successUrl)}&table=${searchParams.get('table') || ''}`);
+            onOpenChange(false);
+            return;
         }
 
-        const returnUrl = new URL(baseReturnUrl, window.location.origin);
-        if (guestIndex !== -1) {
-            returnUrl.searchParams.set('paidGuest', guestIndex.toString());
+        // This is an "Equally" payment
+        const nextPaidGuests = [...paidGuests, guestIndex];
+        const isLastGuest = nextPaidGuests.length === splitCount;
+
+        let returnUrlStr = "";
+        if (isLastGuest) {
+            // FINAL PAYMENT - Clear table account and go home
+            clearCart();
+            returnUrlStr = "/navigation"; 
+        } else {
+            // PARTIAL PAYMENT - Loop back with audit state
+            const returnUrl = new URL(baseReturnUrl, window.location.origin);
             returnUrl.searchParams.set('activeSplit', 'equally');
             returnUrl.searchParams.set('splitCount', splitCount.toString());
+            returnUrl.searchParams.set('paidGuests', nextPaidGuests.join(','));
+            returnUrl.searchParams.set('justPaid', 'true');
+            returnUrlStr = returnUrl.pathname + returnUrl.search;
         }
 
         const paymentParams = new URLSearchParams({
-            amount: finalAmount.toFixed(4),
-            returnUrl: returnUrl.pathname + returnUrl.search,
+            amount: finalAmount.toFixed(2),
+            returnUrl: encodeURIComponent(returnUrlStr),
             method: method,
+            table: searchParams.get('table') || '',
         });
 
-        const baseParams = new URLSearchParams(new URL(baseReturnUrl, window.location.origin).search);
-        if (baseParams.get('table')) {
-            paymentParams.set('table', baseParams.get('table')!);
-        }
-
-        router.push(`/${method}-payment?${params.toString()}`);
+        router.push(`/${method}-payment?${paymentParams.toString()}`);
         onOpenChange(false);
     }
 
@@ -87,24 +101,26 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
         if (isOpen) {
             const activeSplit = searchParams.get('activeSplit');
             const urlSplitCount = searchParams.get('splitCount');
-            const paidGuestIndex = searchParams.get('paidGuest');
+            const urlPaidGuests = searchParams.get('paidGuests');
 
             if (activeSplit === 'equally') {
                 setStep('equally');
                 if (urlSplitCount) setSplitCount(parseInt(urlSplitCount, 10));
-                if (paidGuestIndex) {
-                    const index = parseInt(paidGuestIndex, 10);
-                    setPaidGuests(prev => prev.includes(index) ? prev : [...prev, index]);
+                if (urlPaidGuests) {
+                    const indices = urlPaidGuests.split(',').map(s => parseInt(s, 10)).filter(n => !isNaN(n));
+                    setPaidGuests(indices);
                 }
             }
         } else {
-            setTimeout(() => {
+            // Reset state when sheet closes (with small delay for smooth exit)
+            const timer = setTimeout(() => {
                 setStep('choice');
                 setSplitCount(2);
                 setPaidGuests([]);
                 setSelectedItems([]);
                 setIsScrolled(false);
             }, 300);
+            return () => clearTimeout(timer);
         }
     }, [isOpen, searchParams]);
 
@@ -206,7 +222,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 {/* Full Hero Card */}
                                 <div className={cn(
                                     "transition-all duration-500 transform origin-top",
-                                    isScrolled ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
+                                    isScrolled ? "opacity-0 scale-95 pointer-events-none h-0 overflow-hidden" : "opacity-100 scale-100"
                                 )}>
                                     <div className="p-[1.5px] bg-gradient-to-br from-[#0069B1] via-sky-400 to-orange-300 rounded-[20px] shadow-sm">
                                         <Card className="relative overflow-hidden rounded-[inherit] p-5 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] space-y-4 shadow-none">

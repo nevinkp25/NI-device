@@ -35,7 +35,9 @@ function SuccessContent() {
   const transactionId = searchParams.get('transactionId');
   const tableNumber = searchParams.get('table');
   const methodParam = searchParams.get('method');
-  const isSplitPayment = returnUrl.includes('paidGuest');
+  
+  // Detect if this is a partial split payment loop
+  const isSplitPayment = returnUrl.includes('paidGuests');
 
   useEffect(() => {
     const methodDisplay = methodParam?.toLowerCase() === 'cash' ? 'Cash' : 'Card';
@@ -49,31 +51,31 @@ function SuccessContent() {
     });
     
     if (isSplitPayment) {
+        // Interstitial redirect for partial payments
         const timer = setTimeout(() => {
             router.push(returnUrl);
         }, 1500);
         return () => clearTimeout(timer);
-    } else {
-        if (!returnUrl.includes('post-paid')) {
-          clearCart();
-        }
     }
   }, [amountPaid, transactionId, tableNumber, isSplitPayment, returnUrl, router, clearCart, methodParam]);
 
   if (isSplitPayment) {
     return (
         <div className="flex flex-col items-center justify-center text-center min-h-screen bg-slate-50 p-6 animate-in fade-in duration-500">
-            <div className="w-full max-w-sm p-8 bg-white rounded-[2rem] shadow-xl space-y-4">
+            <div className="w-full max-w-[340px] p-8 bg-white rounded-[2.5rem] shadow-2xl space-y-6 border-2 border-[#0069B1]/10">
                 <div className="flex justify-center">
-                    <div className="h-16 w-16 bg-green-50 rounded-full flex items-center justify-center animate-in zoom-in-50 duration-500">
-                        <CheckCircle2 className="h-8 w-8 text-green-500" />
+                    <div className="h-20 w-20 bg-green-50 rounded-full flex items-center justify-center animate-in zoom-in-50 duration-700">
+                        <CheckCircle2 className="h-10 w-10 text-green-500" />
                     </div>
                 </div>
-                <div className="space-y-1">
-                    <h1 className="text-lg font-bold text-slate-900 uppercase">Payment Authorized</h1>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase">
-                        Syncing remaining balance...
+                <div className="space-y-2">
+                    <h1 className="text-xl font-black text-slate-900 uppercase tracking-tight">Payment Authorized</h1>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+                        Transaction confirmed.<br/>Syncing terminal for next guest...
                     </p>
+                </div>
+                <div className="flex justify-center pt-2">
+                    <Loader2 className="h-6 w-6 animate-spin text-[#0069B1]/40" />
                 </div>
             </div>
         </div>
