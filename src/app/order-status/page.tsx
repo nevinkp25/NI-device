@@ -316,7 +316,7 @@ function OrderStatusContent() {
         <Button 
           onClick={handleSplitBill} 
           variant="outline" 
-          className="w-full h-14 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 uppercase hover:bg-slate-50 transition-all active:scale-[0.98] bg-white"
+          className="w-full h-14 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 uppercase hover:bg-[#0069B1]/5 hover:border-[#0069B1]/30 hover:text-[#0069B1] transition-all active:scale-[0.98] bg-white"
         >
           Split Bill
         </Button>

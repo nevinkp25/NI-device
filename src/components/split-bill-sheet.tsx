@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from 'react';
@@ -27,7 +28,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     const [step, setStep] = useState<SplitStep>('choice');
     const [splitCount, setSplitCount] = useState(2);
     const [paidGuests, setPaidGuests] = useState<number[]>([]);
-    const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number, guestIndex: number | null}>({isOpen: false, amount: 0, guestIndex: null});
+    const [tipDetails, setTipDetails] =({isOpen: false, amount: 0, guestIndex: null});
     const [isScrolled, setIsScrolled] = useState(false);
     
     const router = useRouter();
@@ -55,7 +56,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
         if (guestIndex === -1) {
             itemsToPay.forEach(item => removeFromCart(item.cartItemId));
             const successUrl = "/navigation";
-            router.push(`/${method}-payment?amount=${finalAmount.toFixed(2)}&returnUrl=${encodeURIComponent(successUrl)}&table=${searchParams.get('table') || ''}`);
+            router.push(`/${method}-payment?amount=${finalAmount.toFixed(2)}&returnUrl=${successUrl}&table=${searchParams.get('table') || ''}`);
             onOpenChange(false);
             return;
         }
@@ -150,7 +151,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                             <Button 
                                 onClick={() => setStep('equally')}
-                                className="w-full h-24 bg-white border-2 border-slate-100 hover:border-[#0069B1] text-slate-900 rounded-[20px] flex items-center justify-between px-6 shadow-sm group active:scale-[0.98] transition-all"
+                                className="w-full h-24 bg-white border-2 border-slate-100 hover:border-[#0069B1]/50 hover:bg-[#0069B1]/5 text-slate-900 rounded-[20px] flex items-center justify-between px-6 shadow-sm group active:scale-[0.98] transition-all"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="h-14 w-14 bg-[#0069B1]/10 rounded-[1.25rem] flex items-center justify-center">
@@ -166,7 +167,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                             <Button 
                                 onClick={() => setStep('by-item')}
-                                className="w-full h-24 bg-white border-2 border-slate-100 hover:border-[#0069B1] text-slate-900 rounded-[20px] flex items-center justify-between px-6 shadow-sm group active:scale-[0.98] transition-all"
+                                className="w-full h-24 bg-white border-2 border-slate-100 hover:border-[#0069B1]/50 hover:bg-[#0069B1]/5 text-slate-900 rounded-[20px] flex items-center justify-between px-6 shadow-sm group active:scale-[0.98] transition-all"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="h-14 w-14 bg-[#0069B1]/10 rounded-[1.25rem] flex items-center justify-center">
@@ -216,7 +217,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     isScrolled ? "opacity-0 scale-95 pointer-events-none h-0 overflow-hidden" : "opacity-100 scale-100"
                                 )}>
                                     <div className="p-[1.5px] bg-gradient-to-br from-[#0069B1] via-sky-400 to-orange-300 rounded-[20px] shadow-sm">
-                                        <Card className="relative overflow-hidden rounded-[inherit] p-5 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] space-y-4 shadow-none">
+                                        <Card className="relative overflow-hidden rounded-[20px] p-5 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] space-y-4 shadow-none">
                                             <div className="text-center space-y-1">
                                                 <div className="flex items-center justify-center mb-2">
                                                     <div className="bg-[#0069B1]/10 text-[#0069B1] px-4 py-1 rounded-xl border border-[#0069B1]/20 shadow-sm flex items-center gap-1.5">
@@ -256,7 +257,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     <button 
                                         onClick={() => setSplitCount(Math.max(2, splitCount - 1))}
                                         disabled={paidGuests.length > 0}
-                                        className="h-12 w-12 rounded-2xl bg-white text-slate-700 hover:bg-white shadow-sm border border-slate-200 flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50"
+                                        className="h-12 w-12 rounded-2xl bg-white text-slate-700 hover:bg-[#0069B1]/5 shadow-sm border border-slate-200 flex items-center justify-center active:scale-90 transition-all disabled:opacity-50"
                                     >
                                         <Minus className="h-5 w-5 stroke-[3]" />
                                     </button>
@@ -267,7 +268,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     <button 
                                         onClick={() => setSplitCount(splitCount + 1)}
                                         disabled={paidGuests.length > 0}
-                                        className="h-12 w-12 rounded-2xl bg-[#0069B1] text-white hover:opacity-90 shadow-md flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50"
+                                        className="h-12 w-12 rounded-2xl bg-[#0069B1] text-white hover:bg-[#0069B1]/90 shadow-md flex items-center justify-center active:scale-90 transition-all disabled:opacity-50"
                                     >
                                         <Plus className="h-5 w-5 stroke-[3]" />
                                     </button>
@@ -308,7 +309,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                     ) : (
                                                         <button 
                                                             onClick={() => setTipDetails({ isOpen: true, amount: perPersonAmount, guestIndex: index })}
-                                                            className="h-11 px-8 rounded-2xl font-black uppercase text-[11px] bg-[#0069B1] hover:opacity-90 text-white shadow-lg active:scale-95 transition-all"
+                                                            className="h-11 px-8 rounded-2xl font-black uppercase text-[11px] bg-[#0069B1] hover:bg-[#0069B1]/90 text-white shadow-lg active:scale-95 transition-all"
                                                         >
                                                             PAY
                                                         </button>
@@ -335,7 +336,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     <Button 
                                         variant="ghost" 
                                         onClick={() => setSelectedItems(selectedItems.length === cartItems.length ? [] : cartItems.map(i => i.cartItemId))}
-                                        className="text-[10px] font-black text-[#0069B1] uppercase h-auto p-0"
+                                        className="text-[10px] font-black text-[#0069B1] uppercase h-auto p-0 hover:bg-transparent hover:text-[#0069B1]/80"
                                     >
                                         {selectedItems.length === cartItems.length ? 'Deselect All' : 'Select All'}
                                     </Button>
@@ -353,7 +354,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                             }}
                                             className={cn(
                                                 "flex items-center justify-between p-5 rounded-[1.75rem] border-2 transition-all cursor-pointer",
-                                                selectedItems.includes(item.cartItemId) ? "bg-[#0069B1]/5 border-[#0069B1] shadow-sm" : "bg-white border-slate-100"
+                                                selectedItems.includes(item.cartItemId) ? "bg-[#0069B1]/5 border-[#0069B1] shadow-sm" : "bg-white border-slate-100 hover:border-[#0069B1]/30"
                                             )}
                                         >
                                             <div className="flex items-center gap-4 text-left">
@@ -390,7 +391,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                         <Button 
                             onClick={() => setTipDetails({ isOpen: true, amount: itemSplitTotal, guestIndex: -1 })}
                             disabled={selectedItems.length === 0}
-                            className="w-full h-16 bg-[#0069B1] hover:opacity-90 text-white rounded-2xl shadow-xl flex items-center justify-between px-8 transition-all active:scale-[0.98]"
+                            className="w-full h-16 bg-[#0069B1] hover:bg-[#0069B1]/90 text-white rounded-2xl shadow-xl flex items-center justify-between px-8 transition-all active:scale-[0.98]"
                         >
                             <span className="font-black text-sm uppercase">Process Share</span>
                             <span className="text-2xl font-black tabular-nums">${itemSplitTotal.toFixed(2)}</span>
