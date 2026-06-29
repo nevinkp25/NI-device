@@ -180,10 +180,10 @@ export default function NavigationPage() {
       {/* Main Content Card */}
       <main className="flex-grow px-4 pb-8">
         <div className="bg-white rounded-[2.5rem] p-6 shadow-2xl flex flex-col gap-6 min-h-[500px]">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 auto-rows-fr">
             <button
               onClick={() => handleNavigation('/order-by-table')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
+              className="flex flex-col items-center justify-center rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group h-full w-full"
             >
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconOrderMenu />
@@ -193,7 +193,7 @@ export default function NavigationPage() {
 
             <button
               onClick={() => handleNavigation('/order-by-table?mode=settlement')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
+              className="flex flex-col items-center justify-center rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group h-full w-full"
             >
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconPayByTable />
@@ -203,7 +203,7 @@ export default function NavigationPage() {
 
             <button
               onClick={() => handleNavigation('/scan-qr')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
+              className="flex flex-col items-center justify-center rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group h-full w-full"
             >
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconScanQR />
@@ -213,7 +213,7 @@ export default function NavigationPage() {
 
             <button
               onClick={() => handleNavigation('/transaction-history')}
-              className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
+              className="flex flex-col items-center justify-center rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group h-full w-full"
             >
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
                 <IconManualSale />
