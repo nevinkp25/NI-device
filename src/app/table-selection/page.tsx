@@ -5,7 +5,7 @@ import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, Users, Plus, Minus, X, LayoutGrid, Check, Hash } from 'lucide-react';
+import { ArrowLeft, Search, Users, Plus, Minus, X, LayoutGrid, Check, Hash, Receipt } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { OrderStepper, Step } from '@/components/order-stepper';
@@ -43,6 +43,12 @@ function TableSelectionContent() {
     : tables;
 
   const handleTableClick = (table: TableData) => {
+    if (isSettlementMode) {
+      setTempSelectedTable(table);
+      setIsGuestSheetOpen(true);
+      return;
+    }
+
     if (table.isOccupied) {
       router.push(`/order-status?table=${table.id}`);
     } else {
@@ -52,9 +58,13 @@ function TableSelectionContent() {
     }
   };
 
-  const handleGoToMenu = () => {
+  const handleConfirm = () => {
     if (tempSelectedTable) {
-      router.push(`/menu?table=${tempSelectedTable.id}&guests=${guestCount}`);
+      if (isSettlementMode) {
+        router.push(`/order-status?table=${tempSelectedTable.id}`);
+      } else {
+        router.push(`/menu?table=${tempSelectedTable.id}&guests=${guestCount}`);
+      }
     }
   };
 
@@ -176,11 +186,13 @@ function TableSelectionContent() {
           <SheetHeader className="p-4 border-b flex-row items-center justify-between">
             <div className="flex items-center gap-3 text-left">
                <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <Users className="h-6 w-6 text-primary" />
+                  {isSettlementMode ? <Receipt className="h-6 w-6 text-primary" /> : <Users className="h-6 w-6 text-primary" />}
                </div>
                <div>
                   <SheetTitle className="text-lg font-bold uppercase tracking-tighter">Table {tempSelectedTable?.id}</SheetTitle>
-                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">New Order</p>
+                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                    {isSettlementMode ? 'Account Settlement' : 'New Order'}
+                  </p>
                </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsGuestSheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
@@ -189,34 +201,50 @@ function TableSelectionContent() {
           </SheetHeader>
 
           <div className="p-8 space-y-6">
-             <div className="space-y-4 text-center">
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Guest Count</p>
-                <div className="flex items-center justify-center gap-8">
-                   <Button 
-                      variant="outline" 
-                      onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                      className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
-                   >
-                      <Minus className="h-8 w-8 stroke-[4]" />
-                   </Button>
-                   <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
-                   <Button 
-                      variant="outline" 
-                      onClick={() => setGuestCount(guestCount + 1)}
-                      className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
-                   >
-                      <Plus className="h-8 w-8 stroke-[4]" />
-                   </Button>
+             {isSettlementMode ? (
+                <div className="space-y-4 text-center">
+                  <div className="flex flex-col items-center justify-center py-6 space-y-4">
+                      <div className="h-20 w-20 bg-primary/10 rounded-full flex items-center justify-center">
+                          <Receipt className="h-10 w-10 text-primary" />
+                      </div>
+                      <div className="space-y-1">
+                          <p className="text-xl font-bold uppercase tracking-tight">Access Account</p>
+                          <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest max-w-[200px] mx-auto leading-relaxed">
+                            Confirm order details for Table {tempSelectedTable?.id} to proceed with payment.
+                          </p>
+                      </div>
+                  </div>
+               </div>
+             ) : (
+                <div className="space-y-4 text-center">
+                  <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Guest Count</p>
+                  <div className="flex items-center justify-center gap-8">
+                    <Button 
+                        variant="outline" 
+                        onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                        className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
+                    >
+                        <Minus className="h-8 w-8 stroke-[4]" />
+                    </Button>
+                    <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
+                    <Button 
+                        variant="outline" 
+                        onClick={() => setGuestCount(guestCount + 1)}
+                        className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
+                    >
+                        <Plus className="h-8 w-8 stroke-[4]" />
+                    </Button>
+                  </div>
                 </div>
-             </div>
+             )}
           </div>
 
           <SheetFooter className="p-4 bg-background border-t">
              <Button 
-                onClick={handleGoToMenu}
+                onClick={handleConfirm}
                 className="w-full h-16 text-2xl font-bold bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
              >
-                GO TO MENU
+                {isSettlementMode ? 'Go to Order' : 'GO TO MENU'}
              </Button>
           </SheetFooter>
         </SheetContent>

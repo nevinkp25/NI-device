@@ -5,7 +5,7 @@ import { useState, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Hash, LayoutGrid, Users, Minus, Plus, X } from 'lucide-react';
+import { ArrowLeft, Hash, LayoutGrid, Users, Minus, Plus, X, Receipt } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { OrderStepper, Step } from '@/components/order-stepper';
@@ -40,6 +40,12 @@ function OrderByTableContent() {
   const handleOpenGuestSheet = (id?: string) => {
     const finalId = id || tableNumber.trim();
     if (finalId) {
+      if (isSettlementMode) {
+        setTableNumber(finalId.toUpperCase());
+        setIsGuestSheetOpen(true);
+        return;
+      }
+
       const tableObj = ALL_TABLES.find(t => t.id.toUpperCase() === finalId.toUpperCase());
       if (tableObj?.isOccupied) {
         router.push(`/order-status?table=${tableObj.id}`);
@@ -56,7 +62,12 @@ function OrderByTableContent() {
   };
 
   const handleFinalConfirm = () => {
-    router.push(`/menu?table=${tableNumber.toUpperCase() || 'MANUAL'}&guests=${guestCount}`);
+    const tableId = tableNumber.toUpperCase() || 'MANUAL';
+    if (isSettlementMode) {
+      router.push(`/order-status?table=${tableId}`);
+    } else {
+      router.push(`/menu?table=${tableId}&guests=${guestCount}`);
+    }
   };
 
   const handleSuggestionClick = (table: TableData) => {
@@ -178,11 +189,13 @@ function OrderByTableContent() {
           <SheetHeader className="p-4 border-b flex-row items-center justify-between">
             <div className="flex items-center gap-3 text-left">
                <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <Users className="h-6 w-6 text-primary" />
+                  {isSettlementMode ? <Receipt className="h-6 w-6 text-primary" /> : <Users className="h-6 w-6 text-primary" />}
                </div>
                <div>
                   <SheetTitle className="text-lg font-bold uppercase tracking-tight">Table {tableNumber.toUpperCase()}</SheetTitle>
-                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Initialization</p>
+                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                    {isSettlementMode ? 'Account Settlement' : 'Initialization'}
+                  </p>
                </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsGuestSheetOpen(false)} className="h-10 w-10 rounded-full bg-muted">
@@ -191,26 +204,42 @@ function OrderByTableContent() {
           </SheetHeader>
 
           <div className="p-8 space-y-6">
-             <div className="space-y-4 text-center">
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Cover Count</p>
-                <div className="flex items-center justify-center gap-8">
-                   <Button 
-                      variant="outline" 
-                      onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                      className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
-                   >
-                      <Minus className="h-8 w-8 stroke-[3]" />
-                   </Button>
-                   <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
-                   <Button 
-                      variant="outline" 
-                      onClick={() => setGuestCount(guestCount + 1)}
-                      className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
-                   >
-                      <Plus className="h-8 w-8 stroke-[3]" />
-                   </Button>
-                </div>
-             </div>
+             {isSettlementMode ? (
+               <div className="space-y-4 text-center">
+                  <div className="flex flex-col items-center justify-center py-6 space-y-4">
+                      <div className="h-20 w-20 bg-primary/10 rounded-full flex items-center justify-center">
+                          <Receipt className="h-10 w-10 text-primary" />
+                      </div>
+                      <div className="space-y-1">
+                          <p className="text-xl font-bold uppercase tracking-tight">Access Account</p>
+                          <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest max-w-[200px] mx-auto leading-relaxed">
+                            Confirm order details for Table {tableNumber.toUpperCase()} to proceed with payment.
+                          </p>
+                      </div>
+                  </div>
+               </div>
+             ) : (
+               <div className="space-y-4 text-center">
+                  <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Cover Count</p>
+                  <div className="flex items-center justify-center gap-8">
+                     <Button 
+                        variant="outline" 
+                        onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                        className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
+                     >
+                        <Minus className="h-8 w-8 stroke-[3]" />
+                     </Button>
+                     <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
+                     <Button 
+                        variant="outline" 
+                        onClick={() => setGuestCount(guestCount + 1)}
+                        className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
+                     >
+                        <Plus className="h-8 w-8 stroke-[3]" />
+                     </Button>
+                  </div>
+               </div>
+             )}
           </div>
 
           <SheetFooter className="p-4 bg-background border-t">
@@ -218,7 +247,7 @@ function OrderByTableContent() {
                 onClick={handleFinalConfirm}
                 className="w-full h-16 text-2xl font-bold bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
              >
-                Confirm Covers
+                {isSettlementMode ? 'Go to Order' : 'Confirm Covers'}
              </Button>
           </SheetFooter>
         </SheetContent>
