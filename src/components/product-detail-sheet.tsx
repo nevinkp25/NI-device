@@ -21,11 +21,8 @@ import {
   AlertCircle, 
   Flame, 
   Zap, 
-  Dna, 
-  Wheat,
-  Circle,
   ShieldAlert,
-  Beef
+  AlertTriangle
 } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { cn } from '@/lib/utils';
@@ -33,6 +30,7 @@ import type { MenuItem, CartItemVariationSelection } from '@/lib/data';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Card } from '@/components/ui/card';
 
 interface ProductDetailSheetProps {
   isOpen: boolean;
@@ -170,98 +168,82 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[95dvh] flex flex-col p-0 rounded-t-[2.5rem] border-t-0 shadow-2xl z-[110] bg-white" hideCloseButton>
+      <SheetContent side="bottom" className="h-[95dvh] flex flex-col p-0 rounded-t-[2.5rem] border-t-0 shadow-2xl z-[110] bg-slate-50" hideCloseButton>
         <div className="mx-auto w-12 h-1.5 bg-slate-200 rounded-full mt-3 shrink-0" />
         
         <SheetHeader className="p-6 border-b flex-row items-center justify-between bg-white shrink-0">
           <div className="text-left">
-            <div className="flex items-center gap-2 mb-1">
-                <SheetTitle className="text-2xl font-black text-slate-900 tracking-tight uppercase leading-none">{item.name}</SheetTitle>
-            </div>
-            <p className="text-[10px] font-black text-[#0051B5] uppercase tracking-[0.2em]">Terminal Order Preparation</p>
+            <SheetTitle className="text-2xl font-bold text-slate-900 leading-tight uppercase">{item.name}</SheetTitle>
+            <p className="text-xs font-semibold text-primary uppercase">Order Preparation Details</p>
           </div>
           <SheetClose asChild>
-            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-slate-50 border-2 border-slate-100">
+            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-slate-50 border border-slate-100">
               <X className="h-6 w-6 text-slate-500" />
             </Button>
           </SheetClose>
         </SheetHeader>
 
-        <div ref={scrollContainerRef} className="flex-grow overflow-y-auto p-6 space-y-12 no-scrollbar pb-40">
-          {/* HIGH IMPACT ALLERGEN ALERT */}
+        <div ref={scrollContainerRef} className="flex-grow overflow-y-auto p-6 space-y-6 no-scrollbar pb-40">
+          {/* ALLERGEN ALERT */}
           {item.allergens && item.allergens.length > 0 && (
-            <section className="bg-red-50/50 border-2 border-red-100 rounded-3xl p-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-500">
-                <div className="flex items-center gap-2.5">
-                    <div className="h-10 w-10 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-200">
-                        <ShieldAlert className="h-6 w-6 text-white animate-pulse" />
+            <div className="bg-red-50 border border-red-200 rounded-2xl p-5 space-y-3 shadow-sm">
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-red-600 rounded-xl flex items-center justify-center shadow-md">
+                        <ShieldAlert className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-black text-red-700 uppercase tracking-tight">Allergen Warning</h3>
-                        <p className="text-[10px] font-bold text-red-500/70 uppercase tracking-widest">Crucial Dietary Audit Required</p>
+                        <h3 className="text-sm font-bold text-red-700 uppercase">Allergen Warning</h3>
+                        <p className="text-xs font-medium text-red-500">Dietary Audit Required</p>
                     </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {item.allergens.map((allergen, idx) => (
-                        <Badge key={idx} className="bg-white text-red-600 border-red-200 font-black text-xs uppercase px-4 py-1.5 rounded-xl shadow-sm">
+                        <Badge key={idx} className="bg-white text-red-600 border-red-200 font-bold text-xs uppercase px-3 py-1 rounded-lg">
                             {allergen}
                         </Badge>
                     ))}
                 </div>
-            </section>
+            </div>
           )}
 
-          {/* PREMIUM NUTRITIONAL DASHBOARD */}
+          {/* NUTRITIONAL DASHBOARD */}
           {item.nutrition && (
-            <section className="space-y-4">
+            <div className="space-y-3">
                <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-2.5">
-                        <div className="h-8 w-8 bg-orange-50 rounded-xl flex items-center justify-center">
-                            <Flame className="h-4 w-4 text-orange-500" />
-                        </div>
-                        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Nutritional Dashboard</h3>
+                    <div className="flex items-center gap-2">
+                        <Flame className="h-4 w-4 text-orange-500" />
+                        <h3 className="text-xs font-bold uppercase text-slate-500">Nutritional Facts</h3>
                     </div>
-                    <Badge variant="outline" className="text-[9px] font-black uppercase border-slate-200 text-slate-400">Standard Audit</Badge>
+                    <Badge variant="outline" className="text-[10px] font-bold uppercase border-slate-200 text-slate-400">System Audit</Badge>
                </div>
                
                <div className="grid grid-cols-4 gap-3">
-                  <div className="bg-white border-2 border-slate-50 rounded-[1.5rem] p-4 text-center space-y-1 shadow-sm group hover:border-orange-100 transition-colors">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Energy</p>
-                    <p className="text-lg font-black text-slate-900 leading-none tabular-nums group-hover:text-orange-600">{item.nutrition.kcal}</p>
-                    <p className="text-[8px] font-bold text-slate-300 uppercase">kcal</p>
-                  </div>
-                  <div className="bg-white border-2 border-slate-50 rounded-[1.5rem] p-4 text-center space-y-1 shadow-sm group hover:border-blue-100 transition-colors">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Protein</p>
-                    <p className="text-lg font-black text-slate-900 leading-none tabular-nums group-hover:text-blue-600">{item.nutrition.protein}g</p>
-                    <p className="text-[8px] font-bold text-slate-300 uppercase">Build</p>
-                  </div>
-                  <div className="bg-white border-2 border-slate-50 rounded-[1.5rem] p-4 text-center space-y-1 shadow-sm group hover:border-green-100 transition-colors">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Carbs</p>
-                    <p className="text-lg font-black text-slate-900 leading-none tabular-nums group-hover:text-green-600">{item.nutrition.carbs}g</p>
-                    <p className="text-[8px] font-bold text-slate-300 uppercase">Energy</p>
-                  </div>
-                  <div className="bg-white border-2 border-slate-50 rounded-[1.5rem] p-4 text-center space-y-1 shadow-sm group hover:border-yellow-100 transition-colors">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Fat</p>
-                    <p className="text-lg font-black text-slate-900 leading-none tabular-nums group-hover:text-yellow-600">{item.nutrition.fat}g</p>
-                    <p className="text-[8px] font-bold text-slate-300 uppercase">Fuel</p>
-                  </div>
+                  {[
+                    { label: 'Energy', val: item.nutrition.kcal, unit: 'kcal', icon: Flame, color: 'text-orange-600' },
+                    { label: 'Protein', val: item.nutrition.protein, unit: 'g', icon: Zap, color: 'text-blue-600' },
+                    { label: 'Carbs', val: item.nutrition.carbs, unit: 'g', icon: Info, color: 'text-green-600' },
+                    { label: 'Fat', val: item.nutrition.fat, unit: 'g', icon: AlertTriangle, color: 'text-yellow-600' }
+                  ].map((macro, i) => (
+                    <Card key={i} className="rounded-2xl p-3 text-center space-y-0.5 border-none shadow-sm bg-white">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase">{macro.label}</p>
+                        <p className={cn("text-lg font-bold leading-none tabular-nums", macro.color)}>{macro.val}</p>
+                        <p className="text-[9px] font-bold text-slate-300 uppercase">{macro.unit}</p>
+                    </Card>
+                  ))}
                </div>
-            </section>
+            </div>
           )}
 
-          {/* ITEM BIO CARD */}
-          <section className="space-y-4">
-             <div className="flex items-center gap-2.5 px-1">
-                <div className="h-8 w-8 bg-slate-50 rounded-xl flex items-center justify-center">
-                    <Info className="h-4 w-4 text-slate-400" />
-                </div>
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Kitchen Bio</h3>
+          {/* DESCRIPTION */}
+          <Card className="rounded-2xl p-5 border-none shadow-sm bg-white">
+             <div className="flex items-center gap-2 mb-3">
+                <Info className="h-4 w-4 text-slate-400" />
+                <h3 className="text-xs font-bold uppercase text-slate-500">Item Bio</h3>
              </div>
-             <div className="bg-slate-50/50 border-2 border-slate-50 rounded-3xl p-5">
-               <p className="text-slate-600 text-sm leading-relaxed font-medium italic">
-                  "{item.description || "Freshly prepared house specialty using premium seasonal ingredients, expertly cooked to order by our kitchen team."}"
-               </p>
-             </div>
-          </section>
+             <p className="text-slate-600 text-sm leading-relaxed font-medium italic">
+                "{item.description || "Freshly prepared house specialty using premium seasonal ingredients."}"
+             </p>
+          </Card>
 
           {/* CONFIGURATION SECTIONS */}
           {item.variations?.map((variation) => {
@@ -272,132 +254,129 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
              const selectedIds = selectedValue.split(',').map(v => v.split(':')[0]);
 
              return (
-                <section 
+                <div 
                   key={variation.id} 
                   ref={el => variationRefs.current[variation.id] = el}
-                  className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-500"
+                  className="space-y-3"
                 >
                   <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-2.5">
-                        <div className="h-8 w-8 bg-blue-50 rounded-xl flex items-center justify-center">
-                            <Zap className="h-4 w-4 text-[#0051B5]" />
-                        </div>
-                        <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest">
+                    <div className="flex items-center gap-2">
+                        <Zap className="h-4 w-4 text-primary" />
+                        <h3 className="text-xs font-bold text-slate-800 uppercase">
                             {variation.name}
                         </h3>
                     </div>
                     <span className={cn(
-                        "text-[9px] font-black px-2.5 py-1 rounded-lg uppercase border-2",
-                        variation.type === 'required' ? "text-red-600 bg-red-50 border-red-100" : "text-slate-400 bg-slate-50 border-slate-100"
+                        "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase border",
+                        variation.type === 'required' ? "text-red-600 bg-red-50 border-red-100" : "text-slate-500 bg-slate-100 border-slate-200"
                     )}>
-                        {variation.type === 'required' ? 'Mandatory' : 'Optional'}
+                        {variation.type === 'required' ? 'Required' : 'Optional'}
                     </span>
                   </div>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {variation.options.map(option => {
                       const isActive = selectedIds.includes(option.id);
                       const qty = isIncremental ? getIncrementalQty(variation.id, option.id) : 0;
                       
                       return (
-                        <div 
+                        <Card 
                             key={option.id} 
                             onClick={() => !isIncremental && handleVariationSelect(variation.id, option.id, variation.type)}
                             className={cn(
-                            "flex items-center justify-between p-5 rounded-[1.75rem] border-2 transition-all cursor-pointer",
-                            (isActive || qty > 0) ? "border-[#0051B5] bg-[#0051B5]/5 shadow-md shadow-[#0051B5]/5" : "border-slate-50 bg-white"
+                            "flex items-center justify-between p-4 rounded-2xl border transition-all cursor-pointer shadow-sm",
+                            (isActive || qty > 0) ? "border-primary bg-primary/[0.03]" : "border-transparent bg-white"
                         )}>
-                            <div className="flex items-center gap-5">
+                            <div className="flex items-center gap-4">
                                 {isMultiple ? (
-                                    <Checkbox checked={isActive} className="h-6 w-6 rounded-lg border-2 border-slate-200 data-[state=checked]:border-[#0051B5] data-[state=checked]:bg-[#0051B5]" />
+                                    <Checkbox checked={isActive} className="h-5 w-5 rounded-md border-2 border-slate-200 data-[state=checked]:border-primary data-[state=checked]:bg-primary" />
                                 ) : isSingle ? (
-                                    <div className="h-6 w-6 rounded-full border-2 border-slate-200 flex items-center justify-center">
-                                        {isActive && <div className="h-3 w-3 rounded-full bg-[#0051B5]" />}
+                                    <div className="h-5 w-5 rounded-full border-2 border-slate-200 flex items-center justify-center">
+                                        {isActive && <div className="h-2.5 w-2.5 rounded-full bg-primary" />}
                                     </div>
                                 ) : null}
 
                                 <div className="flex flex-col">
-                                    <span className="font-black text-base leading-tight text-slate-900 uppercase tracking-tight">{option.name}</span>
+                                    <span className="font-bold text-sm text-slate-800 uppercase leading-none">{option.name}</span>
                                     <span className={cn(
-                                        "text-[10px] font-bold opacity-60 uppercase mt-0.5",
-                                        option.priceModifier > 0 ? "text-green-600" : ""
+                                        "text-[10px] font-semibold uppercase mt-1",
+                                        option.priceModifier > 0 ? "text-green-600" : "text-slate-400"
                                     )}>
-                                        {option.priceModifier !== 0 ? `+$${option.priceModifier.toFixed(2)} unit` : "Included in Base"}
+                                        {option.priceModifier !== 0 ? `+$${option.priceModifier.toFixed(2)}` : "Included"}
                                     </span>
                                 </div>
                             </div>
 
                             {isIncremental && (
-                                <div className="flex items-center gap-4 bg-white p-1 rounded-2xl border-2 border-slate-100 shadow-inner" onClick={(e) => e.stopPropagation()}>
+                                <div className="flex items-center gap-3 bg-slate-50 p-1 rounded-xl border border-slate-100" onClick={(e) => e.stopPropagation()}>
                                     <Button 
                                         variant="ghost" 
                                         size="icon" 
-                                        className="h-10 w-10 rounded-xl text-slate-300 hover:bg-red-50 hover:text-red-500" 
+                                        className="h-8 w-8 rounded-lg text-slate-400 hover:text-red-500" 
                                         onClick={() => handleIncrementalChange(variation.id, option.id, -1)}
                                         disabled={qty <= 0}
                                     >
-                                        <Minus className="h-5 w-5 stroke-[4]" />
+                                        <Minus className="h-4 w-4 stroke-[3]" />
                                     </Button>
-                                    <span className="w-6 text-center font-black text-xl text-slate-900 tabular-nums">{qty}</span>
+                                    <span className="w-4 text-center font-bold text-sm text-slate-900 tabular-nums">{qty}</span>
                                     <Button 
                                         variant="ghost" 
                                         size="icon" 
-                                        className="h-10 w-10 rounded-xl text-[#0051B5] hover:bg-[#0051B5]/5" 
+                                        className="h-8 w-8 rounded-lg text-primary" 
                                         onClick={() => handleIncrementalChange(variation.id, option.id, 1)}
                                     >
-                                        <Plus className="h-5 w-5 stroke-[4]" />
+                                        <Plus className="h-4 w-4 stroke-[3]" />
                                     </Button>
                                 </div>
                             )}
-                        </div>
+                        </Card>
                       )
                     })}
                   </div>
-                </section>
+                </div>
              )
           })}
 
-          <section className="space-y-4 pb-12">
-            <div className="flex items-center gap-2.5 text-slate-400 px-1">
-                <div className="h-8 w-8 bg-slate-50 rounded-xl flex items-center justify-center">
-                    <MessageSquareText className="h-4 w-4 text-slate-400" />
-                </div>
-                <h3 className="text-xs font-black uppercase tracking-[0.2em]">Kitchen Prep Note</h3>
+          {/* KITCHEN NOTE */}
+          <div className="space-y-2 pb-10">
+            <div className="flex items-center gap-2 px-1">
+                <MessageSquareText className="h-4 w-4 text-slate-400" />
+                <h3 className="text-xs font-bold uppercase text-slate-500">Preparation Note</h3>
             </div>
             <Textarea 
-                placeholder="Ex: No onions, extra hot, medium-well sauce on side..."
-                className="min-h-[120px] bg-slate-50 border-2 border-slate-50 rounded-[2rem] p-5 text-sm font-medium focus-visible:ring-[#0051B5]/20 resize-none shadow-inner placeholder:text-slate-300"
+                placeholder="E.g., Extra spicy, medium-well, sauce on side..."
+                className="min-h-[100px] bg-white border-none rounded-2xl p-4 text-sm font-medium shadow-sm focus-visible:ring-primary/20 resize-none placeholder:text-slate-300"
                 value={specialInstructions}
                 onChange={(e) => setSpecialInstructions(e.target.value)}
             />
-          </section>
+          </div>
         </div>
 
-        <SheetFooter className="p-6 border-t bg-white shadow-[0_-20px_50px_rgba(0,0,0,0.1)] shrink-0 z-20">
-          <div className="w-full space-y-6">
-            <div className="flex items-center justify-between px-2">
+        <SheetFooter className="p-6 border-t bg-white shadow-[0_-15px_40px_rgba(0,0,0,0.08)] shrink-0 z-20">
+          <div className="w-full space-y-4">
+            <div className="flex items-center justify-between px-1">
                 <div className="space-y-0.5">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Order Volume</p>
-                    <p className="text-xl font-black text-slate-900 tracking-tight uppercase">Base Quantity</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase">Quantity</p>
+                    <p className="text-lg font-bold text-slate-900 uppercase">Base Units</p>
                 </div>
-                <div className="flex items-center gap-8 bg-slate-50 p-2 rounded-2xl border-2 border-slate-100 shadow-inner">
+                <div className="flex items-center gap-6 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 shadow-inner">
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-12 w-12 rounded-xl bg-white shadow-md border-2 border-slate-100 active:scale-90" 
+                        className="h-10 w-10 rounded-xl bg-white shadow-sm border border-slate-200 active:scale-90" 
                         onClick={() => setQuantity(Math.max(1, quantity - 1))} 
                         disabled={quantity <= 1}
                     >
-                        <Minus className="h-6 w-6 stroke-[4] text-slate-400" />
+                        <Minus className="h-5 w-5 stroke-[3] text-slate-400" />
                     </Button>
-                    <span className="w-8 text-center font-black text-3xl tabular-nums text-slate-900 tracking-tighter">{quantity}</span>
+                    <span className="w-6 text-center font-bold text-2xl tabular-nums text-slate-900">{quantity}</span>
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-12 w-12 rounded-xl bg-white shadow-md border-2 border-[#0051B5]/20 text-[#0051B5] active:scale-90" 
+                        className="h-10 w-10 rounded-xl bg-white shadow-sm border border-primary/20 text-primary active:scale-90" 
                         onClick={() => setQuantity(quantity + 1)}
                     >
-                        <Plus className="h-6 w-6 stroke-[4]" />
+                        <Plus className="h-5 w-5 stroke-[3]" />
                     </Button>
                 </div>
             </div>
@@ -406,21 +385,18 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
               onClick={handleAddToCart}
               disabled={!areAllRequiredSelected}
               className={cn(
-                "w-full h-20 text-white text-xl font-black rounded-[2rem] shadow-2xl uppercase tracking-tight flex items-center justify-center gap-4 transition-all duration-500",
-                areAllRequiredSelected ? "bg-[#E54360] hover:bg-[#D43D56] active:scale-[0.98] shadow-[#E54360]/20" : "bg-slate-100 text-slate-300 border-2 border-slate-50 shadow-none"
+                "w-full h-16 text-white text-lg font-bold rounded-2xl shadow-xl uppercase transition-all duration-300",
+                areAllRequiredSelected ? "bg-primary hover:bg-primary/90 shadow-primary/20" : "bg-slate-200 text-slate-400 shadow-none pointer-events-none"
               )}
             >
               {areAllRequiredSelected ? (
-                <>
+                <div className="flex items-center justify-center gap-4">
                   <span>Add to Cart</span>
-                  <div className="h-10 w-px bg-white/20 mx-1" />
-                  <span className="bg-white/10 px-5 py-2 rounded-2xl text-xl font-black tracking-tighter tabular-nums">${finalPrice.toFixed(2)}</span>
-                </>
-              ) : (
-                <div className="flex items-center gap-3">
-                    <AlertCircle className="h-6 w-6" />
-                    <span>Awaiting Selection</span>
+                  <div className="h-6 w-px bg-white/20" />
+                  <span className="tabular-nums">${finalPrice.toFixed(2)}</span>
                 </div>
+              ) : (
+                "Select Required Options"
               )}
             </Button>
           </div>
