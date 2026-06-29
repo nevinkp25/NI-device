@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Minus, Plus, Equal, Box, X, User, Check, Hash, ArrowRight, ArrowLeft, Info, AlertCircle } from 'lucide-react';
+import { Minus, Plus, Equal, Box, X, User, Check, Hash, ArrowRight, ArrowLeft, Info, AlertCircle, Receipt, Landmark, CreditCard } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { TipSheet } from './tip-sheet';
 import { cn } from '@/lib/utils';
@@ -572,84 +572,101 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                             )}
 
                             {byItemStep === 'summary' && (
-                                <div className="space-y-6 animate-in fade-in duration-500">
-                                    <div className="text-center space-y-1 py-4">
+                                <div className="space-y-6 animate-in fade-in duration-500 py-4">
+                                    <div className="text-center space-y-1 mb-2">
                                         <h3 className="text-2xl font-black text-slate-900 uppercase">Review Splits</h3>
                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Audit table # {orderId} assignments</p>
                                     </div>
 
                                     <div className="space-y-4">
                                         {Array.from({ length: splitCount }).map((_, i) => (
-                                            <Card key={i} className="p-5 rounded-[2rem] border-2 border-slate-100 bg-white shadow-sm space-y-4 overflow-hidden relative">
-                                                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                                                    <User className="h-20 w-20" />
-                                                </div>
-                                                <div className="flex justify-between items-center border-b border-slate-50 pb-3">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="h-8 w-8 bg-[#0069B1] text-white rounded-lg flex items-center justify-center text-xs font-black">
+                                            <Card key={i} className="rounded-[2rem] border-none bg-white shadow-xl shadow-slate-100 overflow-hidden relative group transition-all duration-300">
+                                                <div className="bg-[#0069B1]/5 p-5 flex justify-between items-center border-b border-[#0069B1]/10">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="h-10 w-10 bg-[#0069B1] text-white rounded-2xl flex items-center justify-center font-black text-lg shadow-lg shadow-[#0069B1]/20">
                                                             {i + 1}
                                                         </div>
-                                                        <span className="font-black text-slate-900 uppercase tracking-tight">Guest {i + 1}</span>
+                                                        <div className="flex flex-col">
+                                                            <span className="font-black text-base text-slate-900 uppercase tracking-tight">Guest {i + 1}</span>
+                                                            <span className="text-[10px] font-bold text-slate-400 uppercase leading-none">Bill Portion</span>
+                                                        </div>
                                                     </div>
-                                                    <span className="text-lg font-black text-[#0069B1] tabular-nums">${getGuestTotal(i).toFixed(2)}</span>
+                                                    <div className="text-right">
+                                                        <span className="text-xl font-black text-[#0069B1] tabular-nums tracking-tighter">${getGuestTotal(i).toFixed(2)}</span>
+                                                    </div>
                                                 </div>
-                                                <div className="space-y-2">
+
+                                                <div className="p-5 space-y-3">
                                                     {Object.entries(itemAssignments[i] || {}).map(([itemId, qty]) => {
                                                         const item = cartItems.find(ci => ci.cartItemId === itemId);
                                                         return item && qty > 0 && (
-                                                            <div key={itemId} className="flex justify-between text-[11px] font-bold text-slate-500 uppercase">
-                                                                <span>{qty}x {item.name}</span>
-                                                                <span className="tabular-nums">${(getDisplayPrice(item) * qty).toFixed(2)}</span>
+                                                            <div key={itemId} className="flex justify-between items-center">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="bg-slate-100 h-6 w-8 rounded-md flex items-center justify-center text-[10px] font-black text-slate-600">
+                                                                        {qty}x
+                                                                    </div>
+                                                                    <span className="text-[11px] font-bold text-slate-700 uppercase">{item.name}</span>
+                                                                </div>
+                                                                <span className="text-[11px] font-bold text-slate-400 tabular-nums">${(getDisplayPrice(item) * qty).toFixed(2)}</span>
                                                             </div>
                                                         );
                                                     })}
                                                     {(!itemAssignments[i] || Object.keys(itemAssignments[i]).length === 0) && (
-                                                        <p className="text-[10px] font-bold text-slate-300 italic uppercase">No items assigned</p>
+                                                        <div className="flex items-center gap-2 py-4 justify-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-100">
+                                                            <Receipt className="h-4 w-4 text-slate-300" />
+                                                            <p className="text-[10px] font-bold text-slate-400 italic uppercase">No items assigned to this guest</p>
+                                                        </div>
                                                     )}
                                                 </div>
                                             </Card>
                                         ))}
                                     </div>
 
-                                    <Button 
-                                        onClick={() => setByItemStep('payment')}
-                                        className="w-full h-16 bg-[#0069B1] hover:bg-[#0069B1]/90 text-white font-black text-lg rounded-2xl shadow-xl uppercase tracking-tight"
-                                    >
-                                        Confirm & Open Terminal
-                                    </Button>
-                                    <Button 
-                                        variant="ghost" 
-                                        onClick={() => {
-                                            setByItemStep('assigning');
-                                            setCurrentAssigningGuestIndex(0);
-                                            setItemAssignments({});
-                                            setTempSelections({});
-                                        }}
-                                        className="w-full h-10 text-slate-400 font-bold uppercase text-[10px] tracking-widest"
-                                    >
-                                        Reset All Assignments
-                                    </Button>
+                                    <div className="sticky bottom-0 pt-4 bg-white/80 backdrop-blur-sm pb-4">
+                                        <Button 
+                                            onClick={() => setByItemStep('payment')}
+                                            className="w-full h-18 bg-[#0069B1] hover:bg-[#0069B1]/90 text-white font-black text-lg rounded-[1.5rem] shadow-2xl shadow-[#0069B1]/30 uppercase tracking-tight flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+                                        >
+                                            <span>Confirm & Open Terminal</span>
+                                            <ArrowRight className="h-6 w-6" />
+                                        </Button>
+                                        <Button 
+                                            variant="ghost" 
+                                            onClick={() => {
+                                                setByItemStep('assigning');
+                                                setCurrentAssigningGuestIndex(0);
+                                                setItemAssignments({});
+                                                setTempSelections({});
+                                            }}
+                                            className="w-full h-12 mt-2 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-[#E54360]"
+                                        >
+                                            Reset All Assignments
+                                        </Button>
+                                    </div>
                                 </div>
                             )}
 
                             {byItemStep === 'payment' && (
                                 <div className="space-y-6 pt-2 animate-in fade-in duration-500">
-                                    <div className="p-[1.5px] bg-gradient-to-br from-[#0069B1] via-sky-400 to-orange-300 rounded-[20px]">
-                                        <Card className="relative overflow-hidden rounded-[20px] p-5 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] space-y-4 shadow-none">
+                                    <div className="p-[1.5px] bg-gradient-to-br from-[#0069B1] via-sky-400 to-orange-300 rounded-[2rem] shadow-xl">
+                                        <Card className="relative overflow-hidden rounded-[2rem] p-6 border-none bg-white space-y-4 shadow-none">
                                             <div className="text-center space-y-1">
-                                                <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Total Table Settlement</p>
+                                                <div className="bg-[#0069B1]/10 w-fit mx-auto px-4 py-1.5 rounded-full flex items-center gap-2 mb-2 border border-[#0069B1]/10">
+                                                    <Landmark className="h-3 w-3 text-[#0069B1]" />
+                                                    <span className="text-[9px] font-black text-[#0069B1] uppercase tracking-widest">Grand Table Settlement</span>
+                                                </div>
                                                 <div className="flex items-baseline justify-center gap-1.5">
-                                                    <span className="text-5xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">${totalAmount.toFixed(2)}</span>
+                                                    <span className="text-6xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">${totalAmount.toFixed(2)}</span>
                                                 </div>
                                             </div>
-                                            <div className="space-y-2">
+                                            <div className="space-y-3">
                                                 <div className="flex justify-between items-center px-1">
                                                     <span className="text-[10px] font-black text-slate-700 uppercase">Settlement Progress</span>
-                                                    <span className="text-[10px] font-black text-[#0069B1]">{Math.round(progressValue)}%</span>
+                                                    <span className="text-[10px] font-black text-[#0069B1]">{Math.round(progressValue)}% Complete</span>
                                                 </div>
                                                 <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-200">
                                                     <div 
-                                                        className="h-full bg-gradient-to-r from-orange-400 to-[#0069B1] transition-all duration-1000 ease-out"
+                                                        className="h-full bg-gradient-to-r from-[#0069B1] to-sky-400 transition-all duration-1000 ease-out"
                                                         style={{ width: `${progressValue}%` }}
                                                     />
                                                 </div>
@@ -658,7 +675,10 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     </div>
 
                                     <div className="space-y-4 pt-2">
-                                        <h3 className="text-[11px] font-black text-slate-900 uppercase px-1 tracking-widest">SETTLEMENT QUEUE</h3>
+                                        <h3 className="text-[11px] font-black text-slate-900 uppercase px-2 tracking-[0.2em] flex items-center gap-2">
+                                            <div className="h-1.5 w-1.5 rounded-full bg-[#0069B1] animate-pulse" />
+                                            SETTLEMENT QUEUE
+                                        </h3>
                                         <div className="space-y-3">
                                             {Array.from({ length: splitCount }).map((_, index) => {
                                                 const isPaid = paidGuests.includes(index);
@@ -666,28 +686,35 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                 
                                                 return (
                                                     <Card key={index} className={cn(
-                                                        "flex items-center justify-between p-4 rounded-[1.75rem] border transition-all duration-300",
-                                                        isPaid ? "bg-slate-50 border-slate-100 opacity-60" : "bg-white border-slate-100 shadow-sm hover:border-[#0069B1]/30"
+                                                        "flex items-center justify-between p-5 rounded-[2rem] border-none shadow-lg transition-all duration-300",
+                                                        isPaid ? "bg-slate-50 shadow-none opacity-50 grayscale" : "bg-white shadow-slate-100 hover:shadow-xl hover:translate-y-[-2px] cursor-default"
                                                     )}>
-                                                        <div className="flex items-center gap-4">
-                                                            <div className="h-12 w-12 rounded-2xl bg-[#0069B1]/10 flex items-center justify-center text-[#0069B1] border border-[#0069B1]/20">
-                                                                <User className="h-6 w-6" />
+                                                        <div className="flex items-center gap-5">
+                                                            <div className={cn(
+                                                                "h-14 w-14 rounded-2xl flex items-center justify-center border transition-colors",
+                                                                isPaid ? "bg-slate-100 border-slate-200 text-slate-400" : "bg-[#0069B1]/5 border-[#0069B1]/10 text-[#0069B1]"
+                                                            )}>
+                                                                <User className="h-7 w-7" />
                                                             </div>
-                                                            <div className="space-y-0.5 text-left">
-                                                                <p className="text-sm font-black text-slate-900 leading-tight">Guest {index + 1}</p>
-                                                                <p className="text-[11px] font-black text-slate-700 uppercase leading-none">${guestTotal.toFixed(2)}</p>
+                                                            <div className="space-y-1 text-left">
+                                                                <p className="text-base font-black text-slate-900 leading-none">Guest {index + 1}</p>
+                                                                <p className={cn(
+                                                                    "text-sm font-black tabular-nums leading-none mt-1",
+                                                                    isPaid ? "text-slate-400" : "text-[#0069B1]"
+                                                                )}>${guestTotal.toFixed(2)}</p>
                                                             </div>
                                                         </div>
                                                         {isPaid ? (
-                                                            <div className="flex items-center gap-1.5 text-[#0069B1] font-black uppercase text-[10px] px-4 py-2 bg-[#0069B1]/10 rounded-2xl border border-[#0069B1]/20">
-                                                                <Check className="h-3.5 w-3.5 stroke-[4]" />
-                                                                <span>PAID</span>
+                                                            <div className="flex items-center gap-1.5 text-green-600 font-black uppercase text-[10px] px-5 py-2.5 bg-green-50 rounded-2xl border border-green-100">
+                                                                <Check className="h-4 w-4 stroke-[4]" />
+                                                                <span>SETTLED</span>
                                                             </div>
                                                         ) : (
                                                             <button 
                                                                 onClick={() => setTipDetails({ isOpen: true, amount: guestTotal, guestIndex: index })}
-                                                                className="h-11 px-8 rounded-2xl font-black uppercase text-[11px] bg-[#0069B1] hover:bg-[#0069B1]/90 text-white shadow-lg active:scale-95 transition-all"
+                                                                className="h-14 px-8 rounded-2xl font-black uppercase text-xs bg-[#0069B1] hover:bg-[#0069B1]/90 text-white shadow-xl shadow-[#0069B1]/20 active:scale-95 transition-all flex items-center gap-2"
                                                             >
+                                                                <CreditCard className="h-4 w-4" />
                                                                 PAY
                                                             </button>
                                                         )}
