@@ -1,12 +1,14 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, QrCode, CameraOff } from 'lucide-react';
+import { ArrowLeft, QrCode, CameraOff, Sparkles, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { cn } from '@/lib/utils';
 
 export default function ScanQrPage() {
   const router = useRouter();
@@ -19,15 +21,21 @@ export default function ScanQrPage() {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         toast({
           variant: 'destructive',
-          title: 'Camera Not Supported',
-          description: 'Your browser does not support camera access.',
+          title: 'Hardware Conflict',
+          description: 'This terminal does not support direct camera access.',
         });
         setHasCameraPermission(false);
         return;
       }
 
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: "environment",
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
+        });
         setHasCameraPermission(true);
 
         if (videoRef.current) {
@@ -38,8 +46,8 @@ export default function ScanQrPage() {
         setHasCameraPermission(false);
         toast({
           variant: 'destructive',
-          title: 'Camera Access Denied',
-          description: 'Please enable camera permissions in your browser settings.',
+          title: 'Access Restricted',
+          description: 'Please authorize camera permissions in terminal settings.',
         });
       }
     };
@@ -58,64 +66,111 @@ export default function ScanQrPage() {
   useEffect(() => {
     if(hasCameraPermission) {
       const timer = setTimeout(() => {
-        // Here you would typically use a library to decode the QR code from the video stream.
-        // For this demo, we'll just simulate a successful scan.
         toast({
-          title: 'QR Code Scanned!',
-          description: 'Table 12 identified. Loading menu...',
+          title: 'QR Code Validated',
+          description: 'Table #12 identified. Initializing menu...',
         });
-        router.push('/menu');
-      }, 3000);
+        router.push('/menu?table=12');
+      }, 3500);
       return () => clearTimeout(timer);
     }
   }, [hasCameraPermission, router, toast]);
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      <header className="flex items-center p-4 border-b">
+    <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100">
+      <header className="sticky top-0 z-50 flex items-center p-4 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
         <Link href="/navigation" passHref>
-          <Button variant="ghost" size="icon">
-            <ArrowLeft />
+          <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full h-10 w-10">
+            <ArrowLeft className="h-6 w-6" />
           </Button>
         </Link>
-        <h1 className="text-xl font-headline font-semibold mx-auto">Scan QR Code</h1>
-        <div className="w-8"></div>
+        <div className="flex flex-col items-center mx-auto">
+            <h1 className="text-sm font-bold uppercase tracking-widest">Optical Scanner</h1>
+            <p className="text-[10px] font-medium text-slate-500 uppercase tracking-widest leading-none mt-0.5">Terminal v2.4 Active</p>
+        </div>
+        <div className="w-10"></div>
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-center p-8 text-center space-y-4">
-        <div className="relative w-full max-w-sm aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center">
-            <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
+      <main className="flex-grow flex flex-col items-center justify-center p-8 text-center space-y-8 animate-in fade-in duration-700">
+        <div className="relative w-full max-w-sm aspect-square bg-black rounded-[2.5rem] overflow-hidden flex items-center justify-center shadow-2xl ring-1 ring-white/10">
+            <video 
+                ref={videoRef} 
+                className={cn(
+                    "w-full h-full object-cover transition-opacity duration-1000",
+                    hasCameraPermission ? "opacity-70" : "opacity-0"
+                )} 
+                autoPlay 
+                muted 
+                playsInline 
+            />
+            
+            {/* Scanning Overlay Gradients */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-primary/10 pointer-events-none" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-primary/40 animate-scan pointer-events-none" />
+
             {hasCameraPermission === false && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80">
-                    <CameraOff className="h-16 w-16 text-destructive mb-4" />
-                    <p className="text-destructive-foreground">Camera access denied.</p>
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/90 p-8">
+                    <div className="h-20 w-20 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
+                        <CameraOff className="h-10 w-10 text-red-500" />
+                    </div>
+                    <h3 className="text-lg font-bold text-white uppercase tracking-tight">Camera Restricted</h3>
+                    <p className="text-xs text-slate-400 mt-2">Hardware validation failed or permission was denied by the system administrator.</p>
                 </div>
             )}
-             <div className="absolute inset-0 border-4 border-primary/50 rounded-lg" style={{
-                clipPath: 'polygon(0% 0%, 0% 25%, 25% 25%, 25% 0%, 100% 0%, 100% 25%, 75% 25%, 75% 0%, 0% 0%)'
-             }}/>
 
-            <div className="absolute w-2/3 h-2/3">
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary"></div>
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary"></div>
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary"></div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary"></div>
+            {/* Corner Guides */}
+            <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-2/3 h-2/3 relative">
+                    <div className="absolute top-0 left-0 w-12 h-12 border-t-[3px] border-l-[3px] border-primary rounded-tl-3xl shadow-[0_0_15px_rgba(0,81,181,0.5)]"></div>
+                    <div className="absolute top-0 right-0 w-12 h-12 border-t-[3px] border-r-[3px] border-primary rounded-tr-3xl shadow-[0_0_15px_rgba(0,81,181,0.5)]"></div>
+                    <div className="absolute bottom-0 left-0 w-12 h-12 border-b-[3px] border-l-[3px] border-primary rounded-bl-3xl shadow-[0_0_15px_rgba(0,81,181,0.5)]"></div>
+                    <div className="absolute bottom-0 right-0 w-12 h-12 border-b-[3px] border-r-[3px] border-primary rounded-br-3xl shadow-[0_0_15px_rgba(0,81,181,0.5)]"></div>
+                </div>
             </div>
         </div>
 
-        <QrCode className="h-10 w-10 text-primary animate-pulse" />
-        <h2 className="text-xl font-semibold">Point Camera at QR Code</h2>
-        <p className="text-muted-foreground">Scanning for a table QR code to start an order.</p>
+        <div className="space-y-4 max-w-[280px]">
+            <div className="flex justify-center">
+                <div className="h-12 w-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
+                    <QrCode className="h-6 w-6 text-primary animate-pulse" />
+                </div>
+            </div>
+            <div className="space-y-1">
+                <h2 className="text-xl font-bold uppercase tracking-tight">Detecting Code</h2>
+                <p className="text-xs text-slate-500 font-medium leading-relaxed uppercase tracking-wider">
+                    Position the table QR code within the frame to automatically identify guest account.
+                </p>
+            </div>
+        </div>
 
         {hasCameraPermission === false && (
-            <Alert variant="destructive" className="max-w-sm">
-                <AlertTitle>Camera Access Required</AlertTitle>
-                <AlertDescription>
-                    To scan a QR code, please allow camera access in your browser settings.
+            <Alert variant="destructive" className="max-w-sm bg-red-950/20 border-red-900/50 rounded-2xl">
+                <AlertTitle className="text-sm font-bold uppercase tracking-tight">Permission Error</AlertTitle>
+                <AlertDescription className="text-xs opacity-70">
+                    To continue, please enable camera access in your terminal's operating system settings.
                 </AlertDescription>
             </Alert>
         )}
       </main>
+
+      <footer className="p-10 flex flex-col items-center gap-4">
+        <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/5">
+            <ShieldCheck className="h-3.5 w-3.5 text-green-500" />
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Secure AES-256 Validation</span>
+        </div>
+        <p className="text-[8px] font-black text-slate-700 uppercase tracking-[0.4em]">Network Dine POS Infrastructure</p>
+      </footer>
+
+      <style jsx global>{`
+        @keyframes scan {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(320px); opacity: 0; }
+        }
+        .animate-scan {
+            animation: scan 2.5s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
