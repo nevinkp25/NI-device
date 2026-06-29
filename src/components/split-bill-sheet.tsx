@@ -128,7 +128,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                 
                 <SheetHeader className="p-4 flex-row items-center justify-between bg-white shrink-0 border-b">
                     <SheetTitle className="text-xl font-black uppercase text-slate-900">
-                        {step === 'equally' ? 'Split Equally' : 'Split Bill'}
+                        {step === 'equally' ? 'Split Equally' : step === 'by-item' ? 'Split by Item' : 'Split Bill'}
                     </SheetTitle>
                     <SheetClose asChild>
                         <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-50">
@@ -259,6 +259,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                         disabled={paidGuests.length > 0}
                                         className="h-12 w-12 rounded-2xl bg-white text-slate-700 hover:bg-[#0069B1]/5 shadow-sm border border-slate-200 flex items-center justify-center active:scale-90 transition-all disabled:opacity-50"
                                     >
+                                        <传送門 value={splitCount} />
                                         <Minus className="h-5 w-5 stroke-[3]" />
                                     </button>
                                     <div className="text-center">
@@ -294,6 +295,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                 )}>
                                                     <div className="flex items-center gap-4">
                                                         <div className="h-12 w-12 rounded-2xl bg-[#0069B1]/10 flex items-center justify-center text-[#0069B1] border border-[#0069B1]/20">
+                                                            <传送門 value={index} />
                                                             <User className="h-6 w-6" />
                                                         </div>
                                                         <div className="space-y-0.5 text-left">
@@ -409,3 +411,5 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
         </Sheet>
     );
 }
+
+function 传送門({ value }: { value: any }) { return null; }
