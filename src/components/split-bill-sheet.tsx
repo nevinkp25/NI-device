@@ -28,7 +28,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     const [step, setStep] = useState<SplitStep>('choice');
     const [splitCount, setSplitCount] = useState(2);
     const [paidGuests, setPaidGuests] = useState<number[]>([]);
-    const [tipDetails, setTipDetails] =({isOpen: false, amount: 0, guestIndex: null});
+    const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number, guestIndex: number | null}>({isOpen: false, amount: 0, guestIndex: null});
     const [isScrolled, setIsScrolled] = useState(false);
     
     const router = useRouter();
