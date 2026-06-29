@@ -11,6 +11,7 @@ import { CreditCard, X, Pen, Landmark, MoreHorizontal, User } from 'lucide-react
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { cn } from '@/lib/utils';
 
 interface TipSheetProps {
     isOpen: boolean;
@@ -84,101 +85,99 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
 
     return (
         <Sheet open={isOpen} onOpenChange={onOpenChange}>
-            <SheetContent side="bottom" className="h-auto flex flex-col rounded-t-[2.5rem] border-t-0 p-0 shadow-2xl z-[110]" hideCloseButton>
-                <div className="mx-auto w-12 h-1.5 bg-slate-200 rounded-full mt-4 shrink-0" />
+            <SheetContent side="bottom" className="h-auto flex flex-col rounded-t-[2rem] border-t-0 p-0 shadow-2xl z-[110]" hideCloseButton>
+                <div className="mx-auto w-10 h-1 bg-slate-200 rounded-full mt-3 shrink-0" />
                 
-                <SheetHeader className="p-6 flex-row items-center justify-between border-b bg-white">
-                    <div className="flex items-center gap-4 text-left">
-                        <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                            <CreditCard className="h-5 w-5 text-primary" />
+                <SheetHeader className="p-4 flex-row items-center justify-between border-b bg-white">
+                    <div className="flex items-center gap-3 text-left">
+                        <div className="h-9 w-9 bg-primary/10 rounded-xl flex items-center justify-center">
+                            <CreditCard className="h-4 w-4 text-primary" />
                         </div>
                         <div className="space-y-0.5">
-                            <SheetTitle className="text-xl font-bold uppercase">Payment Audit</SheetTitle>
-                            <p className="text-xs font-bold text-slate-400 uppercase leading-none">Final Settlement Review</p>
+                            <SheetTitle className="text-lg font-bold uppercase">Settlement Audit</SheetTitle>
+                            <p className="text-xs font-bold text-slate-400 uppercase leading-none">Review Final Totals</p>
                         </div>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="h-10 w-10 rounded-full bg-slate-50">
-                        <X className="h-5 w-5 text-slate-500" />
+                    <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="h-9 w-9 rounded-full bg-slate-50">
+                        <X className="h-4 w-4 text-slate-500" />
                     </Button>
                 </SheetHeader>
 
-                <div className="flex-grow p-6 space-y-8 pb-12 overflow-y-auto no-scrollbar">
-                    {/* Waiter Info Section */}
-                    <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm">
-                        <Avatar className="h-12 w-12 border-2 border-white shadow-sm">
-                            <AvatarImage src={waiterImage?.imageUrl} alt="Waiter" />
-                            <AvatarFallback><User className="h-6 w-6" /></AvatarFallback>
-                        </Avatar>
-                        <div className="space-y-0.5">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase leading-none">Service Staff</p>
-                            <p className="text-base font-bold text-slate-900 leading-tight">David R.</p>
-                            <p className="text-[10px] font-bold text-primary uppercase leading-none">Staff ID: #{staffId}</p>
+                <div className="flex-grow p-4 space-y-5 pb-8 overflow-y-auto no-scrollbar">
+                    {/* Waiter & Amount Info Row */}
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10 border border-slate-100 shadow-sm">
+                                <AvatarImage src={waiterImage?.imageUrl} alt="Waiter" />
+                                <AvatarFallback><User className="h-5 w-5" /></AvatarFallback>
+                            </Avatar>
+                            <div className="space-y-0.5">
+                                <p className="text-sm font-bold text-slate-900 leading-tight">David R.</p>
+                                <p className="text-xs font-bold text-primary uppercase leading-none">ID: #{staffId}</p>
+                            </div>
+                        </div>
+                        <div className="text-right space-y-0.5">
+                            <p className="text-xs font-bold text-slate-400 uppercase leading-none">Bill Amount</p>
+                            <p className="text-2xl font-bold text-slate-900 tabular-nums">AED {billAmount.toFixed(2)}</p>
                         </div>
                     </div>
 
-                    <div className="text-center space-y-1">
-                        <p className="text-xs font-bold text-slate-400 uppercase">Settlement Amount</p>
-                        <p className="text-6xl font-bold text-slate-900 tabular-nums tracking-tighter">
-                            <span className="text-2xl mr-1 opacity-40">AED</span>{billAmount.toFixed(2)}
-                        </p>
-                    </div>
-
                     {/* Tip Selection Grid */}
-                    <div className="space-y-4">
-                        <p className="text-center text-xs font-bold text-slate-400 uppercase">Add Gratuity</p>
-                        <div className="grid grid-cols-4 gap-3">
+                    <div className="space-y-3">
+                        <p className="text-xs font-bold text-slate-400 uppercase">Add Gratuity</p>
+                        <div className="grid grid-cols-4 gap-2">
                             {tipOptions.map(opt => (
                                 <Button 
                                     key={opt.value}
                                     variant="ghost"
                                     onClick={() => handleTipSelection(opt.value)}
                                     className={cn(
-                                        "h-16 rounded-2xl border-2 flex flex-col items-center justify-center gap-0.5 transition-all",
+                                        "h-14 rounded-xl border-2 flex flex-col items-center justify-center transition-all",
                                         selectedTip === opt.value && !showCustomTip
-                                            ? "bg-primary text-white border-primary shadow-lg scale-[1.02]"
-                                            : "bg-white border-slate-100 text-slate-900 hover:border-primary/20"
+                                            ? "bg-primary text-white border-primary shadow-md"
+                                            : "bg-white border-slate-100 text-slate-900"
                                     )}
                                 >
-                                    <span className="text-[10px] font-bold uppercase opacity-60">AED</span>
-                                    <span className="text-lg font-bold">{opt.label}</span>
+                                    <span className="text-[10px] font-bold uppercase opacity-60 leading-none">AED</span>
+                                    <span className="text-base font-bold">{opt.label}</span>
                                 </Button>
                             ))}
                             <Button 
                                 variant="ghost"
                                 onClick={handleCustomTipClick}
                                 className={cn(
-                                    "h-16 rounded-2xl border-2 flex flex-col items-center justify-center gap-1 transition-all",
+                                    "h-14 rounded-xl border-2 flex flex-col items-center justify-center gap-0.5 transition-all",
                                     showCustomTip
-                                        ? "bg-primary text-white border-primary shadow-lg scale-[1.02]"
-                                        : "bg-white border-slate-100 text-slate-900 hover:border-primary/20"
+                                        ? "bg-primary text-white border-primary shadow-md"
+                                        : "bg-white border-slate-100 text-slate-900"
                                 )}
                             >
-                                <Pen className={cn("h-5 w-5", showCustomTip ? "text-white" : "text-slate-400")} />
-                                <span className="text-[8px] font-bold uppercase">Custom</span>
+                                <Pen className={cn("h-4 w-4", showCustomTip ? "text-white" : "text-slate-400")} />
+                                <span className="text-[9px] font-bold uppercase leading-none">Custom</span>
                             </Button>
                         </div>
                     </div>
 
                     {showCustomTip && (
-                        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="animate-in fade-in slide-in-from-top-1 duration-200">
                             <Input 
                                 type="number"
-                                placeholder="Enter custom AED amount"
+                                placeholder="Enter AED amount"
                                 value={customTip}
                                 onChange={(e) => setCustomTip(e.target.value)}
-                                className="h-16 text-center text-2xl font-bold border-2 border-primary/20 rounded-2xl bg-primary/5 focus-visible:ring-primary/20"
+                                className="h-12 text-center text-xl font-bold border-2 border-primary/20 rounded-xl bg-primary/5 focus-visible:ring-primary/20"
                                 autoFocus
                             />
                         </div>
                     )}
                     
                     {/* Summary Card */}
-                    <Card className="p-5 space-y-4 bg-slate-900 text-white rounded-[2rem] shadow-xl border-none">
-                        <div className="flex justify-between items-center text-sm font-bold">
-                            <span className="opacity-40 uppercase">Bill Amount</span>
+                    <Card className="p-4 space-y-3 bg-slate-900 text-white rounded-[1.5rem] shadow-lg border-none">
+                        <div className="flex justify-between items-center text-xs font-bold">
+                            <span className="opacity-40 uppercase">Base Bill</span>
                             <span className="tabular-nums">AED {billAmount.toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between items-center text-sm font-bold">
+                        <div className="flex justify-between items-center text-xs font-bold">
                             <span className="opacity-40 uppercase">Gratuity</span>
                             <span className={cn("tabular-nums", tipAmount > 0 ? "text-green-400" : "opacity-40")}>
                                 + AED {tipAmount.toFixed(2)}
@@ -186,34 +185,34 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                         </div>
                         <Separator className="bg-white/10" />
                         <div className="flex justify-between items-end">
-                            <span className="text-xs font-bold opacity-40 uppercase leading-none mb-1">Total Authorized</span>
-                            <span className="text-3xl font-bold tabular-nums text-white">AED {totalAmount.toFixed(2)}</span>
+                            <span className="text-xs font-bold opacity-40 uppercase leading-none mb-0.5">Total Authorized</span>
+                            <span className="text-2xl font-bold tabular-nums text-white">AED {totalAmount.toFixed(2)}</span>
                         </div>
                     </Card>
                 </div>
 
-                <SheetFooter className="p-6 pt-2 border-t bg-white flex flex-col gap-3 shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
-                    <div className="grid grid-cols-2 gap-3">
+                <SheetFooter className="p-4 pt-2 border-t bg-white flex flex-col gap-2 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                    <div className="grid grid-cols-2 gap-2">
                         <Button 
                             onClick={() => handlePayment('card')} 
-                            className="h-16 text-base font-bold bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 uppercase"
+                            className="h-14 text-sm font-bold bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md flex items-center justify-center gap-2 uppercase"
                         >
-                            <CreditCard className="h-5 w-5" />
-                            Pay by Card
+                            <CreditCard className="h-4 w-4" />
+                            Card
                         </Button>
                         <Button 
                             onClick={() => handlePayment('cash')} 
-                            className="h-16 text-base font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 uppercase"
+                            className="h-14 text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-md flex items-center justify-center gap-2 uppercase"
                         >
-                            <Landmark className="h-5 w-5" />
-                            Pay by Cash
+                            <Landmark className="h-4 w-4" />
+                            Cash
                         </Button>
                     </div>
                     <Button 
                         variant="ghost"
-                        className="w-full h-12 text-slate-400 font-bold text-xs uppercase hover:bg-slate-50 rounded-xl flex items-center justify-center gap-2"
+                        className="w-full h-10 text-slate-400 font-bold text-[10px] uppercase hover:bg-slate-50 rounded-lg flex items-center justify-center gap-1.5"
                     >
-                        <MoreHorizontal className="h-4 w-4" />
+                        <MoreHorizontal className="h-3.5 w-3.5" />
                         Other Options
                     </Button>
                 </SheetFooter>
@@ -222,6 +221,3 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
     );
 }
 
-function cn(...inputs: any[]) {
-    return inputs.filter(Boolean).join(' ');
-}
