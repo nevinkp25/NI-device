@@ -412,7 +412,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
             >
               {areAllRequiredSelected ? (
                 <>
-                  <span>Commit to Ticket</span>
+                  <span>Add to Cart</span>
                   <div className="h-10 w-px bg-white/20 mx-1" />
                   <span className="bg-white/10 px-5 py-2 rounded-2xl text-xl font-black tracking-tighter tabular-nums">${finalPrice.toFixed(2)}</span>
                 </>
@@ -429,4 +429,3 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
     </Sheet>
   );
 }
-
