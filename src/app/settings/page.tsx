@@ -16,13 +16,11 @@ import {
   ChevronRight,
   ShieldCheck,
   Settings2,
-  LogOut,
-  Moon
+  LogOut
 } from 'lucide-react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
@@ -33,7 +31,6 @@ export default function SettingsPage() {
   const [printQr, setPrintQr] = useState(true);
   const [showTipLine, setShowTipLine] = useState(false);
   const [autoZReport, setAutoZReport] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -179,23 +176,7 @@ export default function SettingsPage() {
           </Card>
         </section>
 
-        {/* 5. Interface Preferences */}
-        <section className="space-y-4">
-            <div className="flex items-center gap-3 px-1 text-[#0069B1]">
-                <Moon className="h-5 w-5" />
-                <h2 className="text-xs font-black uppercase tracking-[0.15em]">Display Preferences</h2>
-            </div>
-            <Card className="rounded-[1.5rem] border-none shadow-sm bg-white p-5">
-                <SettingRow 
-                    label="Dark Mode" 
-                    description="Optimize interface for low-light environments"
-                    checked={darkMode}
-                    onCheckedChange={setDarkMode}
-                />
-            </Card>
-        </section>
-
-        {/* 6. App Information */}
+        {/* 5. App Information */}
         <section className="space-y-4">
           <div className="flex items-center gap-3 px-1 text-[#0069B1]">
              <Info className="h-5 w-5" />
