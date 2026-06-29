@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -28,11 +28,13 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     const [splitCount, setSplitCount] = useState(2);
     const [paidGuests, setPaidGuests] = useState<number[]>([]);
     const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number, guestIndex: number | null}>({isOpen: false, amount: 0, guestIndex: null});
+    const [isScrolled, setIsScrolled] = useState(false);
     
     const router = useRouter();
     const searchParams = useSearchParams();
     const { cartItems, removeFromCart, getDisplayPrice } = useCart();
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     const perPersonAmount = totalAmount > 0 && splitCount > 0 ? totalAmount / splitCount : 0;
     
@@ -76,6 +78,10 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
         onOpenChange(false);
     }
 
+    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        setIsScrolled(e.currentTarget.scrollTop > 50);
+    };
+
     useEffect(() => {
         if (isOpen) {
             const activeSplit = searchParams.get('activeSplit');
@@ -96,6 +102,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                 setSplitCount(2);
                 setPaidGuests([]);
                 setSelectedItems([]);
+                setIsScrolled(false);
             }, 300);
         }
     }, [isOpen, searchParams]);
@@ -118,7 +125,11 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                     </SheetClose>
                 </SheetHeader>
 
-                <div className="flex-grow overflow-y-auto no-scrollbar pb-10 px-6">
+                <div 
+                    ref={scrollContainerRef}
+                    onScroll={handleScroll}
+                    className="flex-grow overflow-y-auto no-scrollbar pb-10 px-6"
+                >
                     {step === 'choice' && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-4">
                             <div className="text-center space-y-1 mb-8">
@@ -161,41 +172,73 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                     )}
 
                     {step === 'equally' && (
-                        <div className="space-y-4 animate-in fade-in duration-500 pt-2">
-                            {/* Hero Voucher Card - Compact Edition */}
-                            <Card className="relative overflow-hidden rounded-[2rem] p-5 border-2 border-slate-100 bg-gradient-to-br from-[#F0F4FF] via-white to-[#F8F9FF] shadow-sm space-y-4">
-                                <div className="text-center space-y-1">
-                                    <div className="flex items-center justify-center mb-3">
-                                        <div className="bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20 flex items-center gap-1.5 shadow-sm">
-                                            <Hash className="h-2.5 w-2.5" />
-                                            <span className="text-[10px] font-black uppercase">Order #{orderId}</span>
+                        <div className="space-y-4 pt-2 relative">
+                            {/* Minimizing Header (Sticky Pill) */}
+                            <div className={cn(
+                                "sticky top-0 z-40 transition-all duration-500 -mx-1",
+                                isScrolled 
+                                    ? "opacity-100 translate-y-0 h-[100px]" 
+                                    : "opacity-0 -translate-y-4 pointer-events-none h-0 overflow-hidden"
+                            )}>
+                                <Card className="relative overflow-hidden rounded-[2rem] p-4 border-2 border-primary/20 bg-gradient-to-br from-[#F0F4FF] via-white to-[#F8F9FF] shadow-lg flex flex-col justify-center space-y-2">
+                                     <div className="flex items-center justify-between px-2">
+                                         <span className="text-[10px] font-black text-slate-400 uppercase">Total Amount</span>
+                                         <span className="text-2xl font-black text-slate-900 tabular-nums">AED {totalAmount.toFixed(2)}</span>
+                                         <span className="text-[10px] font-black text-slate-400">{Math.round(progressValue)}%</span>
+                                     </div>
+                                     <div className="px-2">
+                                         <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                                            <div 
+                                                className="h-full bg-gradient-to-r from-orange-400 to-[#0051B5] transition-all duration-1000 ease-out"
+                                                style={{ width: `${progressValue}%` }}
+                                            />
+                                        </div>
+                                        <p className="text-center text-[9px] font-bold text-slate-400 uppercase mt-2">
+                                            {paidGuests.length} of {splitCount} guest paid
+                                        </p>
+                                     </div>
+                                </Card>
+                            </div>
+
+                            {/* Hero Voucher Card - Full Version (Hides on scroll) */}
+                            <div className={cn(
+                                "transition-all duration-500 origin-top",
+                                isScrolled ? "opacity-0 scale-95 h-0 overflow-hidden pointer-events-none" : "opacity-100 scale-100 h-auto"
+                            )}>
+                                <Card className="relative overflow-hidden rounded-[2rem] p-5 border-2 border-slate-100 bg-gradient-to-br from-[#F0F4FF] via-white to-[#F8F9FF] shadow-sm space-y-4">
+                                    <div className="text-center space-y-1">
+                                        <div className="flex items-center justify-center mb-3">
+                                            <div className="bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20 flex items-center gap-1.5 shadow-sm">
+                                                <Hash className="h-2.5 w-2.5" />
+                                                <span className="text-[10px] font-black uppercase">Order #{orderId}</span>
+                                            </div>
+                                        </div>
+                                        <p className="text-[10px] font-bold text-slate-700 uppercase">Total Amount</p>
+                                        <div className="flex items-baseline justify-center gap-1.5">
+                                            <span className="text-lg font-bold text-slate-900">AED</span>
+                                            <span className="text-5xl font-black text-slate-900 tabular-nums leading-none">{totalAmount.toFixed(2)}</span>
                                         </div>
                                     </div>
-                                    <p className="text-[10px] font-bold text-slate-700 uppercase">Total Amount</p>
-                                    <div className="flex items-baseline justify-center gap-1.5">
-                                        <span className="text-lg font-bold text-slate-900">AED</span>
-                                        <span className="text-5xl font-black text-slate-900 tabular-nums leading-none">{totalAmount.toFixed(2)}</span>
-                                    </div>
-                                </div>
 
-                                <Separator className="bg-slate-200/50" />
+                                    <Separator className="bg-slate-200/50" />
 
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-[10px] font-bold text-slate-700 uppercase">Payment Progress</span>
-                                        <span className="text-[10px] font-bold text-slate-900">{Math.round(progressValue)}%</span>
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-[10px] font-bold text-slate-700 uppercase">Payment Progress</span>
+                                            <span className="text-[10px] font-bold text-slate-900">{Math.round(progressValue)}%</span>
+                                        </div>
+                                        <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                            <div 
+                                                className="h-full bg-gradient-to-r from-orange-400 to-[#0051B5] transition-all duration-1000 ease-out"
+                                                style={{ width: `${progressValue}%` }}
+                                            />
+                                        </div>
+                                        <p className="text-center text-[10px] font-bold text-slate-700 uppercase">
+                                            {paidGuests.length} OF {splitCount} GUESTS PAID
+                                        </p>
                                     </div>
-                                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                        <div 
-                                            className="h-full bg-gradient-to-r from-orange-400 to-[#0051B5] transition-all duration-1000 ease-out"
-                                            style={{ width: `${progressValue}%` }}
-                                        />
-                                    </div>
-                                    <p className="text-center text-[10px] font-bold text-slate-700 uppercase">
-                                        {paidGuests.length} OF {splitCount} GUESTS PAID
-                                    </p>
-                                </div>
-                            </Card>
+                                </Card>
+                            </div>
 
                             {/* Guest Selector Card */}
                             <Card className="p-3 rounded-[1.5rem] border-none bg-slate-50/50 shadow-sm flex items-center justify-between px-6">
