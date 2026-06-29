@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -166,8 +165,11 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                             {/* Hero Voucher Card - Compact Edition */}
                             <Card className="relative overflow-hidden rounded-[2rem] p-5 border-2 border-slate-100 bg-gradient-to-br from-[#F0F4FF] via-white to-[#F8F9FF] shadow-sm space-y-4">
                                 <div className="text-center space-y-1">
-                                    <div className="flex items-center justify-center gap-2 mb-1">
-                                        <p className="text-[10px] font-bold text-slate-700 uppercase">Order #{orderId}</p>
+                                    <div className="flex items-center justify-center mb-3">
+                                        <div className="bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20 flex items-center gap-1.5 shadow-sm">
+                                            <Hash className="h-2.5 w-2.5" />
+                                            <span className="text-[10px] font-black uppercase">Order #{orderId}</span>
+                                        </div>
                                     </div>
                                     <p className="text-[10px] font-bold text-slate-700 uppercase">Total Amount</p>
                                     <div className="flex items-baseline justify-center gap-1.5">
@@ -197,28 +199,24 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                             {/* Guest Selector Card */}
                             <Card className="p-3 rounded-[1.5rem] border-none bg-slate-50/50 shadow-sm flex items-center justify-between px-6">
-                                <Button 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    className="h-12 w-12 rounded-xl bg-white text-slate-700 hover:bg-white shadow-sm border border-slate-200"
+                                <button 
                                     onClick={() => setSplitCount(Math.max(2, splitCount - 1))}
                                     disabled={paidGuests.length > 0}
+                                    className="h-12 w-12 rounded-xl bg-white text-slate-700 hover:bg-white shadow-sm border border-slate-200 flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50"
                                 >
                                     <Minus className="h-5 w-5 stroke-[3]" />
-                                </Button>
+                                </button>
                                 <div className="text-center">
                                     <p className="text-2xl font-black text-slate-900 tabular-nums leading-none">{splitCount}</p>
                                     <p className="text-[10px] font-bold text-slate-700 uppercase mt-1">Covers</p>
                                 </div>
-                                <Button 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    className="h-12 w-12 rounded-xl bg-primary text-white hover:bg-primary/90 shadow-md"
+                                <button 
                                     onClick={() => setSplitCount(splitCount + 1)}
                                     disabled={paidGuests.length > 0}
+                                    className="h-12 w-12 rounded-xl bg-primary text-white hover:bg-primary/90 shadow-md flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50"
                                 >
                                     <Plus className="h-5 w-5 stroke-[3]" />
-                                </Button>
+                                </button>
                             </Card>
 
                             {/* Each Guest Pays Display */}
