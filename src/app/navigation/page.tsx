@@ -192,7 +192,7 @@ export default function NavigationPage() {
             </button>
 
             <button
-              onClick={() => handleNavigation('/order-by-table')}
+              onClick={() => handleNavigation('/order-by-table?mode=settlement')}
               className="flex flex-col items-center justify-center aspect-square rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group"
             >
               <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">

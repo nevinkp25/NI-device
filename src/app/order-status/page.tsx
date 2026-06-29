@@ -15,6 +15,7 @@ import { SplitBillSheet } from '@/components/split-bill-sheet';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
+import { OrderStepper, Step } from '@/components/order-stepper';
 
 function OrderStatusContent() {
   const router = useRouter();
@@ -28,9 +29,13 @@ function OrderStatusContent() {
 
   const tableNumber = searchParams.get('table');
 
+  const settlementSteps: Step[] = [
+    { id: 1, label: "TABLE" },
+    { id: 2, label: "ORDER STATUS" },
+  ];
+
   useEffect(() => {
     if (tableNumber) {
-      // In a real app, you'd fetch this data based on tableNumber
       setOrder(sampleOrder);
       loadCart(sampleOrder.items);
     }
@@ -113,7 +118,7 @@ function OrderStatusContent() {
       <div className="flex flex-col min-h-screen bg-slate-50/50">
         <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
           <div className="flex items-center p-4 h-16">
-            <Link href="/order-by-table" passHref>
+            <Link href="/order-by-table?mode=settlement" passHref>
               <Button variant="ghost" size="icon" className="text-slate-900 h-10 w-10">
                 <ArrowLeft className="h-6 w-6" />
               </Button>
@@ -128,6 +133,7 @@ function OrderStatusContent() {
               </Button>
             </Link>
           </div>
+          <OrderStepper currentStep={2} steps={settlementSteps} />
         </header>
 
         <main className="p-4 flex-grow pb-56 space-y-6">

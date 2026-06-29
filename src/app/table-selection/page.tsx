@@ -1,14 +1,14 @@
 
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Search, Users, Plus, Minus, X, LayoutGrid, Check, Hash } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { OrderStepper } from '@/components/order-stepper';
+import { OrderStepper, Step } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { TABLES_BY_FLOOR, ALL_TABLES, type TableData } from '@/lib/data';
 
@@ -18,8 +18,9 @@ const FLOORS = [
   { id: 'vip', name: 'VIP LOUNGE' },
 ];
 
-export default function TableSelectionPage() {
+function TableSelectionContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [selectedFloor, setSelectedFloor] = useState('f1');
   const [searchQuery, setSearchQuery] = useState('');
   const [guestCount, setGuestCount] = useState(1);
@@ -27,6 +28,13 @@ export default function TableSelectionPage() {
   const [isGuestSheetOpen, setIsGuestSheetOpen] = useState(false);
   const [isFloorSheetOpen, setIsFloorSheetOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const isSettlementMode = searchParams.get('mode') === 'settlement';
+
+  const settlementSteps: Step[] = [
+    { id: 1, label: "TABLE" },
+    { id: 2, label: "ORDER STATUS" },
+  ];
 
   const tables = TABLES_BY_FLOOR[selectedFloor] || [];
   
@@ -63,7 +71,10 @@ export default function TableSelectionPage() {
           <div className="w-10"></div>
         </header>
         
-        <OrderStepper currentStep={1} />
+        <OrderStepper 
+          currentStep={1} 
+          steps={isSettlementMode ? settlementSteps : undefined}
+        />
         
         <div className="px-4 py-3 space-y-3">
           <div className="flex items-center gap-3">
@@ -139,13 +150,12 @@ export default function TableSelectionPage() {
         </section>
       </main>
 
-      {/* Keyboard-Aware Floating Switcher */}
       <div className={cn(
         "fixed left-1/2 -translate-x-1/2 z-30 transition-all duration-500 ease-in-out",
         isInputFocused ? "bottom-32 sm:bottom-40 opacity-80" : "bottom-6"
       )}>
         <div className="bg-slate-900/95 text-white rounded-full p-0.5 shadow-2xl flex items-center gap-0.5 border border-white/10 backdrop-blur-md">
-          <Link href="/order-by-table" passHref>
+          <Link href={`/order-by-table${isSettlementMode ? '?mode=settlement' : ''}`} passHref>
             <Button 
               variant="ghost" 
               className="h-9 px-4 rounded-full text-white/50 hover:text-white flex items-center gap-2"
@@ -251,5 +261,13 @@ export default function TableSelectionPage() {
         </SheetContent>
       </Sheet>
     </div>
+  );
+}
+
+export default function TableSelectionPage() {
+  return (
+    <Suspense fallback={<div>Loading Table Grid...</div>}>
+      <TableSelectionContent />
+    </Suspense>
   );
 }

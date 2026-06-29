@@ -5,18 +5,24 @@ import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import React from "react";
 
-interface Step {
+export interface Step {
   id: number;
   label: string;
 }
 
-const steps: Step[] = [
+const DEFAULT_STEPS: Step[] = [
   { id: 1, label: "TABLE" },
   { id: 2, label: "MENU" },
   { id: 3, label: "ORDER" },
 ];
 
-export function OrderStepper({ currentStep }: { currentStep: number }) {
+export function OrderStepper({ 
+  currentStep, 
+  steps = DEFAULT_STEPS 
+}: { 
+  currentStep: number; 
+  steps?: Step[] 
+}) {
   return (
     <div className="w-full bg-background pt-1.5 pb-2.5">
       <div className="flex items-center justify-center px-4 max-w-[360px] mx-auto relative">

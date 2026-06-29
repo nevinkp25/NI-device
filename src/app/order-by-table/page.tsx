@@ -1,32 +1,40 @@
 
 "use client";
 
-import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useMemo, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Hash, LayoutGrid, Users, Minus, Plus, X, Search } from 'lucide-react';
+import { ArrowLeft, Hash, LayoutGrid, Users, Minus, Plus, X } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
-import { OrderStepper } from '@/components/order-stepper';
+import { OrderStepper, Step } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { ALL_TABLES, type TableData } from '@/lib/data';
 import { cn } from '@/lib/utils';
 
-export default function OrderByTablePage() {
+function OrderByTableContent() {
   const [tableNumber, setTableNumber] = useState('');
   const [guestCount, setGuestCount] = useState(1);
   const [isGuestSheetOpen, setIsGuestSheetOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
+
+  const isSettlementMode = searchParams.get('mode') === 'settlement';
+
+  const settlementSteps: Step[] = [
+    { id: 1, label: "TABLE" },
+    { id: 2, label: "ORDER STATUS" },
+  ];
 
   const suggestions = useMemo(() => {
     if (!tableNumber.trim()) return [];
     const search = tableNumber.toLowerCase();
     return ALL_TABLES.filter(t => 
       t.id.toLowerCase().includes(search)
-    ).slice(0, 8); // Limit to 8 for a clean grid (4 rows of 2)
+    ).slice(0, 8);
   }, [tableNumber]);
 
   const handleOpenGuestSheet = (id?: string) => {
@@ -68,7 +76,10 @@ export default function OrderByTablePage() {
           <h1 className="text-xl font-bold mx-auto uppercase tracking-tight text-slate-900">Identify Table</h1>
           <div className="w-10"></div>
         </div>
-        <OrderStepper currentStep={1} />
+        <OrderStepper 
+          currentStep={1} 
+          steps={isSettlementMode ? settlementSteps : undefined} 
+        />
       </header>
 
       <main className={cn(
@@ -98,7 +109,6 @@ export default function OrderByTablePage() {
                 autoFocus
               />
               
-              {/* Dropdown Popup for Suggestions - Refined Grid Layout */}
               {suggestions.length > 0 && tableNumber.length > 0 && (
                 <div className="absolute top-[80%] left-0 right-0 z-50 mt-4 bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
                   <div className="p-4">
@@ -142,7 +152,6 @@ export default function OrderByTablePage() {
         </form>
       </main>
 
-      {/* Keyboard-Aware Floating Switcher */}
       <div className={cn(
         "fixed left-1/2 -translate-x-1/2 z-30 transition-all duration-500 ease-in-out",
         isInputFocused ? "bottom-32 sm:bottom-40 opacity-80" : "bottom-6"
@@ -152,7 +161,7 @@ export default function OrderByTablePage() {
             <Hash className="h-4 w-4" />
             <span className="text-[10px] font-bold uppercase tracking-tight">Manual</span>
           </div>
-          <Link href="/table-selection" passHref>
+          <Link href={`/table-selection${isSettlementMode ? '?mode=settlement' : ''}`} passHref>
             <Button 
               variant="ghost" 
               className="h-9 px-4 rounded-full text-white/50 hover:text-white flex items-center gap-2"
@@ -215,5 +224,13 @@ export default function OrderByTablePage() {
         </SheetContent>
       </Sheet>
     </div>
+  );
+}
+
+export default function OrderByTablePage() {
+  return (
+    <Suspense fallback={<div>Loading Table Identification...</div>}>
+      <OrderByTableContent />
+    </Suspense>
   );
 }
