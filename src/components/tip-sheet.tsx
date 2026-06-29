@@ -9,8 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { CreditCard, X, Pen, Landmark, MoreHorizontal, User } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { cn } from '@/lib/utils';
 
 interface TipSheetProps {
@@ -25,8 +23,6 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
     const [customTip, setCustomTip] = useState('');
     const [showCustomTip, setShowCustomTip] = useState(false);
     const [staffId, setStaffId] = useState('123456');
-
-    const waiterImage = PlaceHolderImages.find(p => p.id === 'waiter');
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -106,10 +102,9 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                 <div className="flex-grow p-4 space-y-5 pb-8 overflow-y-auto no-scrollbar">
                     <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                            <Avatar className="h-10 w-10 border border-slate-100 shadow-sm">
-                                <AvatarImage src={waiterImage?.imageUrl} alt="Server" />
-                                <AvatarFallback><User className="h-5 w-5" /></AvatarFallback>
-                            </Avatar>
+                            <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200 shadow-sm">
+                                <User className="h-5 w-5 text-slate-500" />
+                            </div>
                             <div className="space-y-0.5">
                                 <p className="text-sm font-bold text-slate-900 leading-tight">Server: David R.</p>
                                 <p className="text-xs font-bold text-primary uppercase leading-none">Employee ID: #{staffId}</p>
