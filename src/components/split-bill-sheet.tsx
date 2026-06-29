@@ -457,28 +457,33 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                         ))}
                                     </div>
 
-                                    <div className="bg-[#0069B1]/5 p-4 rounded-2xl border border-[#0069B1]/20 space-y-4">
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 bg-[#0069B1] text-white rounded-xl flex items-center justify-center font-black">
-                                                    {currentAssigningGuestIndex + 1}
+                                    {/* Sticky Guest Status Card */}
+                                    <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm -mx-1 px-1 py-2">
+                                        <div className="bg-slate-50/80 p-4 rounded-[1.5rem] border border-slate-200 shadow-sm space-y-4">
+                                            <div className="flex justify-between items-center">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="h-10 w-10 bg-[#0051B5] text-white rounded-2xl flex items-center justify-center font-black text-lg">
+                                                        {currentAssigningGuestIndex + 1}
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <h3 className="font-black text-base text-slate-900 uppercase leading-none">Guest {currentAssigningGuestIndex + 1} Selection</h3>
+                                                        <p className="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-tight">Allocate individual quantities</p>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <h3 className="font-black text-base text-slate-900 uppercase leading-none">Guest {currentAssigningGuestIndex + 1} Selection</h3>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Allocate individual quantities</p>
+                                                <div className="text-right">
+                                                    <p className="text-[10px] font-black text-[#0069B1] uppercase tracking-tight">Current Total</p>
+                                                    <p className="text-xl font-black text-slate-900 tabular-nums tracking-tighter leading-none mt-1">
+                                                        ${currentGuestPreviewTotal.toFixed(2)}
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="text-[10px] font-black text-[#0069B1] uppercase">Current Total</p>
-                                                <p className="text-xl font-black text-slate-900 tabular-nums tracking-tighter">${currentGuestPreviewTotal.toFixed(2)}</p>
-                                            </div>
-                                        </div>
 
-                                        <div className="h-1 bg-[#0069B1]/10 rounded-full overflow-hidden">
-                                            <div 
-                                                className="h-full bg-[#0069B1] transition-all duration-500" 
-                                                style={{ width: `${(totalBillAssigned / totalAmount) * 100}%` }}
-                                            />
+                                            <div className="h-1 bg-slate-200 rounded-full overflow-hidden">
+                                                <div 
+                                                    className="h-full bg-[#0051B5] transition-all duration-500" 
+                                                    style={{ width: `${(totalBillAssigned / totalAmount) * 100}%` }}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
