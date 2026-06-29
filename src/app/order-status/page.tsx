@@ -89,7 +89,7 @@ function OrderStatusContent() {
               <ArrowLeft className="h-6 w-6 text-slate-900" />
             </Button>
           </Link>
-          <h1 className="text-sm font-bold mx-auto uppercase text-slate-900">Check Settlement</h1>
+          <h1 className="text-sm font-bold mx-auto uppercase text-slate-900">Table Check</h1>
           <div className="w-10"></div>
         </header>
         <div className="flex-grow flex flex-col items-center justify-center p-12 text-center space-y-4">
@@ -286,7 +286,7 @@ function OrderStatusContent() {
         >
           <div className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
-            <span>Process Payment</span>
+            <span>Pay Full</span>
           </div>
           <div className="h-6 w-px bg-white/20" />
           <span className="bg-white/10 px-3 py-1.5 rounded-xl text-base font-bold tabular-nums">${total.toFixed(2)}</span>
