@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Home, Receipt, User, Clock, ChevronRight, Info, MoreHorizontal, Calendar } from 'lucide-react';
+import { ArrowLeft, Home, Receipt, User, Clock, ChevronRight, Info, Calendar, X } from 'lucide-react';
 import Link from 'next/link';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
