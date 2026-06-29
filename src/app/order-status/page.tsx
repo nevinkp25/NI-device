@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
@@ -56,7 +57,7 @@ function OrderStatusContent() {
   const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const [selectedItemForDetail, setSelectedItemForDetail] = useState<CartItem | null>(null);
-  const [staffId, setStaffId] = useState('123456');
+  const [staffId, setStaffId] = useState('000000');
 
   const tableNumber = searchParams.get('table');
 
@@ -88,10 +89,10 @@ function OrderStatusContent() {
 
   if (!tableNumber) {
     return (
-       <div className="flex flex-col h-screen bg-slate-50">
-         <header className="flex items-center p-4 border-b bg-white">
+       <div className="flex flex-col h-screen bg-slate-50/50">
+         <header className="flex items-center p-4 border-b bg-white shadow-sm">
           <Link href="/order-by-table?mode=settlement">
-            <Button variant="ghost" size="icon" className="h-10 w-10">
+            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
               <ArrowLeft className="h-6 w-6 text-slate-900" />
             </Button>
           </Link>
@@ -110,10 +111,10 @@ function OrderStatusContent() {
 
   if (!order) {
     return (
-      <div className="flex flex-col h-screen bg-slate-50">
-        <header className="flex items-center p-4 border-b bg-white">
+      <div className="flex flex-col h-screen bg-slate-50/50">
+        <header className="flex items-center p-4 border-b bg-white shadow-sm">
           <Link href="/order-by-table?mode=settlement">
-            <Button variant="ghost" size="icon" className="h-10 w-10">
+            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
               <ArrowLeft className="h-6 w-6 text-slate-900" />
             </Button>
           </Link>
@@ -203,7 +204,7 @@ function OrderStatusContent() {
             </div>
           </div>
 
-          <div className="flex items-center flex-wrap gap-x-4 gap-y-2 py-3 border-t border-slate-50 text-slate-500">
+          <div className="flex items-center gap-5 py-3 border-t border-slate-50 text-slate-500 overflow-x-auto no-scrollbar">
             <div className="flex items-center gap-1.5 shrink-0">
               <User className="h-3.5 w-3.5 text-primary/40" />
               <span className="text-[10px] font-bold uppercase">Emp ID: #{staffId}</span>
@@ -303,7 +304,7 @@ function OrderStatusContent() {
           variant="outline" 
           className="w-full h-14 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 uppercase hover:bg-slate-50 transition-all active:scale-[0.98] bg-white"
         >
-          Split Check Between Guests
+          Split Bill
         </Button>
       </footer>
 
@@ -389,7 +390,7 @@ function OrderStatusContent() {
 export default function OrderStatusPage() {
   return (
     <Suspense fallback={
-      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50/50">
         <div className="h-8 w-8 border-4 border-slate-100 border-t-slate-400 rounded-full animate-spin" />
       </div>
     }>
