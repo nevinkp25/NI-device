@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo } from 'react';
@@ -223,7 +222,7 @@ export default function TransactionHistoryPage() {
             <div className="p-4 space-y-4">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">Ref</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">Order</span>
                   <span className="text-lg font-bold text-slate-900 leading-none">#{tx.id}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 shadow-inner">
@@ -313,7 +312,7 @@ export default function TransactionHistoryPage() {
                     <SheetTitle className="text-2xl font-black text-white uppercase tracking-tight leading-none">Order Details</SheetTitle>
                     <SheetDescription className="text-white/60 text-xs font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
                       <Hash className="h-3 w-3" />
-                      Ref #{selectedTx.id}
+                      Order #{selectedTx.id}
                     </SheetDescription>
                   </div>
                   <Button 

@@ -139,7 +139,7 @@ function OrderStatusContent() {
              <div className="space-y-1">
                 <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Tab</h2>
                 <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-slate-900 tracking-tighter">REF #{order.id}</span>
+                    <span className="text-2xl font-black text-slate-900 tracking-tighter">Order #{order.id}</span>
                     <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-100 text-[9px] font-black uppercase">Standard</Badge>
                 </div>
              </div>
@@ -226,7 +226,7 @@ function OrderStatusContent() {
                 <div className="flex justify-between items-end pt-1">
                     <div className="flex flex-col">
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-none">Final Bill</span>
-                      <span className="text-[9px] font-black text-slate-300 uppercase tracking-tighter leading-none">REF #{order.id} | TABLE {tableNumber}</span>
+                      <span className="text-[9px] font-black text-slate-300 uppercase tracking-tighter leading-none">Order #{order.id} | TABLE {tableNumber}</span>
                     </div>
                     <span className="text-4xl font-black text-primary tracking-tighter tabular-nums">${total.toFixed(2)}</span>
                 </div>
