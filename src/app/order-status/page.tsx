@@ -15,7 +15,10 @@ import {
   X,
   CreditCard,
   History,
-  FileText
+  FileText,
+  MoreVertical,
+  RefreshCw,
+  Trash2
 } from 'lucide-react';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
@@ -33,9 +36,19 @@ import {
 } from '@/components/ui/sheet';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function OrderStatusContent() {
   const router = useRouter();
+  const { toast } = useToast();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { loadCart } = useCart();
@@ -52,6 +65,20 @@ function OrderStatusContent() {
       loadCart(sampleOrder.items);
     }
   }, [tableNumber, loadCart]);
+
+  const handleSyncOrder = () => {
+    toast({
+      title: "Syncing Order",
+      description: "Fetching latest transaction data from kitchen...",
+    });
+  };
+
+  const handleClearSplits = () => {
+    toast({
+      title: "Splits Cleared",
+      description: "Account has been reset to single-payer mode.",
+    });
+  };
 
   if (!tableNumber) {
     return (
@@ -128,13 +155,34 @@ function OrderStatusContent() {
         </Link>
         <div className="flex flex-col items-center">
           <h1 className="text-sm font-bold uppercase text-slate-900">Table {tableNumber} Account</h1>
-          <p className="text-[10px] font-bold text-slate-400 uppercase leading-none mt-0.5">Terminal Dashboard</p>
+          <p className="text-xs font-bold text-slate-400 uppercase leading-none mt-0.5">Terminal Dashboard</p>
         </div>
-        <Link href="/navigation">
-          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-slate-100 bg-slate-50">
-            <Home className="h-5 w-5" />
-          </Button>
-        </Link>
+        <div className="flex items-center gap-1">
+          <Link href="/navigation">
+            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-slate-100 bg-slate-50">
+              <Home className="h-5 w-5" />
+            </Button>
+          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-slate-100 bg-slate-50">
+                <MoreVertical className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2">
+              <DropdownMenuLabel className="text-xs font-bold uppercase text-slate-400 p-2">Account Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={handleSyncOrder}>
+                <RefreshCw className="h-4 w-4 text-blue-600" />
+                <span className="font-bold text-sm">Sync Order</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={handleClearSplits}>
+                <Trash2 className="h-4 w-4 text-red-600" />
+                <span className="font-bold text-sm">Clear Splits</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </header>
 
       <main className="flex-grow p-4 animate-in fade-in duration-500 max-w-[420px] mx-auto w-full space-y-4 pb-44">
@@ -144,7 +192,7 @@ function OrderStatusContent() {
             <div className="space-y-1">
               <h2 className="text-xl font-bold text-slate-900 uppercase">Order #{order.id}</h2>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-[10px] py-0 px-2 rounded-md">Open Account</Badge>
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-xs py-0 px-2 rounded-md">Open Account</Badge>
                 <span className="text-xs font-bold text-slate-400 uppercase">Audit Required</span>
               </div>
             </div>
@@ -153,15 +201,15 @@ function OrderStatusContent() {
           <div className="flex items-center gap-5 py-3 border-t border-slate-50 text-slate-500 overflow-x-auto no-scrollbar">
             <div className="flex items-center gap-2 shrink-0">
               <User className="h-4 w-4 text-primary/40" />
-              <span className="text-xs font-bold uppercase">David R.</span>
+              <span className="text-sm font-bold uppercase">David R.</span>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Clock className="h-4 w-4 text-primary/40" />
-              <span className="text-xs font-bold uppercase">{format(new Date(order.date), "hh:mm a")}</span>
+              <span className="text-sm font-bold uppercase">{format(new Date(order.date), "hh:mm a")}</span>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Calendar className="h-4 w-4 text-primary/40" />
-              <span className="text-xs font-bold uppercase">{format(new Date(order.date), "MMM d, yyyy")}</span>
+              <span className="text-sm font-bold uppercase">{format(new Date(order.date), "MMM d, yyyy")}</span>
             </div>
           </div>
         </Card>
@@ -180,7 +228,7 @@ function OrderStatusContent() {
                 onClick={() => setSelectedItemForDetail(item)}
               >
                 <div className="flex items-center gap-4">
-                  <div className="h-8 w-8 bg-slate-900 rounded-lg flex items-center justify-center text-[11px] font-black text-white">
+                  <div className="h-8 w-8 bg-slate-900 rounded-lg flex items-center justify-center text-sm font-bold text-white">
                     {item.quantity}x
                   </div>
                   <div className="flex flex-col">
@@ -206,21 +254,21 @@ function OrderStatusContent() {
           
           <div className="space-y-3">
             <div className="flex justify-between items-center p-3 rounded-xl bg-primary/5 border border-primary/10">
-              <span className="text-xs font-bold text-primary uppercase">Subtotal</span>
-              <span className="text-sm font-black text-primary tabular-nums">${subtotal.toFixed(2)}</span>
+              <span className="text-sm font-bold text-primary uppercase">Subtotal</span>
+              <span className="text-base font-bold text-primary tabular-nums">${subtotal.toFixed(2)}</span>
             </div>
             
             <div className="px-3 space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-slate-500 uppercase">Service Charge (10%)</span>
+                <span className="text-sm font-bold text-slate-500 uppercase">Service Charge (10%)</span>
                 <span className="text-sm font-bold text-slate-900 tabular-nums">${extraCharges.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-slate-500 uppercase">VAT (5%)</span>
+                <span className="text-sm font-bold text-slate-500 uppercase">VAT (5%)</span>
                 <span className="text-sm font-bold text-slate-900 tabular-nums">${vatAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center opacity-40">
-                <span className="text-xs font-bold text-slate-500 uppercase">Gratuity (Tip)</span>
+                <span className="text-sm font-bold text-slate-500 uppercase">Gratuity (Tip)</span>
                 <span className="text-sm font-bold text-slate-900 tabular-nums">$0.00</span>
               </div>
             </div>
@@ -231,9 +279,9 @@ function OrderStatusContent() {
           <div className="flex justify-between items-end py-2 px-3">
             <div className="flex flex-col">
               <span className="text-xs font-bold text-slate-400 uppercase leading-none mb-1">Total Balance Due</span>
-              <span className="text-xs font-bold text-primary uppercase leading-none">Order # {order.id}</span>
+              <span className="text-sm font-bold text-primary uppercase leading-none">Order # {order.id}</span>
             </div>
-            <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">${total.toFixed(2)}</span>
+            <span className="text-4xl font-bold text-primary tabular-nums tracking-normal">${total.toFixed(2)}</span>
           </div>
         </Card>
       </main>
@@ -249,13 +297,13 @@ function OrderStatusContent() {
             <span>Pay Full Amount</span>
           </div>
           <div className="h-6 w-px bg-white/20" />
-          <span className="bg-white/10 px-3 py-1.5 rounded-xl text-base font-black tabular-nums">${total.toFixed(2)}</span>
+          <span className="bg-white/10 px-3 py-1.5 rounded-xl text-base font-bold tabular-nums">${total.toFixed(2)}</span>
         </Button>
         
         <Button 
           onClick={handleSplitBill} 
           variant="outline" 
-          className="w-full h-14 border-2 border-slate-100 rounded-2xl text-xs font-bold text-slate-700 uppercase hover:bg-slate-50 transition-all active:scale-[0.98] bg-white"
+          className="w-full h-14 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 uppercase hover:bg-slate-50 transition-all active:scale-[0.98] bg-white"
         >
           Split Bill Between Guests
         </Button>
@@ -268,11 +316,11 @@ function OrderStatusContent() {
           <SheetHeader className="p-6 flex-row items-center justify-between border-b bg-white">
             <div className="flex items-center gap-4 text-left">
                <div className="h-10 w-10 bg-slate-900 rounded-2xl flex items-center justify-center text-white">
-                  <span className="text-xs font-black">{selectedItemForDetail?.quantity}x</span>
+                  <span className="text-sm font-bold">{selectedItemForDetail?.quantity}x</span>
                </div>
                <div className="space-y-0.5">
                   <SheetTitle className="text-lg font-bold text-slate-900 uppercase leading-none">{selectedItemForDetail?.name}</SheetTitle>
-                  <p className="text-xs text-slate-400 font-bold uppercase leading-none">Kitchen Service Audit</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase leading-none">Kitchen Service Audit</p>
                </div>
             </div>
             <SheetClose asChild>
@@ -284,22 +332,22 @@ function OrderStatusContent() {
           <div className="p-6 space-y-8 pb-12">
             <div className="grid grid-cols-2 gap-3">
               <Card className="bg-slate-50 p-5 rounded-2xl space-y-1 border-none shadow-none">
-                <p className="text-[10px] font-bold text-slate-400 uppercase">Quantity</p>
+                <p className="text-xs font-bold text-slate-400 uppercase">Quantity</p>
                 <p className="text-2xl font-bold text-slate-900">{selectedItemForDetail?.quantity}x</p>
               </Card>
               <Card className="bg-slate-50 p-5 rounded-2xl space-y-1 text-right border-none shadow-none">
-                <p className="text-[10px] font-bold text-slate-400 uppercase">Unit Price</p>
+                <p className="text-xs font-bold text-slate-400 uppercase">Unit Price</p>
                 <p className="text-2xl font-bold text-slate-900 tabular-nums">${selectedItemForDetail?.price.toFixed(2)}</p>
               </Card>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[10px] font-bold text-slate-400 uppercase px-1">Order Customizations</h4>
+              <h4 className="text-xs font-bold text-slate-400 uppercase px-1">Order Customizations</h4>
               <div className="space-y-6">
                 {selectedItemForDetail?.selectedVariations && Object.keys(selectedItemForDetail.selectedVariations).length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {Object.values(selectedItemForDetail.selectedVariations).map((v, i) => (
-                      <Badge key={i} className="bg-white text-slate-700 border border-slate-200 font-bold text-[10px] uppercase px-3 py-1.5 rounded-lg shadow-sm">
+                      <Badge key={i} className="bg-white text-slate-700 border border-slate-200 font-bold text-xs uppercase px-3 py-1.5 rounded-lg shadow-sm">
                         {v}
                       </Badge>
                     ))}
@@ -309,7 +357,7 @@ function OrderStatusContent() {
                 )}
                 
                 <div className="space-y-2">
-                  <p className="text-[10px] font-bold text-slate-300 uppercase px-1">Prep Instructions</p>
+                  <p className="text-xs font-bold text-slate-300 uppercase px-1">Prep Instructions</p>
                   <div className="text-sm font-bold italic text-slate-600 bg-slate-50 p-4 rounded-xl">
                     {selectedItemForDetail?.specialInstructions ? `"${selectedItemForDetail.specialInstructions}"` : 'No specific requests.'}
                   </div>
