@@ -52,7 +52,7 @@ export default function SettingsPage() {
                                 <div className="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
                                     <option.icon className="h-5 w-5 text-[#0069B1]" />
                                 </div>
-                                <span className="text-sm font-bold text-slate-900 uppercase tracking-tight">{option.name}</span>
+                                <span className="text-sm font-bold text-slate-900 tracking-tight">{option.name}</span>
                             </div>
                             <ChevronRight className="h-5 w-5 text-slate-300" />
                         </div>
@@ -68,13 +68,13 @@ export default function SettingsPage() {
             </div>
             <div className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
                 <div className="flex items-center gap-3">
-                    <Label htmlFor="dark-mode-switch" className="text-sm font-bold text-slate-900 uppercase">Dark Mode</Label>
+                    <Label htmlFor="dark-mode-switch" className="text-sm font-bold text-slate-900">Dark Mode</Label>
                 </div>
                 <Switch id="dark-mode-switch" />
             </div>
             <div className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-100 shadow-sm mt-2">
                 <div className="flex items-center gap-3">
-                    <Label htmlFor="auto-print-switch" className="text-sm font-bold text-slate-900 uppercase">Auto-print Receipts</Label>
+                    <Label htmlFor="auto-print-switch" className="text-sm font-bold text-slate-900">Auto-print Receipts</Label>
                 </div>
                 <Switch id="auto-print-switch" defaultChecked />
             </div>

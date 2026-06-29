@@ -37,8 +37,8 @@ export default function TerminalConnectivityPage() {
   const SettingRow = ({ label, description, checked, onCheckedChange }: { label: string, description?: string, checked: boolean, onCheckedChange: (v: boolean) => void }) => (
     <div className="flex items-center justify-between py-4">
       <div className="space-y-0.5">
-        <p className="text-sm font-bold text-slate-900 uppercase tracking-tight">{label}</p>
-        {description && <p className="text-[10px] font-medium text-slate-400 uppercase leading-none">{description}</p>}
+        <p className="text-sm font-bold text-slate-900 tracking-tight">{label}</p>
+        {description && <p className="text-[10px] font-medium text-slate-400 leading-none">{description}</p>}
       </div>
       <Switch 
         checked={checked} 
@@ -70,7 +70,7 @@ export default function TerminalConnectivityPage() {
           <Card className="rounded-[1.5rem] border-none shadow-sm bg-white p-6 space-y-6">
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-bold text-slate-500 uppercase">Device Status</span>
+                <span className="text-sm font-bold text-slate-500">Device Status</span>
                 <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
                     <span className="text-sm font-black text-green-600 uppercase">System Ready</span>
@@ -87,7 +87,7 @@ export default function TerminalConnectivityPage() {
                     { label: 'N-Genius Ver', value: '2.08.804' }
                 ].map((item, i) => (
                     <div key={i} className="flex justify-between items-center text-[11px]">
-                        <span className="font-bold text-slate-400 uppercase">{item.label}</span>
+                        <span className="font-bold text-slate-400">{item.label}</span>
                         <span className="font-black text-slate-900 tracking-tight">{item.value}</span>
                     </div>
                 ))}
@@ -181,7 +181,7 @@ export default function TerminalConnectivityPage() {
                         </div>
                         <div>
                             <p className="text-sm font-black text-slate-900 leading-none">Network Dine POS</p>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Version 2.4.1 (Stable)</p>
+                            <p className="text-[10px] font-bold text-slate-400 mt-1">Version 2.4.1 (Stable)</p>
                         </div>
                     </div>
                     <Badge variant="outline" className="bg-blue-50 text-[#0069B1] border-blue-100 font-black text-[9px] uppercase px-2 py-0.5 rounded-md">Production</Badge>
@@ -190,11 +190,11 @@ export default function TerminalConnectivityPage() {
                 <Separator className="bg-slate-50" />
                 
                 <div className="space-y-2.5">
-                    <button className="w-full flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase hover:text-[#0069B1] transition-colors">
+                    <button className="w-full flex items-center justify-between text-[11px] font-bold text-slate-500 hover:text-[#0069B1] transition-colors">
                         <span>Check for System Updates</span>
                         <ChevronRight className="h-4 w-4 opacity-30" />
                     </button>
-                    <button className="w-full flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase hover:text-[#0069B1] transition-colors">
+                    <button className="w-full flex items-center justify-between text-[11px] font-bold text-slate-500 hover:text-[#0069B1] transition-colors">
                         <span>Legal & Compliance</span>
                         <ChevronRight className="h-4 w-4 opacity-30" />
                     </button>
@@ -204,7 +204,7 @@ export default function TerminalConnectivityPage() {
             <div className="bg-slate-50 p-4 text-center border-t border-slate-100">
                 <div className="flex items-center justify-center gap-1.5 opacity-40">
                     <ShieldCheck className="h-3 w-3 text-slate-900" />
-                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-900">Secure Enterprise Build #031306</p>
+                    <p className="text-[9px] font-black tracking-widest text-slate-900">Secure Enterprise Build #031306</p>
                 </div>
             </div>
           </Card>
