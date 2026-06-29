@@ -22,8 +22,8 @@
     --muted: 214 32% 91%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 214 100% 35%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 214 100% 94%; /* Light Blue for hovers */
+    --accent-foreground: 214 100% 35%; /* Network Blue for text on hover */
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;

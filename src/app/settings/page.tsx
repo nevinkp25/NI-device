@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -98,7 +97,7 @@ export default function SettingsPage() {
               </Button>
             </div>
             <div className="bg-slate-50/50 p-3 text-center border-t border-slate-100">
-               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Manage N-Genius terminal connectivity and settings</p>
+               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Manage N-Genius terminal connectivity and settings</p>
             </div>
           </Card>
         </div>
@@ -169,7 +168,7 @@ export default function SettingsPage() {
                 <div className="flex justify-between items-center">
                     <div className="space-y-0.5">
                         <p className="text-sm font-bold text-slate-900">Network Dine POS</p>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Production Build</p>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Production Build</p>
                     </div>
                     <div className="text-right">
                         <Badge variant="outline" className="bg-blue-50 text-[#0051B5] border-blue-100 font-black text-[10px] uppercase px-2.5 py-1 rounded-lg">v15.0</Badge>
@@ -185,7 +184,7 @@ export default function SettingsPage() {
             <div className="bg-slate-900 p-4 text-center">
                 <div className="flex items-center justify-center gap-2">
                     <ShieldCheck className="h-3.5 w-3.5 text-white" />
-                    <p className="text-[9px] font-black tracking-[0.2em] text-white uppercase">Secure Enterprise Session Active</p>
+                    <p className="text-[9px] font-black tracking-[0.2em] text-white uppercase leading-none">Secure Enterprise Session Active</p>
                 </div>
             </div>
           </Card>
@@ -202,7 +201,7 @@ export default function SettingsPage() {
                 Reset Terminal Session
             </Button>
             <p className="text-center text-[8px] font-black text-slate-300 uppercase tracking-[0.3em] mt-6">
-               Network POS Infrastructure Infrastructure v2.4
+               Network POS Infrastructure v2.4
             </p>
         </div>
       </main>
