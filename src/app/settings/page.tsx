@@ -191,30 +191,17 @@ export default function SettingsPage() {
                         </div>
                         <div>
                             <p className="text-sm font-black text-slate-900 leading-none">Network Dine POS</p>
-                            <p className="text-[10px] font-bold text-slate-400 mt-1">Version 2.4.1 (Stable)</p>
+                            <p className="text-[10px] font-bold text-slate-400 mt-1">Version 15.0</p>
                         </div>
                     </div>
                     <Badge variant="outline" className="bg-blue-50 text-[#0069B1] border-blue-100 font-black text-[9px] uppercase px-2 py-0.5 rounded-md">Production</Badge>
-                </div>
-                
-                <Separator className="bg-slate-50" />
-                
-                <div className="space-y-2.5">
-                    <button className="w-full flex items-center justify-between text-[11px] font-bold text-slate-500 hover:text-[#0069B1] transition-colors">
-                        <span>Check for System Updates</span>
-                        <ChevronRight className="h-4 w-4 opacity-30" />
-                    </button>
-                    <button className="w-full flex items-center justify-between text-[11px] font-bold text-slate-500 hover:text-[#0069B1] transition-colors">
-                        <span>Legal & Compliance</span>
-                        <ChevronRight className="h-4 w-4 opacity-30" />
-                    </button>
                 </div>
             </div>
             
             <div className="bg-slate-50 p-4 text-center border-t border-slate-100">
                 <div className="flex items-center justify-center gap-1.5 opacity-40">
                     <ShieldCheck className="h-3 w-3 text-slate-900" />
-                    <p className="text-[9px] font-black tracking-widest text-slate-900">Secure Enterprise Build #031306</p>
+                    <p className="text-[9px] font-black tracking-widest text-slate-900">Secure Enterprise Build #15</p>
                 </div>
             </div>
           </Card>
