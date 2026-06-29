@@ -73,17 +73,21 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
             returnUrlStr = "/navigation"; 
         } else {
             // PARTIAL PAYMENT - Loop back with audit state
-            const returnUrl = new URL(baseReturnUrl, window.location.origin);
-            returnUrl.searchParams.set('activeSplit', 'equally');
-            returnUrl.searchParams.set('splitCount', splitCount.toString());
-            returnUrl.searchParams.set('paidGuests', nextPaidGuests.join(','));
-            returnUrl.searchParams.set('justPaid', 'true');
-            returnUrlStr = returnUrl.pathname + returnUrl.search;
+            // Use URL object to construct the return URL accurately
+            const url = new URL(baseReturnUrl, window.location.origin);
+            url.searchParams.set('activeSplit', 'equally');
+            url.searchParams.set('splitCount', splitCount.toString());
+            url.searchParams.set('paidGuests', nextPaidGuests.join(','));
+            url.searchParams.set('justPaid', 'true');
+            // Pathname + Search results in a proper internal route string
+            returnUrlStr = url.pathname + url.search;
         }
 
+        // Construct parameters for the payment page
+        // DO NOT manually encode returnUrl here as URLSearchParams handles it.
         const paymentParams = new URLSearchParams({
             amount: finalAmount.toFixed(2),
-            returnUrl: encodeURIComponent(returnUrlStr),
+            returnUrl: returnUrlStr,
             method: method,
             table: searchParams.get('table') || '',
         });
@@ -112,7 +116,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                 }
             }
         } else {
-            // Reset state when sheet closes (with small delay for smooth exit)
             const timer = setTimeout(() => {
                 setStep('choice');
                 setSplitCount(2);
@@ -190,7 +193,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                     {step === 'equally' && (
                         <div className="pt-2">
-                            {/* Sticky Minimized Header */}
                             <div className={cn(
                                 "sticky top-0 z-50 transition-all duration-300 -mx-5 px-5 bg-transparent mb-2",
                                 isScrolled ? "opacity-100 py-3" : "opacity-0 h-0 overflow-hidden pointer-events-none"
@@ -217,9 +219,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 </div>
                             </div>
 
-                            {/* Scroll Content Stack */}
                             <div className="space-y-6 pt-2">
-                                {/* Full Hero Card */}
                                 <div className={cn(
                                     "transition-all duration-500 transform origin-top",
                                     isScrolled ? "opacity-0 scale-95 pointer-events-none h-0 overflow-hidden" : "opacity-100 scale-100"
@@ -261,7 +261,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     </div>
                                 </div>
 
-                                {/* Guest Selector Card */}
                                 <Card className="p-2 rounded-[20px] border-none bg-slate-50/80 shadow-sm flex items-center justify-between px-6">
                                     <button 
                                         onClick={() => setSplitCount(Math.max(2, splitCount - 1))}
@@ -283,7 +282,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     </button>
                                 </Card>
 
-                                {/* Each Guest Pays Card */}
                                 <Card className="p-5 rounded-[20px] border-2 border-slate-100 bg-white shadow-md text-center space-y-0.5">
                                     <p className="text-[11px] font-black text-slate-700 uppercase tracking-widest">Share Per Guest</p>
                                     <div className="flex items-baseline justify-center gap-1.5 text-[#0069B1]">
@@ -292,7 +290,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     </div>
                                 </Card>
 
-                                {/* Guest List */}
                                 <div className="space-y-4 pt-2">
                                     <h3 className="text-[11px] font-black text-slate-900 uppercase px-1 tracking-widest">GUEST LIST</h3>
                                     <div className="space-y-3">
@@ -318,12 +315,12 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                             <span>PAID</span>
                                                         </div>
                                                     ) : (
-                                                        <Button 
+                                                        <button 
                                                             onClick={() => setTipDetails({ isOpen: true, amount: perPersonAmount, guestIndex: index })}
                                                             className="h-11 px-8 rounded-2xl font-black uppercase text-[11px] bg-[#0069B1] hover:opacity-90 text-white shadow-lg active:scale-95 transition-all"
                                                         >
                                                             PAY
-                                                        </Button>
+                                                        </button>
                                                     )}
                                                 </Card>
                                             )

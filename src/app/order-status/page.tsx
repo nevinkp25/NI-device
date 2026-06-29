@@ -75,7 +75,6 @@ function OrderStatusContent() {
     }
   }, [tableNumber, loadCart]);
 
-  // Handle split payment loop interactions
   useEffect(() => {
     if (activeSplit === 'equally') {
         setIsSplitSheetOpen(true);
@@ -159,7 +158,7 @@ function OrderStatusContent() {
   const handlePaymentConfirmed = (finalAmount: number, method: 'card' | 'cash', returnUrl: string = '/success', table?: string) => {
     const params = new URLSearchParams({
         amount: finalAmount.toFixed(2),
-        returnUrl: encodeURIComponent(returnUrl),
+        returnUrl: returnUrl,
     });
     if (table) {
         params.set('table', table);
