@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from 'react';
@@ -53,7 +52,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     const handlePaymentConfirmed = (finalAmount: number, method: 'card' | 'cash', guestIndex: number | null) => {
         if (guestIndex === null) return;
         
-        // This is a "By Item" payment (process share button)
         if (guestIndex === -1) {
             itemsToPay.forEach(item => removeFromCart(item.cartItemId));
             const successUrl = "/navigation";
@@ -62,29 +60,22 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
             return;
         }
 
-        // This is an "Equally" payment
         const nextPaidGuests = [...paidGuests, guestIndex];
         const isLastGuest = nextPaidGuests.length === splitCount;
 
         let returnUrlStr = "";
         if (isLastGuest) {
-            // FINAL PAYMENT - Clear table account and go home
             clearCart();
             returnUrlStr = "/navigation"; 
         } else {
-            // PARTIAL PAYMENT - Loop back with audit state
-            // Use URL object to construct the return URL accurately
             const url = new URL(baseReturnUrl, window.location.origin);
             url.searchParams.set('activeSplit', 'equally');
             url.searchParams.set('splitCount', splitCount.toString());
             url.searchParams.set('paidGuests', nextPaidGuests.join(','));
             url.searchParams.set('justPaid', 'true');
-            // Pathname + Search results in a proper internal route string
             returnUrlStr = url.pathname + url.search;
         }
 
-        // Construct parameters for the payment page
-        // DO NOT manually encode returnUrl here as URLSearchParams handles it.
         const paymentParams = new URLSearchParams({
             amount: finalAmount.toFixed(2),
             returnUrl: returnUrlStr,
