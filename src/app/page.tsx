@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -101,7 +100,7 @@ export default function RestaurantEntryPage() {
         <div className="space-y-4">
           <div className="text-center">
             <label htmlFor="restaurantSlug" className="inline-block text-[11px] font-bold opacity-60 uppercase tracking-widest mb-1">
-                Enter Branch Identifier
+                Enter Restaurant Slug
             </label>
           </div>
           
