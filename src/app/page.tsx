@@ -89,10 +89,6 @@ export default function RestaurantEntryPage() {
 
       {/* Refined Branding Header */}
       <div className="text-center mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
-        <div className="inline-flex items-center gap-2 mb-4 opacity-50">
-            <Terminal className="h-4 w-4" />
-            <span className="text-[10px] font-black uppercase tracking-[0.4em]">Hardware System v2.4</span>
-        </div>
         <h1 className="text-5xl font-black tracking-tighter leading-none">NETWORK</h1>
         <div className="flex items-center justify-center gap-3 mt-3">
             <span className="h-px w-8 bg-white/20"></span>
