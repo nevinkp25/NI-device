@@ -29,7 +29,7 @@ export function OrderStepper({
         "w-full bg-white transition-all duration-300",
         compact ? "py-1 px-4 border-b shadow-sm" : "py-2.5 px-6"
     )}>
-      <div className="flex items-start justify-center max-w-[400px] mx-auto">
+      <div className="flex items-start justify-center max-w-[240px] mx-auto">
         {steps.map((step, index) => {
           const isCompleted = currentStep > step.id;
           const isActive = currentStep === step.id;
@@ -45,7 +45,7 @@ export function OrderStepper({
                   compact ? "h-5 w-5 text-[9px]" : "h-7 w-7 text-[10px]",
                   (isActive || isCompleted) 
                     ? "bg-primary text-primary-foreground shadow-md" 
-                    : "bg-white border-2 border-slate-200 text-slate-500"
+                    : "bg-white border-2 border-slate-300 text-slate-600"
                 )}>
                   {step.id}
                 </div>
@@ -54,7 +54,7 @@ export function OrderStepper({
                 {!compact && (
                   <span className={cn(
                     "text-[8px] font-black uppercase mt-1.5 tracking-widest transition-colors duration-300",
-                    (isActive || isCompleted) ? "text-primary" : "text-slate-600"
+                    (isActive || isCompleted) ? "text-primary" : "text-slate-500"
                   )}>
                     {step.label}
                   </span>
@@ -64,9 +64,9 @@ export function OrderStepper({
               {/* Horizontal Connecting Bridge */}
               {!isLast && (
                 <div className={cn(
-                  "flex-grow h-[1px] mx-1.5 transition-colors duration-700",
+                  "flex-grow h-[1px] mx-1 transition-colors duration-700",
                   compact ? "mt-[9.5px]" : "mt-[13.5px]",
-                  isCompleted ? "bg-primary" : "bg-slate-200"
+                  isCompleted ? "bg-primary" : "bg-slate-300"
                 )} />
               )}
             </React.Fragment>
