@@ -1,4 +1,3 @@
-
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -46,7 +45,7 @@ export function OrderStepper({
                   {isCompleted ? <Check className="h-3.5 w-3.5 stroke-[4]" /> : step.id}
                 </div>
                 <span className={cn(
-                  "text-[9px] font-black tracking-widest uppercase transition-colors duration-300",
+                  "text-[9px] font-black uppercase transition-colors duration-300",
                   isActive ? "text-primary" : isCompleted ? "text-green-700" : "text-slate-600"
                 )}>
                   {step.label}

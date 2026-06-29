@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo, Suspense } from 'react';
@@ -26,7 +25,7 @@ function OrderByTableContent() {
 
   const settlementSteps: Step[] = [
     { id: 1, label: "TABLE" },
-    { id: 2, label: "ORDER STATUS" },
+    { id: 2, label: "STATUS" },
   ];
 
   const suggestions = useMemo(() => {
@@ -84,7 +83,7 @@ function OrderByTableContent() {
               <ArrowLeft className="h-6 w-6 text-primary" />
             </Button>
           </Link>
-          <h1 className="text-xl font-bold mx-auto uppercase tracking-tight text-slate-900">Identify Table</h1>
+          <h1 className="text-xl font-bold mx-auto uppercase text-slate-900">Identify Table</h1>
           <div className="w-10"></div>
         </div>
         <OrderStepper 
@@ -104,7 +103,7 @@ function OrderByTableContent() {
           className="w-full relative"
         >
           <div className="text-center w-full max-w-sm mx-auto relative">
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-300 mb-1">Enter Table ID</p>
+            <p className="text-[10px] font-bold uppercase text-slate-300 mb-1">Enter Table ID</p>
             <div className="relative">
               <Input
                 type="text"
@@ -115,7 +114,7 @@ function OrderByTableContent() {
                 onBlur={() => setTimeout(() => setIsInputFocused(false), 200)}
                 onChange={(e) => setTableNumber(e.target.value)}
                 className={cn(
-                  "text-center font-bold border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums tracking-tighter transition-all duration-300 h-32 text-7xl"
+                  "text-center font-bold border-none focus-visible:ring-0 bg-transparent placeholder:text-slate-100 uppercase tabular-nums transition-all duration-300 h-32 text-7xl"
                 )}
                 autoFocus
               />
@@ -123,7 +122,7 @@ function OrderByTableContent() {
               {suggestions.length > 0 && tableNumber.length > 0 && (
                 <div className="absolute top-[80%] left-0 right-0 z-50 mt-4 bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
                   <div className="p-4">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 text-left pl-1">Quick Matches</p>
+                    <p className="text-[9px] font-black text-slate-400 uppercase mb-3 text-left pl-1">Quick Matches</p>
                     <div className="grid grid-cols-2 gap-2">
                       {suggestions.map((table) => (
                         <button
@@ -142,10 +141,10 @@ function OrderByTableContent() {
                               "h-2 w-2 rounded-full shadow-sm",
                               table.isOccupied ? "bg-red-500" : "bg-green-500"
                             )} />
-                            <span className="font-black text-sm text-slate-900 uppercase tracking-tight">Table {table.id}</span>
+                            <span className="font-black text-sm text-slate-900 uppercase">Table {table.id}</span>
                           </div>
                           <span className={cn(
-                            "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border",
+                            "text-[8px] font-black uppercase px-2 py-0.5 rounded-md border",
                             table.isOccupied 
                               ? "bg-red-50 text-red-600 border-red-100" 
                               : "bg-green-50 text-green-600 border-green-100"
@@ -170,7 +169,7 @@ function OrderByTableContent() {
         <div className="bg-slate-900/95 text-white rounded-full p-0.5 shadow-2xl flex items-center gap-0.5 border border-white/10 backdrop-blur-md">
            <div className="h-9 px-4 rounded-full bg-primary text-white flex items-center gap-2 shadow-inner">
             <Hash className="h-4 w-4" />
-            <span className="text-[10px] font-bold uppercase tracking-tight">Manual</span>
+            <span className="text-[10px] font-bold uppercase">Manual</span>
           </div>
           <Link href={`/table-selection${isSettlementMode ? '?mode=settlement' : ''}`} passHref>
             <Button 
@@ -178,7 +177,7 @@ function OrderByTableContent() {
               className="h-9 px-4 rounded-full text-white/50 hover:text-white flex items-center gap-2"
             >
               <LayoutGrid className="h-4 w-4" />
-              <span className="text-[10px] font-bold uppercase tracking-tight">Grid</span>
+              <span className="text-[10px] font-bold uppercase">Grid</span>
             </Button>
           </Link>
         </div>
@@ -192,8 +191,8 @@ function OrderByTableContent() {
                   {isSettlementMode ? <Receipt className="h-6 w-6 text-primary" /> : <Users className="h-6 w-6 text-primary" />}
                </div>
                <div>
-                  <SheetTitle className="text-lg font-bold uppercase tracking-tight">Table {tableNumber.toUpperCase()}</SheetTitle>
-                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                  <SheetTitle className="text-lg font-bold uppercase">Table {tableNumber.toUpperCase()}</SheetTitle>
+                  <p className="text-[10px] text-muted-foreground font-bold uppercase">
                     {isSettlementMode ? 'Account Settlement' : 'Initialization'}
                   </p>
                </div>
@@ -211,8 +210,8 @@ function OrderByTableContent() {
                           <Receipt className="h-10 w-10 text-primary" />
                       </div>
                       <div className="space-y-1">
-                          <p className="text-xl font-bold uppercase tracking-tight">Access Account</p>
-                          <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest max-w-[200px] mx-auto leading-relaxed">
+                          <p className="text-xl font-bold uppercase">Access Account</p>
+                          <p className="text-xs text-muted-foreground font-medium uppercase max-w-[200px] mx-auto leading-relaxed">
                             Confirm order details for Table {tableNumber.toUpperCase()} to proceed with payment.
                           </p>
                       </div>
@@ -220,7 +219,7 @@ function OrderByTableContent() {
                </div>
              ) : (
                <div className="space-y-4 text-center">
-                  <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Cover Count</p>
+                  <p className="text-sm font-bold text-slate-400 uppercase">Cover Count</p>
                   <div className="flex items-center justify-center gap-8">
                      <Button 
                         variant="outline" 
@@ -229,7 +228,7 @@ function OrderByTableContent() {
                      >
                         <Minus className="h-8 w-8 stroke-[3]" />
                      </Button>
-                     <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
+                     <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums">{guestCount}</span>
                      <Button 
                         variant="outline" 
                         onClick={() => setGuestCount(guestCount + 1)}
@@ -245,7 +244,7 @@ function OrderByTableContent() {
           <SheetFooter className="p-4 bg-background border-t">
              <Button 
                 onClick={handleFinalConfirm}
-                className="w-full h-16 text-2xl font-bold bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase tracking-tighter"
+                className="w-full h-16 text-2xl font-bold bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase"
              >
                 {isSettlementMode ? 'Go to Order' : 'Confirm Covers'}
              </Button>

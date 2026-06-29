@@ -5,7 +5,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Home, Receipt, User, Clock, ChevronRight, Info, Calendar, X } from 'lucide-react';
-import Link from 'next/link';
+import Link from 'next/navigation';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
 import { format } from 'date-fns';
@@ -50,11 +50,11 @@ function OrderStatusContent() {
               <ArrowLeft className="h-6 w-6 text-slate-900" />
             </Button>
           </Link>
-          <h1 className="text-sm font-bold mx-auto uppercase tracking-widest text-slate-900">Table Settlement</h1>
+          <h1 className="text-sm font-bold mx-auto uppercase text-slate-900">Table Settlement</h1>
           <div className="w-10"></div>
         </header>
         <div className="flex-grow flex items-center justify-center p-8 text-center">
-            <p className="text-slate-400 font-bold uppercase text-xs tracking-[0.2em]">Select a table from the dashboard to begin settlement.</p>
+            <p className="text-slate-400 font-bold uppercase text-sm">Select a table from the dashboard to begin settlement.</p>
         </div>
       </div>
     )
@@ -69,12 +69,12 @@ function OrderStatusContent() {
               <ArrowLeft className="h-6 w-6 text-slate-900" />
             </Button>
           </Link>
-          <h1 className="text-sm font-bold mx-auto uppercase tracking-widest text-slate-900">Syncing...</h1>
+          <h1 className="text-sm font-bold mx-auto uppercase text-slate-900">Syncing...</h1>
           <div className="w-10"></div>
         </header>
         <div className="flex-grow flex flex-col items-center justify-center p-8 text-center space-y-4">
             <div className="h-12 w-12 bg-slate-100 rounded-full animate-pulse" />
-            <p className="text-slate-400 font-bold uppercase text-xs tracking-[0.2em]">Retrieving Table {tableNumber} Account...</p>
+            <p className="text-slate-400 font-bold uppercase text-sm">Retrieving Table {tableNumber} Account...</p>
         </div>
       </div>
     )
@@ -117,8 +117,8 @@ function OrderStatusContent() {
               </Button>
             </Link>
             <div className="flex flex-col items-center mx-auto">
-                <h1 className="text-xs font-bold text-slate-400 tracking-[0.2em] uppercase leading-none mb-1">Terminal Audit</h1>
-                <h2 className="text-lg font-bold text-slate-900 tracking-tight uppercase leading-none">Table {tableNumber}</h2>
+                <h1 className="text-xs font-bold text-slate-400 uppercase leading-none mb-1">Terminal Audit</h1>
+                <h2 className="text-lg font-bold text-slate-900 uppercase leading-none">Table {tableNumber}</h2>
             </div>
             <Link href="/navigation" passHref>
               <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-50 text-slate-900 border border-slate-200 hover:bg-slate-100">
@@ -133,11 +133,11 @@ function OrderStatusContent() {
           <div className="space-y-3 px-1">
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <span className="text-3xl font-bold text-slate-900 tracking-tight uppercase">Order #{order.id}</span>
+                    <span className="text-3xl font-bold text-slate-900 uppercase">Order #{order.id}</span>
                     <Badge variant="outline" className="bg-primary/5 text-primary border-primary/10 text-xs font-bold uppercase py-0.5 px-3 h-6">Open</Badge>
                 </div>
              </div>
-             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold text-slate-500 uppercase tracking-widest border-y border-slate-100 py-4">
+             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold text-slate-500 uppercase border-y border-slate-100 py-4">
                 <span className="flex items-center gap-2"><User className="h-4 w-4 text-slate-300" /> David R.</span>
                 <span className="flex items-center gap-2"><Clock className="h-4 w-4 text-slate-300" /> {format(new Date(order.date), "hh:mm a")}</span>
                 <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-slate-300" /> {format(new Date(order.date), "MMM d, yyyy")}</span>
@@ -147,7 +147,7 @@ function OrderStatusContent() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-1">
                 <Receipt className="h-5 w-5 text-slate-400" />
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em]">Itemized Statement</h3>
+                <h3 className="text-xs font-bold text-slate-500 uppercase">Itemized Statement</h3>
             </div>
             
             <div className="space-y-2">
@@ -160,8 +160,8 @@ function OrderStatusContent() {
                         <div className="flex items-center gap-4">
                             <span className="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-xs font-black text-slate-500 border border-slate-100">{item.quantity}</span>
                             <div className="space-y-1">
-                                <p className="text-base font-bold text-slate-800 leading-tight uppercase tracking-tight">{item.name}</p>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">${item.price.toFixed(2)} unit</p>
+                                <p className="text-base font-bold text-slate-800 leading-tight uppercase">{item.name}</p>
+                                <p className="text-xs font-bold text-slate-400 uppercase">${item.price.toFixed(2)} unit</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
@@ -173,29 +173,29 @@ function OrderStatusContent() {
             </div>
 
             <div className="mt-8 bg-slate-50/50 rounded-[2rem] p-8 space-y-4 border border-slate-100 shadow-inner">
-                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase">
                     <span>Subtotal</span>
                     <span className="tabular-nums font-black text-slate-900 text-sm">${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase">
                     <span>Service Charge (10%)</span>
                     <span className="tabular-nums font-black text-slate-900 text-sm">${extraCharges.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase">
                     <span>VAT (5%)</span>
                     <span className="tabular-nums font-black text-slate-900 text-sm">${vatAmount.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase">
                     <span>Gratuity</span>
                     <span className="tabular-nums font-black text-slate-900 text-sm">${tips.toFixed(2)}</span>
                 </div>
                 <Separator className="bg-slate-200/50 my-2" />
                 <div className="flex justify-between items-end pt-2">
                     <div className="flex flex-col gap-1">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none">Total Balance</span>
-                      <span className="text-xs font-black text-primary uppercase tracking-tight leading-none">Order ID: {order.id}</span>
+                      <span className="text-xs font-bold text-slate-400 uppercase leading-none">Total Balance</span>
+                      <span className="text-xs font-black text-primary uppercase leading-none">Order ID: {order.id}</span>
                     </div>
-                    <span className="text-4xl font-black text-primary tracking-tighter tabular-nums">${total.toFixed(2)}</span>
+                    <span className="text-4xl font-black text-primary tabular-nums">${total.toFixed(2)}</span>
                 </div>
             </div>
           </div>
@@ -204,17 +204,17 @@ function OrderStatusContent() {
         <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-6 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 space-y-4">
           <Button 
             onClick={handleProceedToPayment} 
-            className="w-full h-20 bg-primary hover:bg-primary/90 text-white text-xl font-bold rounded-2xl shadow-lg flex items-center justify-center gap-6 uppercase tracking-tight transition-all active:scale-[0.98]"
+            className="w-full h-20 bg-primary hover:bg-primary/90 text-white text-xl font-bold rounded-2xl shadow-lg flex items-center justify-center gap-6 uppercase transition-all active:scale-[0.98]"
           >
               <span>Pay Full Amount</span>
               <div className="h-8 w-px bg-white/20" />
-              <span className="bg-white/10 px-4 py-1.5 rounded-xl text-lg font-black tracking-tight">${total.toFixed(2)}</span>
+              <span className="bg-white/10 px-4 py-1.5 rounded-xl text-lg font-black">${total.toFixed(2)}</span>
           </Button>
           
           <Button 
             onClick={handleSplitBill} 
             variant="outline" 
-            className="w-full h-16 border-2 border-slate-200 rounded-2xl text-sm font-bold text-slate-500 uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-[0.98]"
+            className="w-full h-16 border-2 border-slate-200 rounded-2xl text-sm font-bold text-slate-500 uppercase hover:bg-slate-50 transition-all active:scale-[0.98]"
           >
               Split Bill Between Guests
           </Button>
@@ -230,8 +230,8 @@ function OrderStatusContent() {
                     <Info className="h-6 w-6 text-primary" />
                  </div>
                  <div className="space-y-1">
-                    <SheetTitle className="text-xl font-bold text-slate-900 uppercase tracking-tight leading-none">{selectedItemForDetail?.name}</SheetTitle>
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest leading-none">Kitchen Service Log</p>
+                    <SheetTitle className="text-xl font-bold text-slate-900 uppercase leading-none">{selectedItemForDetail?.name}</SheetTitle>
+                    <p className="text-xs text-slate-400 font-bold uppercase leading-none">Kitchen Service Log</p>
                  </div>
               </div>
               <SheetClose asChild>
@@ -243,21 +243,21 @@ function OrderStatusContent() {
             <div className="p-8 space-y-10 pb-16">
                 <div className="grid grid-cols-2 gap-4">
                     <div className="bg-white p-6 rounded-[1.5rem] border border-slate-100 space-y-2 shadow-sm">
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Qty Ordered</p>
+                        <p className="text-xs font-bold text-slate-400 uppercase">Qty Ordered</p>
                         <p className="text-3xl font-black text-slate-900">{selectedItemForDetail?.quantity}x</p>
                     </div>
                     <div className="bg-white p-6 rounded-[1.5rem] border border-slate-100 space-y-2 shadow-sm text-right">
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Line Total</p>
+                        <p className="text-xs font-bold text-slate-400 uppercase">Line Total</p>
                         <p className="text-3xl font-black text-slate-900 tabular-nums">${((selectedItemForDetail?.price || 0) * (selectedItemForDetail?.quantity || 1)).toFixed(2)}</p>
                     </div>
                 </div>
 
                 <div className="space-y-4">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Kitchen Preferences</h4>
+                    <h4 className="text-xs font-bold text-slate-400 uppercase px-1">Kitchen Preferences</h4>
                     <div className="p-8 bg-white border border-slate-100 rounded-[2rem] space-y-6 shadow-sm">
                         {selectedItemForDetail?.selectedVariations && Object.keys(selectedItemForDetail.selectedVariations).length > 0 ? (
                             <div className="space-y-4">
-                                <p className="text-xs font-bold text-slate-300 uppercase tracking-[0.2em]">Variations</p>
+                                <p className="text-xs font-bold text-slate-300 uppercase">Variations</p>
                                 <div className="flex flex-wrap gap-3">
                                     {Object.values(selectedItemForDetail.selectedVariations).map((v, i) => (
                                         <Badge key={i} className="bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs uppercase px-4 py-1.5 rounded-lg shadow-sm">
@@ -273,7 +273,7 @@ function OrderStatusContent() {
                         <Separator className="bg-slate-50" />
                         
                         <div className="space-y-3">
-                            <p className="text-xs font-bold text-slate-300 uppercase tracking-[0.2em]">Prep Instructions</p>
+                            <p className="text-xs font-bold text-slate-300 uppercase">Prep Instructions</p>
                             <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-100">
                                 <p className="text-base font-bold italic text-slate-600 leading-relaxed">
                                     {selectedItemForDetail?.specialInstructions ? `"${selectedItemForDetail.specialInstructions}"` : 'Standard house preparation requested.'}
@@ -313,7 +313,7 @@ export default function OrderStatusPage() {
         <Suspense fallback={
             <div className="flex flex-col items-center justify-center min-h-screen bg-white">
                 <div className="h-12 w-12 bg-primary/5 rounded-full animate-pulse mb-4 border border-primary/10" />
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Loading Audit Terminal...</p>
+                <p className="text-xs font-bold text-slate-400 uppercase">Loading Audit Terminal...</p>
             </div>
         }>
             <OrderStatusContent />
