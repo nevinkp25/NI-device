@@ -5,7 +5,7 @@ import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Download, Mail, Home, Printer, Share2, Receipt } from 'lucide-react';
+import { CheckCircle2, Download, Mail, Home, Printer, Share2, Receipt, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
