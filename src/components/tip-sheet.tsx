@@ -172,21 +172,24 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                     )}
                     
                     {/* Summary Card */}
-                    <Card className="p-4 space-y-3 bg-slate-900 text-white rounded-[1.5rem] shadow-lg border-none">
-                        <div className="flex justify-between items-center text-xs font-bold">
-                            <span className="opacity-40 uppercase">Base Bill</span>
-                            <span className="tabular-nums">AED {billAmount.toFixed(2)}</span>
+                    <Card className="p-5 space-y-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-slate-400 font-bold uppercase leading-none">Base Bill</span>
+                            <span className="text-slate-900 font-bold tabular-nums">AED {billAmount.toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between items-center text-xs font-bold">
-                            <span className="opacity-40 uppercase">Gratuity</span>
-                            <span className={cn("tabular-nums", tipAmount > 0 ? "text-green-400" : "opacity-40")}>
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-slate-400 font-bold uppercase leading-none">Gratuity</span>
+                            <span className={cn("font-bold tabular-nums", tipAmount > 0 ? "text-green-600" : "text-slate-400")}>
                                 + AED {tipAmount.toFixed(2)}
                             </span>
                         </div>
-                        <Separator className="bg-white/10" />
-                        <div className="flex justify-between items-end">
-                            <span className="text-xs font-bold opacity-40 uppercase leading-none mb-0.5">Total Authorized</span>
-                            <span className="text-2xl font-bold tabular-nums text-white">AED {totalAmount.toFixed(2)}</span>
+                        <Separator className="bg-slate-50" />
+                        <div className="flex justify-between items-end pt-1">
+                            <div className="space-y-0.5">
+                                <span className="text-xs font-bold text-slate-400 uppercase leading-none">Total Authorized</span>
+                                <p className="text-xs font-bold text-primary uppercase leading-none">Order Settlement</p>
+                            </div>
+                            <span className="text-3xl font-black text-primary tabular-nums">AED {totalAmount.toFixed(2)}</span>
                         </div>
                     </Card>
                 </div>
@@ -220,4 +223,3 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
         </Sheet>
     );
 }
-
