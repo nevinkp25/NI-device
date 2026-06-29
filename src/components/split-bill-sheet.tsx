@@ -74,7 +74,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
             paymentParams.set('table', baseParams.get('table')!);
         }
 
-        router.push(`/${method}-payment?${paymentParams.toString()}`);
+        router.push(`/${method}-payment?${params.toString()}`);
         onOpenChange(false);
     }
 
@@ -140,7 +140,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                             <Button 
                                 onClick={() => setStep('equally')}
-                                className="w-full h-24 bg-white border-2 border-slate-100 hover:border-[#0069B1] text-slate-900 rounded-[2rem] flex items-center justify-between px-6 shadow-sm group active:scale-[0.98] transition-all"
+                                className="w-full h-24 bg-white border-2 border-slate-100 hover:border-[#0069B1] text-slate-900 rounded-[20px] flex items-center justify-between px-6 shadow-sm group active:scale-[0.98] transition-all"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="h-14 w-14 bg-[#0069B1]/10 rounded-[1.25rem] flex items-center justify-center">
@@ -156,7 +156,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                             <Button 
                                 onClick={() => setStep('by-item')}
-                                className="w-full h-24 bg-white border-2 border-slate-100 hover:border-[#0069B1] text-slate-900 rounded-[2rem] flex items-center justify-between px-6 shadow-sm group active:scale-[0.98] transition-all"
+                                className="w-full h-24 bg-white border-2 border-slate-100 hover:border-[#0069B1] text-slate-900 rounded-[20px] flex items-center justify-between px-6 shadow-sm group active:scale-[0.98] transition-all"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="h-14 w-14 bg-[#0069B1]/10 rounded-[1.25rem] flex items-center justify-center">
@@ -179,7 +179,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 "sticky top-0 z-50 transition-all duration-300 -mx-5 px-5 bg-transparent mb-2",
                                 isScrolled ? "opacity-100 py-3" : "opacity-0 h-0 overflow-hidden pointer-events-none"
                             )}>
-                                <div className="p-[1.5px] bg-gradient-to-br from-[#0069B1] via-sky-400 to-orange-300 rounded-[2rem]">
+                                <div className="p-[1.5px] bg-gradient-to-br from-[#0069B1] via-sky-400 to-orange-300 rounded-[20px]">
                                     <Card className="relative overflow-hidden rounded-[inherit] p-3 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] flex flex-col gap-2 shadow-none">
                                         <div className="flex items-center justify-between px-2">
                                             <span className="text-[9px] font-black text-slate-700 uppercase">Total Amount</span>
@@ -208,7 +208,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     "transition-all duration-500 transform origin-top",
                                     isScrolled ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
                                 )}>
-                                    <div className="p-[1.5px] bg-gradient-to-br from-[#0069B1] via-sky-400 to-orange-300 rounded-[2.5rem] shadow-2xl">
+                                    <div className="p-[1.5px] bg-gradient-to-br from-[#0069B1] via-sky-400 to-orange-300 rounded-[20px] shadow-sm">
                                         <Card className="relative overflow-hidden rounded-[inherit] p-5 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] space-y-4 shadow-none">
                                             <div className="text-center space-y-1">
                                                 <div className="flex items-center justify-center mb-2">
@@ -246,7 +246,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 </div>
 
                                 {/* Guest Selector Card */}
-                                <Card className="p-2 rounded-[2rem] border-none bg-slate-50/80 shadow-sm flex items-center justify-between px-6">
+                                <Card className="p-2 rounded-[20px] border-none bg-slate-50/80 shadow-sm flex items-center justify-between px-6">
                                     <button 
                                         onClick={() => setSplitCount(Math.max(2, splitCount - 1))}
                                         disabled={paidGuests.length > 0}
@@ -268,7 +268,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 </Card>
 
                                 {/* Each Guest Pays Card */}
-                                <Card className="p-5 rounded-[2.5rem] border-2 border-slate-100 bg-white shadow-md text-center space-y-0.5">
+                                <Card className="p-5 rounded-[20px] border-2 border-slate-100 bg-white shadow-md text-center space-y-0.5">
                                     <p className="text-[11px] font-black text-slate-700 uppercase tracking-widest">Share Per Guest</p>
                                     <div className="flex items-baseline justify-center gap-1.5 text-[#0069B1]">
                                         <span className="text-base font-black">AED</span>
