@@ -134,81 +134,49 @@ function OrderStatusContent() {
           <OrderStepper currentStep={2} steps={settlementSteps} />
         </header>
 
-        <main className="p-4 flex-grow pb-56 space-y-6">
-          <div className="flex items-center justify-between px-1">
+        <main className="p-4 flex-grow pb-56 space-y-4">
+          <div className="flex items-center justify-between px-1 mb-2">
              <div className="space-y-1">
-                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Tab</h2>
                 <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-slate-900 tracking-tighter">Order #{order.id}</span>
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-100 text-[9px] font-black uppercase">Standard</Badge>
+                    <span className="text-2xl font-black text-slate-900 tracking-tighter uppercase">Order #{order.id}</span>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-100 text-[9px] font-black uppercase">Active</Badge>
+                </div>
+                <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span className="flex items-center gap-1.5"><User className="h-3.5 w-3.5" /> David R.</span>
+                    <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> {format(new Date(order.date), "hh:mm a")}</span>
+                    <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {format(new Date(order.date), "MMM d, yyyy")}</span>
                 </div>
              </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-             <Card className="p-4 bg-white border-slate-200 shadow-sm rounded-2xl flex items-center gap-3">
-                <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center">
-                    <User className="h-5 w-5 text-slate-400" />
-                </div>
-                <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Server</p>
-                    <p className="text-sm font-black text-slate-900 uppercase">David R.</p>
-                </div>
-             </Card>
-             <Card className="p-4 bg-white border-slate-200 shadow-sm rounded-2xl flex items-center gap-3">
-                <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center">
-                    <Clock className="h-5 w-5 text-slate-400" />
-                </div>
-                <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Ordered At</p>
-                    <p className="text-sm font-black text-slate-900 uppercase">
-                      {format(new Date(order.date), "hh:mm a")}
-                    </p>
-                </div>
-             </Card>
-             <Card className="p-4 bg-white border-slate-200 shadow-sm rounded-2xl flex items-center gap-3 col-span-2">
-                <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center">
-                    <Calendar className="h-5 w-5 text-slate-400" />
-                </div>
-                <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Order Date</p>
-                    <p className="text-sm font-black text-slate-900 uppercase">
-                      {format(new Date(order.date), "MMMM d, yyyy")}
-                    </p>
-                </div>
-             </Card>
-          </div>
-
-          <Card className="rounded-[2.5rem] border-slate-200 shadow-md overflow-hidden bg-white">
-            <div className="p-5 border-b bg-slate-50/50 flex items-center justify-between">
+          <Card className="rounded-[2rem] border-slate-200 shadow-sm overflow-hidden bg-white">
+            <div className="p-4 border-b bg-slate-50/50 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Receipt className="h-4 w-4 text-slate-400" />
                     <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Account Statement</h3>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[9px] font-black text-slate-400 uppercase">Order #{order.id}</span>
-                  <Badge className="bg-slate-200 text-slate-600 hover:bg-slate-200 border-none font-bold text-[9px]">{order.items.length} Items</Badge>
-                </div>
+                <Badge className="bg-slate-200 text-slate-600 hover:bg-slate-200 border-none font-bold text-[9px]">{order.items.length} Items</Badge>
             </div>
+            
             <div className="divide-y divide-slate-100">
                 {order.items.map(item => (
                     <div 
                       key={item.cartItemId} 
-                      className="p-5 flex items-center justify-between hover:bg-slate-50/50 transition-colors group"
+                      className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors group"
                     >
-                        <div className="flex items-center gap-4">
-                            <span className="h-9 w-9 bg-slate-100 rounded-xl flex items-center justify-center text-[11px] font-black text-slate-600">{item.quantity}x</span>
+                        <div className="flex items-center gap-3">
+                            <span className="h-8 w-8 bg-slate-100 rounded-lg flex items-center justify-center text-[10px] font-black text-slate-600">{item.quantity}x</span>
                             <div className="space-y-0.5">
                                 <p className="text-sm font-black text-slate-900 leading-tight uppercase tracking-tight">{item.name}</p>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${item.price.toFixed(2)} unit</p>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">${item.price.toFixed(2)} unit</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <span className="text-lg font-black text-slate-900 tabular-nums">${(item.price * item.quantity).toFixed(2)}</span>
+                            <span className="text-base font-black text-slate-900 tabular-nums">${(item.price * item.quantity).toFixed(2)}</span>
                             <Button 
                                 variant="outline" 
                                 size="icon" 
-                                className="h-9 w-9 rounded-xl border-slate-200 text-slate-400 hover:text-primary hover:border-primary/30"
+                                className="h-8 w-8 rounded-lg border-slate-200 text-slate-400 hover:text-primary hover:border-primary/30"
                                 onClick={() => setSelectedItemForDetail(item)}
                             >
                                 <MoreHorizontal className="h-4 w-4" />
@@ -218,30 +186,30 @@ function OrderStatusContent() {
                 ))}
             </div>
 
-            <div className="p-6 bg-slate-50/80 space-y-3">
-                <div className="flex justify-between items-center text-xs font-black text-slate-400 uppercase tracking-widest">
+            <div className="p-5 bg-slate-50/80 space-y-2.5">
+                <div className="flex justify-between items-center text-[11px] font-black text-slate-400 uppercase tracking-widest">
                     <span>Subtotal</span>
                     <span className="tabular-nums">${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center text-xs font-black text-slate-400 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-[11px] font-black text-slate-400 uppercase tracking-widest">
                     <span>Extra Charges (10%)</span>
                     <span className="tabular-nums">${extraCharges.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center text-xs font-black text-slate-400 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-[11px] font-black text-slate-400 uppercase tracking-widest">
                     <span>VAT (5%)</span>
                     <span className="tabular-nums">${vatAmount.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center text-xs font-black text-slate-400 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-[11px] font-black text-slate-400 uppercase tracking-widest">
                     <span>Tips</span>
                     <span className="tabular-nums">${tips.toFixed(2)}</span>
                 </div>
-                <Separator className="bg-slate-200/50" />
-                <div className="flex justify-between items-end pt-1">
+                <Separator className="bg-slate-200/50 my-1" />
+                <div className="flex justify-between items-end pt-0.5">
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-none">Final Bill</span>
-                      <span className="text-[9px] font-black text-slate-300 uppercase tracking-tighter leading-none">Order #{order.id} | TABLE {tableNumber}</span>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5 leading-none">Total Amount</span>
+                      <span className="text-[8px] font-black text-slate-300 uppercase tracking-tighter leading-none">Order #{order.id} | T-{tableNumber}</span>
                     </div>
-                    <span className="text-4xl font-black text-primary tracking-tighter tabular-nums">${total.toFixed(2)}</span>
+                    <span className="text-3xl font-black text-primary tracking-tighter tabular-nums">${total.toFixed(2)}</span>
                 </div>
             </div>
           </Card>
