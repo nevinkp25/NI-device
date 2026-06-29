@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -141,7 +142,6 @@ export default function RestaurantEntryPage() {
       </form>
       
       <footer className="fixed bottom-10 flex flex-col items-center gap-2 opacity-20">
-          <p className="text-[8px] font-black tracking-[0.4em] uppercase">Secured by Network POS Infrastructure</p>
           <div className="h-1 w-24 bg-white/30 rounded-full" />
       </footer>
     </div>
