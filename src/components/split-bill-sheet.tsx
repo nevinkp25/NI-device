@@ -44,10 +44,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     // Calculations for Equal Split
     const perPersonAmount = totalAmount > 0 && splitCount > 0 ? totalAmount / splitCount : 0;
 
-    /**
-     * Calculate guest total matching main logic:
-     * (Subtotal + 10% Service) * 1.05 VAT
-     */
     const getGuestTotal = (guestIndex: number, selectionsToUse?: Record<string, number>) => {
         const selections = selectionsToUse || itemAssignments[guestIndex] || {};
         const subtotal = Object.entries(selections).reduce((acc, [itemId, qty]) => {
@@ -66,7 +62,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
         return getGuestTotal(currentAssigningGuestIndex, tempSelections);
     }, [currentAssigningGuestIndex, tempSelections, cartItems, getDisplayPrice]);
 
-    // Total units of a specific item assigned across ALL guests except current assignments
     const getAssignedQuantity = (cartItemId: string) => {
         return Object.entries(itemAssignments).reduce((acc, [gIdx, selections]) => {
             return acc + (selections[cartItemId] || 0);
@@ -228,7 +223,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                 <div 
                     ref={scrollContainerRef}
                     onScroll={handleScroll}
-                    className="flex-grow overflow-y-auto no-scrollbar pb-10 px-5 relative"
+                    className="flex-grow overflow-y-auto no-scrollbar pb-6 px-5 relative"
                 >
                     {step === 'choice' && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-6">
@@ -571,7 +566,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                             )}
 
                             {byItemStep === 'summary' && (
-                                <div className="animate-in fade-in duration-500 pt-4">
+                                <div className="animate-in fade-in duration-500 pt-4 pb-0">
                                     <div className="text-center space-y-1 mb-6">
                                         <h3 className="text-2xl font-black text-slate-900 uppercase">Review Splits</h3>
                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Audit table # {orderId} assignments</p>
@@ -621,12 +616,12 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                         ))}
                                     </div>
 
-                                    <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-5 px-5 py-2">
+                                    <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-5 px-5 pt-2 pb-1">
                                         <Button 
                                             onClick={() => setByItemStep('payment')}
                                             className="w-full h-18 bg-[#0069B1] hover:bg-[#0069B1]/90 text-white font-black text-lg rounded-[1.5rem] shadow-2xl shadow-[#0069B1]/30 uppercase tracking-tight flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
                                         >
-                                            <span>Confirm & Create Payments</span>
+                                            <span>Confirm &amp; Create Payments</span>
                                             <ArrowRight className="h-6 w-6" />
                                         </Button>
                                         <Button 
