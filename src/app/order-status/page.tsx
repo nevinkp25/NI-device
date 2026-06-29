@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Home, Plus, Receipt, User, Clock, ChevronRight, Info, MoreHorizontal, Hash } from 'lucide-react';
+import { ArrowLeft, Home, Receipt, User, Clock, ChevronRight, Info, MoreHorizontal, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
@@ -160,8 +160,21 @@ function OrderStatusContent() {
                     <Clock className="h-5 w-5 text-slate-400" />
                 </div>
                 <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Open</p>
-                    <p className="text-sm font-black text-slate-900 uppercase">{format(new Date(order.date), "hh:mm a")}</p>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Ordered At</p>
+                    <p className="text-sm font-black text-slate-900 uppercase">
+                      {format(new Date(order.date), "hh:mm a")}
+                    </p>
+                </div>
+             </Card>
+             <Card className="p-4 bg-white border-slate-200 shadow-sm rounded-2xl flex items-center gap-3 col-span-2">
+                <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                    <Calendar className="h-5 w-5 text-slate-400" />
+                </div>
+                <div>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Order Date</p>
+                    <p className="text-sm font-black text-slate-900 uppercase">
+                      {format(new Date(order.date), "MMMM d, yyyy")}
+                    </p>
                 </div>
              </Card>
           </div>
@@ -173,7 +186,7 @@ function OrderStatusContent() {
                     <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Account Statement</h3>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[9px] font-black text-slate-400 uppercase">T-{tableNumber}</span>
+                  <span className="text-[9px] font-black text-slate-400 uppercase">Order #{order.id}</span>
                   <Badge className="bg-slate-200 text-slate-600 hover:bg-slate-200 border-none font-bold text-[9px]">{order.items.length} Items</Badge>
                 </div>
             </div>
