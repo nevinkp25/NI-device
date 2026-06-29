@@ -103,7 +103,7 @@ function OrderByTableContent() {
           className="w-full relative"
         >
           <div className="text-center w-full max-w-sm mx-auto relative">
-            <p className="text-[10px] font-bold uppercase text-slate-300 mb-1">Enter Table ID</p>
+            <p className="text-xs font-bold uppercase text-slate-300 mb-1">Enter Table ID</p>
             <div className="relative">
               <Input
                 type="text"
@@ -122,7 +122,7 @@ function OrderByTableContent() {
               {suggestions.length > 0 && tableNumber.length > 0 && (
                 <div className="absolute top-[80%] left-0 right-0 z-50 mt-4 bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
                   <div className="p-4">
-                    <p className="text-[9px] font-black text-slate-400 uppercase mb-3 text-left pl-1">Quick Matches</p>
+                    <p className="text-xs font-black text-slate-400 uppercase mb-3 text-left pl-1">Quick Matches</p>
                     <div className="grid grid-cols-2 gap-2">
                       {suggestions.map((table) => (
                         <button
@@ -144,7 +144,7 @@ function OrderByTableContent() {
                             <span className="font-black text-sm text-slate-900 uppercase">Table {table.id}</span>
                           </div>
                           <span className={cn(
-                            "text-[8px] font-black uppercase px-2 py-0.5 rounded-md border",
+                            "text-xs font-black uppercase px-2 py-0.5 rounded-md border",
                             table.isOccupied 
                               ? "bg-red-50 text-red-600 border-red-100" 
                               : "bg-green-50 text-green-600 border-green-100"
@@ -169,7 +169,7 @@ function OrderByTableContent() {
         <div className="bg-slate-900/95 text-white rounded-full p-0.5 shadow-2xl flex items-center gap-0.5 border border-white/10 backdrop-blur-md">
            <div className="h-9 px-4 rounded-full bg-primary text-white flex items-center gap-2 shadow-inner">
             <Hash className="h-4 w-4" />
-            <span className="text-[10px] font-bold uppercase">Manual</span>
+            <span className="text-xs font-bold uppercase">Manual</span>
           </div>
           <Link href={`/table-selection${isSettlementMode ? '?mode=settlement' : ''}`} passHref>
             <Button 
@@ -177,7 +177,7 @@ function OrderByTableContent() {
               className="h-9 px-4 rounded-full text-white/50 hover:text-white flex items-center gap-2"
             >
               <LayoutGrid className="h-4 w-4" />
-              <span className="text-[10px] font-bold uppercase">Grid</span>
+              <span className="text-xs font-bold uppercase">Grid</span>
             </Button>
           </Link>
         </div>
@@ -192,7 +192,7 @@ function OrderByTableContent() {
                </div>
                <div>
                   <SheetTitle className="text-lg font-bold uppercase">Table {tableNumber.toUpperCase()}</SheetTitle>
-                  <p className="text-[10px] text-muted-foreground font-bold uppercase">
+                  <p className="text-xs text-muted-foreground font-bold uppercase">
                     {isSettlementMode ? 'Account Settlement' : 'Initialization'}
                   </p>
                </div>

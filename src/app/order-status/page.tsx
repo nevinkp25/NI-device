@@ -5,7 +5,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Home, Receipt, User, Clock, ChevronRight, Info, Calendar, X } from 'lucide-react';
-import Link from 'next/navigation';
+import Link from 'next/link';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
 import { format } from 'date-fns';
@@ -193,7 +193,7 @@ function OrderStatusContent() {
                 <div className="flex justify-between items-end pt-2">
                     <div className="flex flex-col gap-1">
                       <span className="text-xs font-bold text-slate-400 uppercase leading-none">Total Balance</span>
-                      <span className="text-xs font-black text-primary uppercase leading-none">Order ID: {order.id}</span>
+                      <span className="text-xs font-black text-primary uppercase leading-none">Order # {order.id}</span>
                     </div>
                     <span className="text-4xl font-black text-primary tabular-nums">${total.toFixed(2)}</span>
                 </div>
