@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, HandCoins, Home, Plus, Receipt, User, Clock, ChevronRight, Info, MoreHorizontal } from 'lucide-react';
+import { ArrowLeft, Home, Plus, Receipt, User, Clock, ChevronRight, Info, MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
@@ -97,10 +97,6 @@ function OrderStatusContent() {
   const handleSplitBill = () => {
       setIsSplitSheetOpen(true);
   }
-
-  const handlePostPaid = () => {
-    router.push(`/post-paid?orderId=${order.id}`);
-  };
 
   const handlePaymentConfirmed = (finalAmount: number, method: 'card' | 'cash', returnUrl: string = '/success', table?: string) => {
     const params = new URLSearchParams({
@@ -238,23 +234,13 @@ function OrderStatusContent() {
               <span className="bg-white/10 px-3 py-1 rounded-lg text-sm">${total.toFixed(2)}</span>
           </Button>
           
-          <div className="grid grid-cols-2 gap-3">
-              <Button 
-                onClick={handleSplitBill} 
-                variant="outline" 
-                className="h-12 border-2 border-slate-200 rounded-xl text-xs font-black text-slate-600 uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-[0.98]"
-              >
-                  Split Bill
-              </Button>
-              <Button 
-                onClick={handlePostPaid} 
-                variant="outline" 
-                className="h-12 border-2 border-slate-200 rounded-xl text-xs font-black text-slate-600 uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-              >
-                <HandCoins className="h-4 w-4 text-slate-400" />
-                Post-Paid
-              </Button>
-          </div>
+          <Button 
+            onClick={handleSplitBill} 
+            variant="outline" 
+            className="w-full h-14 border-2 border-slate-200 rounded-xl text-sm font-black text-slate-600 uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-[0.98]"
+          >
+              Split Bill
+          </Button>
         </footer>
 
         {/* Item Detail Sheet */}
