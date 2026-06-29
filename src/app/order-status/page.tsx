@@ -14,7 +14,6 @@ import { SplitBillSheet } from '@/components/split-bill-sheet';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
-import { OrderStepper, Step } from '@/components/order-stepper';
 import { cn } from '@/lib/utils';
 
 function OrderStatusContent() {
@@ -28,11 +27,6 @@ function OrderStatusContent() {
   const [selectedItemForDetail, setSelectedItemForDetail] = useState<CartItem | null>(null);
 
   const tableNumber = searchParams.get('table');
-
-  const settlementSteps: Step[] = [
-    { id: 1, label: "TABLE" },
-    { id: 2, label: "STATUS" },
-  ];
 
   useEffect(() => {
     if (tableNumber) {
@@ -54,7 +48,7 @@ function OrderStatusContent() {
           <div className="w-10"></div>
         </header>
         <div className="flex-grow flex items-center justify-center p-8 text-center">
-            <p className="text-slate-400 font-bold uppercase text-sm">Select a table from the dashboard to begin settlement.</p>
+            <p className="text-slate-500 font-bold uppercase text-sm">Select a table from the dashboard to begin settlement.</p>
         </div>
       </div>
     )
@@ -74,7 +68,7 @@ function OrderStatusContent() {
         </header>
         <div className="flex-grow flex flex-col items-center justify-center p-8 text-center space-y-4">
             <div className="h-12 w-12 bg-slate-100 rounded-full animate-pulse" />
-            <p className="text-slate-400 font-bold uppercase text-sm">Retrieving Table {tableNumber} Account...</p>
+            <p className="text-slate-500 font-bold uppercase text-sm">Retrieving Table {tableNumber} Account...</p>
         </div>
       </div>
     )
@@ -116,9 +110,9 @@ function OrderStatusContent() {
                 <ArrowLeft className="h-6 w-6" />
               </Button>
             </Link>
-            <div className="flex flex-col items-center mx-auto">
-                <h1 className="text-xs font-bold text-slate-400 uppercase leading-none mb-1">Terminal Audit</h1>
-                <h2 className="text-lg font-bold text-slate-900 uppercase leading-none">Table {tableNumber}</h2>
+            <div className="flex flex-col items-center mx-auto text-center">
+                <h1 className="text-lg font-black text-slate-900 uppercase leading-none">Table {tableNumber}</h1>
+                <p className="text-xs font-bold text-slate-400 uppercase leading-none mt-1">Order Summary</p>
             </div>
             <Link href="/navigation" passHref>
               <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-50 text-slate-900 border border-slate-200 hover:bg-slate-100">
@@ -126,42 +120,62 @@ function OrderStatusContent() {
               </Button>
             </Link>
           </div>
-          <OrderStepper currentStep={2} steps={settlementSteps} />
         </header>
 
-        <main className="p-4 flex-grow pb-56 space-y-6 max-w-[420px] mx-auto w-full">
-          <div className="space-y-3 px-1">
+        <main className="p-4 flex-grow pb-56 space-y-6 max-w-[420px] mx-auto w-full animate-in fade-in duration-300">
+          <div className="space-y-4 px-1">
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <span className="text-3xl font-bold text-slate-900 uppercase">Order #{order.id}</span>
+                    <span className="text-2xl font-black text-slate-900 uppercase">Order #{order.id}</span>
                     <Badge variant="outline" className="bg-primary/5 text-primary border-primary/10 text-xs font-bold uppercase py-0.5 px-3 h-6">Open</Badge>
                 </div>
              </div>
-             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold text-slate-500 uppercase border-y border-slate-100 py-4">
-                <span className="flex items-center gap-2"><User className="h-4 w-4 text-slate-300" /> David R.</span>
-                <span className="flex items-center gap-2"><Clock className="h-4 w-4 text-slate-300" /> {format(new Date(order.date), "hh:mm a")}</span>
-                <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-slate-300" /> {format(new Date(order.date), "MMM d, yyyy")}</span>
+             
+             <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-100">
+                <div className="flex flex-col gap-1">
+                   <div className="flex items-center gap-1.5 text-slate-400">
+                      <User className="h-3.5 w-3.5" />
+                      <span className="text-[10px] font-bold uppercase">Waiter</span>
+                   </div>
+                   <span className="text-xs font-bold text-slate-700 uppercase">David R.</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                   <div className="flex items-center gap-1.5 text-slate-400">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span className="text-[10px] font-bold uppercase">Time</span>
+                   </div>
+                   <span className="text-xs font-bold text-slate-700 uppercase">{format(new Date(order.date), "hh:mm a")}</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                   <div className="flex items-center gap-1.5 text-slate-400">
+                      <Calendar className="h-3.5 w-3.5" />
+                      <span className="text-[10px] font-bold uppercase">Date</span>
+                   </div>
+                   <span className="text-xs font-bold text-slate-700 uppercase">{format(new Date(order.date), "MMM d, yyyy")}</span>
+                </div>
              </div>
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-1">
-                <Receipt className="h-5 w-5 text-slate-400" />
-                <h3 className="text-xs font-bold text-slate-500 uppercase">Itemized Statement</h3>
+                <Receipt className="h-5 w-5 text-slate-900" />
+                <h3 className="text-sm font-bold text-slate-900 uppercase">Itemized Statement</h3>
             </div>
             
             <div className="space-y-2">
                 {order.items.map(item => (
                     <div 
                       key={item.cartItemId} 
-                      className="group flex items-center justify-between p-4 rounded-2xl border border-slate-100 hover:bg-slate-50/80 transition-all cursor-pointer shadow-sm"
+                      className="group flex items-center justify-between p-4 rounded-2xl border border-slate-100 hover:bg-slate-50 transition-all cursor-pointer shadow-sm"
                       onClick={() => setSelectedItemForDetail(item)}
                     >
                         <div className="flex items-center gap-4">
-                            <span className="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-xs font-black text-slate-500 border border-slate-100">{item.quantity}</span>
-                            <div className="space-y-1">
+                            <div className="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-xs font-black text-white">
+                                {item.quantity}
+                            </div>
+                            <div className="space-y-0.5">
                                 <p className="text-base font-bold text-slate-800 leading-tight uppercase">{item.name}</p>
-                                <p className="text-xs font-bold text-slate-400 uppercase">${item.price.toFixed(2)} unit</p>
+                                <p className="text-xs font-semibold text-slate-400 uppercase">${item.price.toFixed(2)} unit</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
@@ -172,7 +186,7 @@ function OrderStatusContent() {
                 ))}
             </div>
 
-            <div className="mt-8 bg-slate-50/50 rounded-[2rem] p-8 space-y-4 border border-slate-100 shadow-inner">
+            <div className="mt-8 bg-slate-50 rounded-[2rem] p-8 space-y-4 border border-slate-100">
                 <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase">
                     <span>Subtotal</span>
                     <span className="tabular-nums font-black text-slate-900 text-sm">${subtotal.toFixed(2)}</span>
@@ -189,10 +203,10 @@ function OrderStatusContent() {
                     <span>Gratuity</span>
                     <span className="tabular-nums font-black text-slate-900 text-sm">${tips.toFixed(2)}</span>
                 </div>
-                <Separator className="bg-slate-200/50 my-2" />
+                <Separator className="bg-slate-200 my-2" />
                 <div className="flex justify-between items-end pt-2">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-xs font-bold text-slate-400 uppercase leading-none">Total Balance</span>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold text-slate-400 uppercase leading-none mb-1">Total Balance</span>
                       <span className="text-xs font-black text-primary uppercase leading-none">Order # {order.id}</span>
                     </div>
                     <span className="text-4xl font-black text-primary tabular-nums">${total.toFixed(2)}</span>
@@ -201,7 +215,7 @@ function OrderStatusContent() {
           </div>
         </main>
 
-        <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-6 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 space-y-4">
+        <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-6 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 flex flex-col gap-3">
           <Button 
             onClick={handleProceedToPayment} 
             className="w-full h-20 bg-primary hover:bg-primary/90 text-white text-xl font-bold rounded-2xl shadow-lg flex items-center justify-center gap-6 uppercase transition-all active:scale-[0.98]"
@@ -214,7 +228,7 @@ function OrderStatusContent() {
           <Button 
             onClick={handleSplitBill} 
             variant="outline" 
-            className="w-full h-16 border-2 border-slate-200 rounded-2xl text-sm font-bold text-slate-500 uppercase hover:bg-slate-50 transition-all active:scale-[0.98]"
+            className="w-full h-16 border-2 border-slate-200 rounded-2xl text-sm font-bold text-slate-700 uppercase hover:bg-slate-50 transition-all active:scale-[0.98]"
           >
               Split Bill Between Guests
           </Button>
@@ -229,8 +243,8 @@ function OrderStatusContent() {
                  <div className="h-12 w-12 bg-primary/5 rounded-2xl flex items-center justify-center border border-primary/10">
                     <Info className="h-6 w-6 text-primary" />
                  </div>
-                 <div className="space-y-1">
-                    <SheetTitle className="text-xl font-bold text-slate-900 uppercase leading-none">{selectedItemForDetail?.name}</SheetTitle>
+                 <div className="space-y-0.5">
+                    <SheetTitle className="text-xl font-black text-slate-900 uppercase leading-none">{selectedItemForDetail?.name}</SheetTitle>
                     <p className="text-xs text-slate-400 font-bold uppercase leading-none">Kitchen Service Log</p>
                  </div>
               </div>
@@ -253,7 +267,7 @@ function OrderStatusContent() {
                 </div>
 
                 <div className="space-y-4">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase px-1">Kitchen Preferences</h4>
+                    <h4 className="text-xs font-bold text-slate-500 uppercase px-1">Kitchen Preferences</h4>
                     <div className="p-8 bg-white border border-slate-100 rounded-[2rem] space-y-6 shadow-sm">
                         {selectedItemForDetail?.selectedVariations && Object.keys(selectedItemForDetail.selectedVariations).length > 0 ? (
                             <div className="space-y-4">
