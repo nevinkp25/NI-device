@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Minus, Plus, Equal, Box, X, User, Check, Hash, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, Equal, Box, X, User, Check, Hash, ArrowRight, ArrowLeft, Info, AlertCircle } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { TipSheet } from './tip-sheet';
 import { cn } from '@/lib/utils';
@@ -35,6 +35,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     // By-Item specific state: GuestIndex -> { cartItemId: quantity }
     const [itemAssignments, setItemAssignments] = useState<Record<number, Record<string, number>>>({}); 
     const [tempSelections, setTempSelections] = useState<Record<string, number>>({});
+    const [currentAssigningGuestIndex, setCurrentAssigningGuestIndex] = useState(0);
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -44,23 +45,38 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     // Calculations for Equal Split
     const perPersonAmount = totalAmount > 0 && splitCount > 0 ? totalAmount / splitCount : 0;
 
-    // Calculations for Item Split
-    const getGuestTotal = (guestIndex: number) => {
-        const selections = itemAssignments[guestIndex] || {};
+    /**
+     * Calculate guest total matching main logic:
+     * (Subtotal + 10% Service) * 1.05 VAT
+     */
+    const getGuestTotal = (guestIndex: number, selectionsToUse?: Record<string, number>) => {
+        const selections = selectionsToUse || itemAssignments[guestIndex] || {};
         const subtotal = Object.entries(selections).reduce((acc, [itemId, qty]) => {
             const item = cartItems.find(ci => ci.cartItemId === itemId);
             return item ? acc + getDisplayPrice(item) * qty : acc;
         }, 0);
-        return subtotal * 1.05; // Including 5% VAT
+        
+        if (subtotal === 0) return 0;
+        
+        const extraCharges = subtotal * 0.10;
+        const vatAmount = (subtotal + extraCharges) * 0.05;
+        return subtotal + extraCharges + vatAmount;
     };
 
-    // Total units of a specific item assigned across all PREVIOUS guests
-    const getAssignedQuantity = (cartItemId: string, excludingGuestIndex?: number) => {
+    const currentGuestPreviewTotal = useMemo(() => {
+        return getGuestTotal(currentAssigningGuestIndex, tempSelections);
+    }, [currentAssigningGuestIndex, tempSelections, cartItems, getDisplayPrice]);
+
+    // Total units of a specific item assigned across ALL guests except current assignments
+    const getAssignedQuantity = (cartItemId: string) => {
         return Object.entries(itemAssignments).reduce((acc, [gIdx, selections]) => {
-            if (excludingGuestIndex !== undefined && parseInt(gIdx) === excludingGuestIndex) return acc;
             return acc + (selections[cartItemId] || 0);
         }, 0);
     };
+
+    const totalBillAssigned = useMemo(() => {
+        return Array.from({ length: splitCount }).reduce((acc, _, i) => acc + getGuestTotal(i), 0);
+    }, [itemAssignments, splitCount, cartItems, getDisplayPrice]);
 
     const handleBack = () => {
         if (step === 'equally') {
@@ -135,14 +151,12 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
         router.push(`/${method}-payment?${paymentParams.toString()}`);
         onOpenChange(false);
-    }
+    };
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const scrollTop = e.currentTarget.scrollTop;
         setIsScrolled(scrollTop > 20);
     };
-
-    const [currentAssigningGuestIndex, setCurrentAssigningGuestIndex] = useState(0);
 
     useEffect(() => {
         if (isOpen) {
@@ -199,7 +213,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                             {step === 'by-item' && (
                                 <p className="text-[10px] font-bold text-[#0069B1] uppercase mt-1 tracking-widest">
                                     {byItemStep === 'guests-count' ? 'Guest Setup' : 
-                                    byItemStep === 'assigning' ? `Assign Guest ${currentAssigningGuestIndex + 1} of ${splitCount}` : 
+                                    byItemStep === 'assigning' ? `Assigning Guest ${currentAssigningGuestIndex + 1}` : 
                                     byItemStep === 'summary' ? 'Review Splits' : 'Settlement Queue'}
                                 </p>
                             )}
@@ -443,19 +457,35 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                         ))}
                                     </div>
 
-                                    <div className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-10 w-10 bg-[#0069B1] text-white rounded-xl flex items-center justify-center font-black">
-                                                {currentAssigningGuestIndex + 1}
+                                    <div className="bg-[#0069B1]/5 p-4 rounded-2xl border border-[#0069B1]/20 space-y-4">
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-10 w-10 bg-[#0069B1] text-white rounded-xl flex items-center justify-center font-black">
+                                                    {currentAssigningGuestIndex + 1}
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <h3 className="font-black text-base text-slate-900 uppercase leading-none">Guest {currentAssigningGuestIndex + 1} Selection</h3>
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Allocate individual quantities</p>
+                                                </div>
                                             </div>
-                                            <h3 className="font-black text-lg text-slate-900 uppercase tracking-tight">Assignment for Guest {currentAssigningGuestIndex + 1}</h3>
+                                            <div className="text-right">
+                                                <p className="text-[10px] font-black text-[#0069B1] uppercase">Current Total</p>
+                                                <p className="text-xl font-black text-slate-900 tabular-nums tracking-tighter">${currentGuestPreviewTotal.toFixed(2)}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="h-1 bg-[#0069B1]/10 rounded-full overflow-hidden">
+                                            <div 
+                                                className="h-full bg-[#0069B1] transition-all duration-500" 
+                                                style={{ width: `${(totalBillAssigned / totalAmount) * 100}%` }}
+                                            />
                                         </div>
                                     </div>
 
                                     <div className="space-y-3">
                                         {cartItems.map(item => {
                                             const totalInCart = item.quantity;
-                                            const assignedElsewhere = getAssignedQuantity(item.cartItemId, currentAssigningGuestIndex);
+                                            const assignedElsewhere = getAssignedQuantity(item.cartItemId);
                                             const remainingToAssign = totalInCart - assignedElsewhere;
                                             const currentTempQty = tempSelections[item.cartItemId] || 0;
                                             
@@ -465,26 +495,34 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                     className={cn(
                                                         "flex items-center justify-between p-4 rounded-2xl border-2 transition-all",
                                                         remainingToAssign <= 0 && currentTempQty === 0 ? "bg-slate-50 border-slate-100 opacity-40 pointer-events-none" :
-                                                        currentTempQty > 0 ? "bg-[#0069B1]/5 border-[#0069B1] shadow-sm" :
+                                                        currentTempQty > 0 ? "bg-white border-[#0069B1] shadow-md" :
                                                         "bg-white border-slate-100"
                                                     )}
                                                 >
                                                     <div className="flex flex-col text-left">
                                                         <p className="font-black text-sm text-slate-800 uppercase leading-none">{item.name}</p>
-                                                        <p className="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-widest">
-                                                            {remainingToAssign} units available • ${getDisplayPrice(item).toFixed(2)}/ea
-                                                        </p>
+                                                        <div className="flex items-center gap-1.5 mt-1.5">
+                                                            <div className="bg-slate-100 px-2 py-0.5 rounded text-[9px] font-black text-slate-500 uppercase">
+                                                                {remainingToAssign} of {totalInCart} Available
+                                                            </div>
+                                                            <span className="text-[10px] font-bold text-slate-400">${getDisplayPrice(item).toFixed(2)}/ea</span>
+                                                        </div>
                                                     </div>
 
-                                                    <div className="flex items-center gap-3 bg-white p-1 rounded-xl border border-slate-200">
+                                                    <div className="flex items-center gap-3 bg-slate-50 p-1 rounded-xl border border-slate-200">
                                                         <Button 
                                                             variant="ghost" 
                                                             size="icon" 
                                                             className="h-8 w-8 rounded-lg text-slate-400"
-                                                            onClick={() => setTempSelections(prev => ({
-                                                                ...prev,
-                                                                [item.cartItemId]: Math.max(0, currentTempQty - 1)
-                                                            }))}
+                                                            onClick={() => setTempSelections(prev => {
+                                                                const val = Math.max(0, currentTempQty - 1);
+                                                                if (val === 0) {
+                                                                    const next = { ...prev };
+                                                                    delete next[item.cartItemId];
+                                                                    return next;
+                                                                }
+                                                                return { ...prev, [item.cartItemId]: val };
+                                                            })}
                                                             disabled={currentTempQty === 0}
                                                         >
                                                             <Minus className="h-4 w-4 stroke-[3]" />
@@ -509,7 +547,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     </div>
 
                                     <Button 
-                                        disabled={Object.values(tempSelections).every(v => v === 0)}
                                         onClick={() => {
                                             const nextAssignments = { ...itemAssignments, [currentAssigningGuestIndex]: tempSelections };
                                             setItemAssignments(nextAssignments);
@@ -523,7 +560,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                         }}
                                         className="w-full h-16 bg-[#0069B1] hover:bg-[#0069B1]/90 text-white font-black text-lg rounded-2xl shadow-xl uppercase tracking-tight flex items-center justify-center gap-2"
                                     >
-                                        <span>{currentAssigningGuestIndex === splitCount - 1 ? 'Finish & Audit' : 'Confirm & Next Guest'}</span>
+                                        <span>{currentAssigningGuestIndex === splitCount - 1 ? 'Finish Audit' : 'Confirm & Next Guest'}</span>
                                         <ArrowRight className="h-5 w-5" />
                                     </Button>
                                 </div>
@@ -561,6 +598,9 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                             </div>
                                                         );
                                                     })}
+                                                    {(!itemAssignments[i] || Object.keys(itemAssignments[i]).length === 0) && (
+                                                        <p className="text-[10px] font-bold text-slate-300 italic uppercase">No items assigned</p>
+                                                    )}
                                                 </div>
                                             </Card>
                                         ))}
@@ -578,6 +618,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                             setByItemStep('assigning');
                                             setCurrentAssigningGuestIndex(0);
                                             setItemAssignments({});
+                                            setTempSelections({});
                                         }}
                                         className="w-full h-10 text-slate-400 font-bold uppercase text-[10px] tracking-widest"
                                     >
@@ -666,4 +707,3 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
         </Sheet>
     );
 }
-
