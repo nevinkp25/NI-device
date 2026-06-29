@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Minus, Plus, Equal, Box, X, User, Check } from 'lucide-react';
+import { Minus, Plus, Equal, Box, X, User, Check, Hash } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { TipSheet } from './tip-sheet';
 import { Checkbox } from './ui/checkbox';
@@ -16,13 +16,14 @@ interface SplitBillSheetProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     totalAmount: number;
+    orderId: string;
     baseReturnUrl: string; 
     onProceedToPayment: (amount: number) => void;
 }
 
 type SplitStep = 'choice' | 'equally' | 'by-item';
 
-export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, baseReturnUrl }: SplitBillSheetProps) {
+export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, baseReturnUrl }: SplitBillSheetProps) {
     const [step, setStep] = useState<SplitStep>('choice');
     const [splitCount, setSplitCount] = useState(2);
     const [paidGuests, setPaidGuests] = useState<number[]>([]);
@@ -163,6 +164,11 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, baseReturnUr
                         <div className="px-6 space-y-6 animate-in fade-in duration-500">
                             {/* Hero Voucher Card */}
                             <Card className="relative overflow-hidden rounded-[2.5rem] p-8 border border-slate-100 bg-gradient-to-br from-[#EEF2FF] to-[#F5F3FF] shadow-sm">
+                                <div className="absolute top-4 right-8 flex items-center gap-1 opacity-60">
+                                    <Hash className="h-3 w-3 text-primary" />
+                                    <p className="text-[10px] font-black text-primary uppercase">ID: {orderId}</p>
+                                </div>
+
                                 <div className="text-center space-y-1 mb-8">
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Amount</p>
                                     <div className="flex items-center justify-center gap-2">
@@ -352,4 +358,3 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, baseReturnUr
         </Sheet>
     );
 }
-

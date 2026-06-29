@@ -204,7 +204,7 @@ function OrderStatusContent() {
             </div>
           </div>
 
-          <div className="flex items-center gap-5 py-3 border-t border-slate-50 text-slate-500 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-3 py-3 border-t border-slate-50 text-slate-500 flex-wrap">
             <div className="flex items-center gap-1.5 shrink-0">
               <User className="h-3.5 w-3.5 text-primary/40" />
               <span className="text-[10px] font-bold uppercase">Emp ID: #{staffId}</span>
@@ -377,6 +377,7 @@ function OrderStatusContent() {
         isOpen={isSplitSheetOpen}
         onOpenChange={setIsSplitSheetOpen}
         totalAmount={total}
+        orderId={order.id}
         onProceedToPayment={(amount) => {
           setIsSplitSheetOpen(false);
           setTipDetails({ isOpen: true, amount: amount });
