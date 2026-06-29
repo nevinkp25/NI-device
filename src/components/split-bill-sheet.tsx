@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Minus, Plus, Equal, Box, X, User, Receipt, Check } from 'lucide-react';
+import { Minus, Plus, Equal, Box, X, User, Check } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { TipSheet } from './tip-sheet';
 import { Checkbox } from './ui/checkbox';
@@ -161,47 +161,47 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, baseReturnUr
 
                     {step === 'equally' && (
                         <div className="px-6 space-y-6 animate-in fade-in duration-500">
-                            {/* Modern Gradient Voucher Card */}
-                            <Card className="relative overflow-hidden rounded-[2.5rem] p-8 border border-slate-100 bg-gradient-to-br from-white via-[#F8FAFF] to-[#F1F4FF] shadow-sm">
-                                <div className="text-center space-y-2 mb-8">
-                                    <p className="text-xs font-bold text-slate-400 uppercase">Total Amount</p>
-                                    <div className="flex items-center justify-center gap-3">
-                                        <span className="text-xl font-bold text-slate-900">AED</span>
-                                        <span className="text-6xl font-black text-slate-900 tabular-nums leading-none">{totalAmount.toFixed(2)}</span>
+                            {/* Hero Voucher Card */}
+                            <Card className="relative overflow-hidden rounded-[2.5rem] p-8 border border-slate-100 bg-gradient-to-br from-[#EEF2FF] to-[#F5F3FF] shadow-sm">
+                                <div className="text-center space-y-1 mb-8">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase">Total Amount</p>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <span className="text-base font-bold text-slate-900">AED</span>
+                                        <span className="text-6xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">{totalAmount.toFixed(2)}</span>
                                     </div>
                                     <p className="text-[10px] font-bold text-slate-300 uppercase">Including tax & service</p>
                                 </div>
 
                                 <div className="space-y-3">
-                                    <div className="flex justify-between text-[11px] font-bold uppercase text-slate-400">
+                                    <div className="flex justify-between text-[10px] font-bold text-slate-400">
                                         <span>Payment Progress</span>
                                         <span>{Math.round(progressValue)}%</span>
                                     </div>
-                                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div className="h-2 w-full bg-slate-200/50 rounded-full overflow-hidden">
                                         <div 
                                             className="h-full bg-gradient-to-r from-orange-400 to-primary transition-all duration-1000 ease-out"
                                             style={{ width: `${progressValue}%` }}
                                         />
                                     </div>
-                                    <p className="text-center text-[11px] font-bold uppercase text-slate-400">
+                                    <p className="text-center text-[10px] font-bold text-slate-400">
                                         {paidGuests.length} of {splitCount} Guest paid
                                     </p>
                                 </div>
                             </Card>
 
                             {/* Guest Selector Card */}
-                            <Card className="p-6 rounded-[2rem] border-none bg-white shadow-[0_10px_40px_rgba(0,0,0,0.04)] flex items-center justify-between">
+                            <Card className="p-4 rounded-[2rem] border-none bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex items-center justify-between">
                                 <Button 
                                     variant="ghost" 
                                     size="icon" 
-                                    className="h-14 w-14 rounded-2xl bg-white border border-slate-100 text-slate-300 shadow-sm"
+                                    className="h-14 w-14 rounded-2xl bg-[#F9FAFB] text-slate-400 hover:bg-slate-100"
                                     onClick={() => setSplitCount(Math.max(2, splitCount - 1))}
                                     disabled={paidGuests.length > 0}
                                 >
                                     <Minus className="h-6 w-6 stroke-[3]" />
                                 </Button>
                                 <div className="text-center">
-                                    <p className="text-4xl font-black text-slate-900 tabular-nums leading-none">{splitCount}</p>
+                                    <p className="text-4xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">{splitCount}</p>
                                     <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Guest</p>
                                 </div>
                                 <Button 
@@ -216,17 +216,17 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, baseReturnUr
                             </Card>
 
                             {/* Share Value Display */}
-                            <Card className="p-6 rounded-[2rem] border-none bg-white shadow-[0_10px_40px_rgba(0,0,0,0.04)] text-center">
+                            <Card className="p-6 rounded-[2rem] border-none bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] text-center">
                                 <p className="text-xs font-bold text-slate-400 uppercase mb-2">Each Guests pays</p>
                                 <div className="flex items-center justify-center gap-2 text-primary">
                                     <span className="text-base font-bold">AED</span>
-                                    <span className="text-5xl font-black tabular-nums leading-none">{perPersonAmount.toFixed(2)}</span>
+                                    <span className="text-5xl font-black tabular-nums leading-none tracking-tighter">{perPersonAmount.toFixed(2)}</span>
                                 </div>
                             </Card>
 
                             {/* Guest List */}
                             <div className="space-y-4 pt-2">
-                                <h3 className="text-[11px] font-black text-slate-400 uppercase px-1">Select who is paying</h3>
+                                <h3 className="text-[11px] font-black text-slate-400 uppercase px-1">SELECT WHO IS PAYING</h3>
                                 <div className="space-y-3">
                                     {Array.from({ length: splitCount }).map((_, index) => {
                                         const isPaid = paidGuests.includes(index);
@@ -238,26 +238,26 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, baseReturnUr
                                                 <div className="flex items-center gap-4">
                                                     <div className={cn(
                                                         "h-12 w-12 rounded-full flex items-center justify-center border",
-                                                        isPaid ? "bg-white text-primary border-slate-100" : "bg-slate-50 text-slate-400 border-slate-100"
+                                                        isPaid ? "bg-white text-primary border-slate-100" : "bg-[#F3F4F6] text-primary border-transparent shadow-inner"
                                                     )}>
                                                         <User className="h-6 w-6" />
                                                     </div>
-                                                    <div className="space-y-0.5">
-                                                        <p className="text-base font-black text-slate-900">Guest {index + 1}</p>
-                                                        <p className="text-xs font-bold text-slate-400">AED {perPersonAmount.toFixed(2)}</p>
+                                                    <div className="space-y-0.5 text-left">
+                                                        <p className="text-base font-black text-slate-900 leading-tight">Guest {index + 1}</p>
+                                                        <p className="text-xs font-bold text-slate-400 leading-tight">AED {perPersonAmount.toFixed(2)}</p>
                                                     </div>
                                                 </div>
                                                 {isPaid ? (
                                                     <div className="flex items-center gap-1.5 text-primary font-bold uppercase text-[10px] px-4 py-2 bg-primary/5 rounded-xl border border-primary/10">
                                                         <Check className="h-3.5 w-3.5 stroke-[4]" />
-                                                        <span>Paid</span>
+                                                        <span>PAID</span>
                                                     </div>
                                                 ) : (
                                                     <Button 
                                                         onClick={() => setTipDetails({ isOpen: true, amount: perPersonAmount, guestIndex: index })}
                                                         className="h-10 px-8 rounded-xl font-bold uppercase text-xs bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/10"
                                                     >
-                                                        Pay
+                                                        PAY
                                                     </Button>
                                                 )}
                                             </Card>
