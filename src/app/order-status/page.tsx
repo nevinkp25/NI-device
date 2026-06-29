@@ -14,7 +14,8 @@ import {
   Calendar, 
   X,
   CreditCard,
-  History
+  History,
+  FileText
 } from 'lucide-react';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
@@ -30,6 +31,7 @@ import {
   SheetTitle, 
   SheetClose 
 } from '@/components/ui/sheet';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 function OrderStatusContent() {
@@ -53,9 +55,9 @@ function OrderStatusContent() {
 
   if (!tableNumber) {
     return (
-       <div className="flex flex-col h-screen bg-white">
-         <header className="flex items-center p-4 border-b">
-          <Link href="/order-by-table" passHref>
+       <div className="flex flex-col h-screen bg-slate-50">
+         <header className="flex items-center p-4 border-b bg-white">
+          <Link href="/order-by-table?mode=settlement">
             <Button variant="ghost" size="icon" className="h-10 w-10">
               <ArrowLeft className="h-6 w-6 text-slate-900" />
             </Button>
@@ -64,7 +66,7 @@ function OrderStatusContent() {
           <div className="w-10"></div>
         </header>
         <div className="flex-grow flex flex-col items-center justify-center p-12 text-center space-y-4">
-            <div className="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100">
+            <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100">
                 <History className="h-8 w-8 text-slate-300" />
             </div>
             <p className="text-slate-500 font-bold uppercase text-xs">Select a table to begin settlement</p>
@@ -75,9 +77,9 @@ function OrderStatusContent() {
 
   if (!order) {
     return (
-      <div className="flex flex-col h-screen bg-white">
-        <header className="flex items-center p-4 border-b">
-          <Link href="/order-by-table" passHref>
+      <div className="flex flex-col h-screen bg-slate-50">
+        <header className="flex items-center p-4 border-b bg-white">
+          <Link href="/order-by-table?mode=settlement">
             <Button variant="ghost" size="icon" className="h-10 w-10">
               <ArrowLeft className="h-6 w-6 text-slate-900" />
             </Button>
@@ -117,67 +119,64 @@ function OrderStatusContent() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      {/* Refined Minimal Header */}
-      <header className="sticky top-0 z-50 bg-white border-b px-4 h-16 flex items-center justify-between">
-        <Link href="/order-by-table?mode=settlement" passHref>
+    <div className="flex flex-col min-h-screen bg-slate-50/50">
+      <header className="sticky top-0 z-50 bg-white border-b px-4 h-16 flex items-center justify-between shadow-sm">
+        <Link href="/order-by-table?mode=settlement">
           <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
             <ArrowLeft className="h-6 w-6" />
           </Button>
         </Link>
         <div className="flex flex-col items-center">
           <h1 className="text-sm font-bold uppercase text-slate-900">Table {tableNumber} Account</h1>
-          <p className="text-[10px] font-bold text-slate-400 uppercase leading-none mt-0.5">Settlement Mode</p>
+          <p className="text-[10px] font-bold text-slate-400 uppercase leading-none mt-0.5">Terminal Dashboard</p>
         </div>
-        <Link href="/navigation" passHref>
-          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-slate-100">
+        <Link href="/navigation">
+          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-slate-100 bg-slate-50">
             <Home className="h-5 w-5" />
           </Button>
         </Link>
       </header>
 
-      <main className="flex-grow p-5 animate-in fade-in duration-500 max-w-[420px] mx-auto w-full space-y-8 pb-40">
-        {/* Order Identity Block */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
+      <main className="flex-grow p-4 animate-in fade-in duration-500 max-w-[420px] mx-auto w-full space-y-4 pb-44">
+        {/* Order Identity Card */}
+        <Card className="p-4 border-slate-200 shadow-sm rounded-2xl bg-white space-y-4">
+          <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <h2 className="text-2xl font-black text-slate-900 uppercase">Order #{order.id}</h2>
+              <h2 className="text-xl font-bold text-slate-900 uppercase">Order #{order.id}</h2>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-[10px] py-0 px-2 rounded-md">Open</Badge>
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-[10px] py-0 px-2 rounded-md">Open Account</Badge>
                 <span className="text-xs font-bold text-slate-400 uppercase">Audit Required</span>
               </div>
             </div>
           </div>
 
-          {/* Unified Audit Row */}
-          <div className="flex items-center gap-6 py-4 border-y border-slate-50 text-slate-500 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-5 py-3 border-t border-slate-50 text-slate-500 overflow-x-auto no-scrollbar">
             <div className="flex items-center gap-2 shrink-0">
-              <User className="h-4 w-4 text-slate-300" />
-              <span className="text-xs font-bold uppercase whitespace-nowrap">David R.</span>
+              <User className="h-4 w-4 text-primary/40" />
+              <span className="text-xs font-bold uppercase">David R.</span>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Clock className="h-4 w-4 text-slate-300" />
-              <span className="text-xs font-bold uppercase whitespace-nowrap">{format(new Date(order.date), "hh:mm a")}</span>
+              <Clock className="h-4 w-4 text-primary/40" />
+              <span className="text-xs font-bold uppercase">{format(new Date(order.date), "hh:mm a")}</span>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Calendar className="h-4 w-4 text-slate-300" />
-              <span className="text-xs font-bold uppercase whitespace-nowrap">{format(new Date(order.date), "MMM d")}</span>
+              <Calendar className="h-4 w-4 text-primary/40" />
+              <span className="text-xs font-bold uppercase">{format(new Date(order.date), "MMM d, yyyy")}</span>
             </div>
           </div>
-        </div>
+        </Card>
 
-        {/* Itemized List - Prioritized and Clean */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 px-1">
+        {/* Itemized Statement Card */}
+        <Card className="border-slate-200 shadow-sm rounded-2xl bg-white overflow-hidden">
+          <div className="p-4 bg-slate-50/50 border-b flex items-center gap-2">
             <Receipt className="h-4 w-4 text-slate-400" />
             <h3 className="text-xs font-bold text-slate-400 uppercase">Account Statement</h3>
           </div>
-          
           <div className="divide-y divide-slate-50">
             {order.items.map(item => (
               <div 
                 key={item.cartItemId} 
-                className="group flex items-center justify-between py-4 hover:bg-slate-50 transition-colors cursor-pointer px-1"
+                className="group flex items-center justify-between p-4 hover:bg-slate-50/80 transition-colors cursor-pointer"
                 onClick={() => setSelectedItemForDetail(item)}
               >
                 <div className="flex items-center gap-4">
@@ -186,56 +185,64 @@ function OrderStatusContent() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-slate-800 uppercase leading-none">{item.name}</span>
-                    <span className="text-xs font-bold text-slate-400 uppercase mt-1">${item.price.toFixed(2)}</span>
+                    <span className="text-xs font-bold text-slate-400 uppercase mt-1">${item.price.toFixed(2)} unit</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-base font-black text-slate-900 tabular-nums">${(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="text-base font-bold text-slate-900 tabular-nums">${(item.price * item.quantity).toFixed(2)}</span>
                   <ChevronRight className="h-4 w-4 text-slate-200 group-hover:text-primary transition-colors" />
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
-        {/* Financial Summary - Receipt Aesthetic */}
-        <div className="pt-8 space-y-4">
-          <div className="space-y-2.5">
-            <div className="flex justify-between items-center px-1">
-              <span className="text-xs font-bold text-slate-500 uppercase">Subtotal</span>
-              <span className="text-sm font-bold text-slate-900 tabular-nums">${subtotal.toFixed(2)}</span>
+        {/* Financial Breakdown Card */}
+        <Card className="border-slate-200 shadow-sm rounded-2xl bg-white overflow-hidden p-5 space-y-4">
+          <div className="flex items-center gap-2 px-1 pb-1">
+             <FileText className="h-4 w-4 text-slate-400" />
+             <h3 className="text-xs font-bold text-slate-400 uppercase">Billing Summary</h3>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="flex justify-between items-center p-3 rounded-xl bg-primary/5 border border-primary/10">
+              <span className="text-xs font-bold text-primary uppercase">Subtotal</span>
+              <span className="text-sm font-black text-primary tabular-nums">${subtotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between items-center px-1">
-              <span className="text-xs font-bold text-slate-500 uppercase">Service (10%)</span>
-              <span className="text-sm font-bold text-slate-900 tabular-nums">${extraCharges.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between items-center px-1">
-              <span className="text-xs font-bold text-slate-500 uppercase">VAT (5%)</span>
-              <span className="text-sm font-bold text-slate-900 tabular-nums">${vatAmount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between items-center px-1 opacity-40">
-              <span className="text-xs font-bold text-slate-500 uppercase">Gratuity</span>
-              <span className="text-sm font-bold text-slate-900 tabular-nums">$0.00</span>
+            
+            <div className="px-3 space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-slate-500 uppercase">Service Charge (10%)</span>
+                <span className="text-sm font-bold text-slate-900 tabular-nums">${extraCharges.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-slate-500 uppercase">VAT (5%)</span>
+                <span className="text-sm font-bold text-slate-900 tabular-nums">${vatAmount.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center opacity-40">
+                <span className="text-xs font-bold text-slate-500 uppercase">Gratuity (Tip)</span>
+                <span className="text-sm font-bold text-slate-900 tabular-nums">$0.00</span>
+              </div>
             </div>
           </div>
           
           <Separator className="bg-slate-100" />
           
-          <div className="flex justify-between items-end px-1 py-2">
+          <div className="flex justify-between items-end py-2 px-3">
             <div className="flex flex-col">
-              <span className="text-xs font-black text-slate-400 uppercase leading-none mb-1">Total Balance Due</span>
+              <span className="text-xs font-bold text-slate-400 uppercase leading-none mb-1">Total Balance Due</span>
               <span className="text-xs font-bold text-primary uppercase leading-none">Order # {order.id}</span>
             </div>
-            <span className="text-5xl font-black text-primary tabular-nums tracking-tighter">${total.toFixed(2)}</span>
+            <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">${total.toFixed(2)}</span>
           </div>
-        </div>
+        </Card>
       </main>
 
-      {/* Pinned Footer - High Impact */}
-      <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-5 bg-white/95 backdrop-blur-md border-t border-slate-50 z-50 flex flex-col gap-3">
+      {/* Pinned Action Footer */}
+      <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-5 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 flex flex-col gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
         <Button 
           onClick={handleProceedToPayment} 
-          className="w-full h-16 bg-primary hover:bg-primary/90 text-white text-lg font-black rounded-2xl shadow-xl flex items-center justify-center gap-6 uppercase transition-transform active:scale-[0.98]"
+          className="w-full h-16 bg-primary hover:bg-primary/90 text-white text-lg font-bold rounded-2xl shadow-xl flex items-center justify-center gap-6 uppercase transition-all active:scale-[0.98]"
         >
           <div className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
@@ -248,13 +255,13 @@ function OrderStatusContent() {
         <Button 
           onClick={handleSplitBill} 
           variant="outline" 
-          className="w-full h-14 border-2 border-slate-100 rounded-2xl text-xs font-black text-slate-700 uppercase hover:bg-slate-50 transition-all active:scale-[0.98]"
+          className="w-full h-14 border-2 border-slate-100 rounded-2xl text-xs font-bold text-slate-700 uppercase hover:bg-slate-50 transition-all active:scale-[0.98] bg-white"
         >
           Split Bill Between Guests
         </Button>
       </footer>
 
-      {/* Item Detail Audit Sheet */}
+      {/* Item Detail Sheet */}
       <Sheet open={!!selectedItemForDetail} onOpenChange={(open) => !open && setSelectedItemForDetail(null)}>
         <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-0 bg-white z-[100]" hideCloseButton>
           <div className="mx-auto w-12 h-1.5 bg-slate-100 rounded-full mt-4 mb-2" />
@@ -264,7 +271,7 @@ function OrderStatusContent() {
                   <span className="text-xs font-black">{selectedItemForDetail?.quantity}x</span>
                </div>
                <div className="space-y-0.5">
-                  <SheetTitle className="text-lg font-black text-slate-900 uppercase leading-none">{selectedItemForDetail?.name}</SheetTitle>
+                  <SheetTitle className="text-lg font-bold text-slate-900 uppercase leading-none">{selectedItemForDetail?.name}</SheetTitle>
                   <p className="text-xs text-slate-400 font-bold uppercase leading-none">Kitchen Service Audit</p>
                </div>
             </div>
@@ -276,18 +283,18 @@ function OrderStatusContent() {
           </SheetHeader>
           <div className="p-6 space-y-8 pb-12">
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-slate-50 p-5 rounded-2xl space-y-1">
+              <Card className="bg-slate-50 p-5 rounded-2xl space-y-1 border-none shadow-none">
                 <p className="text-[10px] font-bold text-slate-400 uppercase">Quantity</p>
-                <p className="text-2xl font-black text-slate-900">{selectedItemForDetail?.quantity}x</p>
-              </div>
-              <div className="bg-slate-50 p-5 rounded-2xl space-y-1 text-right">
+                <p className="text-2xl font-bold text-slate-900">{selectedItemForDetail?.quantity}x</p>
+              </Card>
+              <Card className="bg-slate-50 p-5 rounded-2xl space-y-1 text-right border-none shadow-none">
                 <p className="text-[10px] font-bold text-slate-400 uppercase">Unit Price</p>
-                <p className="text-2xl font-black text-slate-900 tabular-nums">${selectedItemForDetail?.price.toFixed(2)}</p>
-              </div>
+                <p className="text-2xl font-bold text-slate-900 tabular-nums">${selectedItemForDetail?.price.toFixed(2)}</p>
+              </Card>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[10px] font-black text-slate-400 uppercase px-1">Order Customizations</h4>
+              <h4 className="text-[10px] font-bold text-slate-400 uppercase px-1">Order Customizations</h4>
               <div className="space-y-6">
                 {selectedItemForDetail?.selectedVariations && Object.keys(selectedItemForDetail.selectedVariations).length > 0 ? (
                   <div className="flex flex-wrap gap-2">
@@ -337,7 +344,7 @@ function OrderStatusContent() {
 export default function OrderStatusPage() {
   return (
     <Suspense fallback={
-      <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
         <div className="h-8 w-8 border-4 border-slate-100 border-t-slate-400 rounded-full animate-spin" />
       </div>
     }>
