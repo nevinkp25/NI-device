@@ -103,7 +103,7 @@ function OrderByTableContent() {
           className="w-full relative"
         >
           <div className="text-center w-full max-w-sm mx-auto relative">
-            <p className="text-xs font-bold uppercase text-slate-300 mb-1">Enter Table ID</p>
+            <p className="text-xs font-bold uppercase text-slate-400 mb-1">Enter Table ID</p>
             <div className="relative">
               <Input
                 type="text"
