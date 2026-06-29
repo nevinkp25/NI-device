@@ -80,7 +80,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const scrollTop = e.currentTarget.scrollTop;
-        setIsScrolled(scrollTop > 40);
+        setIsScrolled(scrollTop > 20);
     };
 
     useEffect(() => {
@@ -116,7 +116,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                 <div className="mx-auto w-12 h-1.5 bg-slate-200 rounded-full mt-3 shrink-0" />
                 
                 <SheetHeader className="p-4 flex-row items-center justify-between bg-white shrink-0 border-b">
-                    <SheetTitle className="text-xl font-bold uppercase text-slate-900">
+                    <SheetTitle className="text-xl font-black uppercase text-slate-900">
                         {step === 'equally' ? 'Split Equally' : 'Split Bill'}
                     </SheetTitle>
                     <SheetClose asChild>
@@ -174,13 +174,12 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                     {step === 'equally' && (
                         <div className="pt-2">
-                            {/* Sticky Minimized Header - Positioned at top without taking space by default */}
+                            {/* Sticky Minimized Header */}
                             <div className={cn(
-                                "sticky top-0 z-50 transition-all duration-300 -mx-5 px-5 bg-white",
-                                isScrolled ? "opacity-100 py-2 border-b shadow-sm" : "opacity-0 h-0 overflow-hidden pointer-events-none"
+                                "sticky top-0 z-50 transition-all duration-300 -mx-5 px-5 bg-white mb-2",
+                                isScrolled ? "opacity-100 py-3 border-b shadow-md" : "opacity-0 h-0 overflow-hidden pointer-events-none"
                             )}>
-                                {/* Gradient Border Wrapper */}
-                                <div className="p-[1.5px] bg-gradient-to-br from-indigo-500 via-purple-400 to-orange-300 rounded-[2rem] shadow-xl">
+                                <div className="p-[1.5px] bg-gradient-to-br from-blue-600 via-sky-400 to-orange-300 rounded-[2rem] shadow-xl">
                                     <Card className="relative overflow-hidden rounded-[inherit] p-3 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] flex flex-col gap-2 shadow-none">
                                         <div className="flex items-center justify-between px-2">
                                             <span className="text-[9px] font-black text-slate-700 uppercase">Total Amount</span>
@@ -188,14 +187,14 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                             <span className="text-[9px] font-black text-primary">{Math.round(progressValue)}%</span>
                                         </div>
                                         <div className="px-2">
-                                            <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100/50 shadow-inner">
+                                            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200 shadow-inner">
                                                 <div 
-                                                    className="h-full bg-gradient-to-r from-orange-400 to-indigo-600 transition-all duration-1000 ease-out"
+                                                    className="h-full bg-gradient-to-r from-orange-400 to-blue-600 transition-all duration-1000 ease-out"
                                                     style={{ width: `${progressValue}%` }}
                                                 />
                                             </div>
-                                            <p className="text-center text-[8px] font-bold text-slate-500 uppercase mt-1">
-                                                {paidGuests.length} of {splitCount} guests paid
+                                            <p className="text-center text-[8px] font-black text-slate-700 uppercase mt-1">
+                                                {paidGuests.length} OF {splitCount} GUESTS PAID
                                             </p>
                                         </div>
                                     </Card>
@@ -204,41 +203,41 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                             {/* Scroll Content Stack */}
                             <div className="space-y-6 pt-2">
-                                {/* Full Hero Card with Gradient Border */}
+                                {/* Full Hero Card */}
                                 <div className={cn(
                                     "transition-all duration-500 transform origin-top",
                                     isScrolled ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
                                 )}>
-                                    <div className="p-[1.5px] bg-gradient-to-br from-indigo-500 via-purple-400 to-orange-300 rounded-[3rem] shadow-2xl">
-                                        <Card className="relative overflow-hidden rounded-[inherit] p-6 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] space-y-5 shadow-none">
+                                    <div className="p-[1.5px] bg-gradient-to-br from-blue-600 via-sky-400 to-orange-300 rounded-[2.5rem] shadow-2xl">
+                                        <Card className="relative overflow-hidden rounded-[inherit] p-5 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] space-y-4 shadow-none">
                                             <div className="text-center space-y-1">
-                                                <div className="flex items-center justify-center mb-3">
-                                                    <div className="bg-white/80 backdrop-blur-sm text-indigo-700 px-4 py-1.5 rounded-2xl border border-indigo-100 shadow-sm flex items-center gap-2">
+                                                <div className="flex items-center justify-center mb-2">
+                                                    <div className="bg-blue-600/10 text-blue-700 px-4 py-1 rounded-xl border border-blue-100 shadow-sm flex items-center gap-1.5">
                                                         <Hash className="h-3 w-3" />
-                                                        <span className="text-[11px] font-black uppercase">Order #{orderId}</span>
+                                                        <span className="text-[10px] font-black uppercase">Order #{orderId}</span>
                                                     </div>
                                                 </div>
-                                                <p className="text-[11px] font-bold text-slate-700 uppercase tracking-widest opacity-80">Total Balance Due</p>
-                                                <div className="flex items-baseline justify-center gap-2">
-                                                    <span className="text-lg font-bold text-slate-500">AED</span>
-                                                    <span className="text-6xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">{totalAmount.toFixed(2)}</span>
+                                                <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Total Balance Due</p>
+                                                <div className="flex items-baseline justify-center gap-1.5">
+                                                    <span className="text-base font-black text-slate-500">AED</span>
+                                                    <span className="text-5xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">{totalAmount.toFixed(2)}</span>
                                                 </div>
                                             </div>
 
-                                            <Separator className="bg-slate-200/40" />
+                                            <Separator className="bg-slate-200/50" />
 
-                                            <div className="space-y-3">
+                                            <div className="space-y-2">
                                                 <div className="flex justify-between items-center px-1">
-                                                    <span className="text-[11px] font-bold text-slate-700 uppercase">Payment Progress</span>
-                                                    <span className="text-[11px] font-black text-indigo-700">{Math.round(progressValue)}%</span>
+                                                    <span className="text-[10px] font-black text-slate-700 uppercase">Payment Progress</span>
+                                                    <span className="text-[10px] font-black text-blue-700">{Math.round(progressValue)}%</span>
                                                 </div>
-                                                <div className="h-3 w-full bg-slate-100/80 rounded-full overflow-hidden shadow-inner border border-slate-200/30">
+                                                <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-200">
                                                     <div 
-                                                        className="h-full bg-gradient-to-r from-orange-400 via-purple-500 to-indigo-600 transition-all duration-1000 ease-out"
+                                                        className="h-full bg-gradient-to-r from-orange-400 via-sky-500 to-blue-600 transition-all duration-1000 ease-out"
                                                         style={{ width: `${progressValue}%` }}
                                                     />
                                                 </div>
-                                                <p className="text-center text-[10px] font-bold text-slate-700 uppercase">
+                                                <p className="text-center text-[9px] font-black text-slate-700 uppercase">
                                                     {paidGuests.length} OF {splitCount} GUESTS PAID
                                                 </p>
                                             </div>
@@ -247,7 +246,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 </div>
 
                                 {/* Guest Selector Card */}
-                                <Card className="p-2 rounded-[2rem] border-none bg-slate-50/50 shadow-sm flex items-center justify-between px-6">
+                                <Card className="p-2 rounded-[2rem] border-none bg-slate-50/80 shadow-sm flex items-center justify-between px-6">
                                     <button 
                                         onClick={() => setSplitCount(Math.max(2, splitCount - 1))}
                                         disabled={paidGuests.length > 0}
@@ -262,17 +261,17 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     <button 
                                         onClick={() => setSplitCount(splitCount + 1)}
                                         disabled={paidGuests.length > 0}
-                                        className="h-12 w-12 rounded-2xl bg-indigo-600 text-white hover:bg-indigo-700 shadow-md flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50"
+                                        className="h-12 w-12 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 shadow-md flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50"
                                     >
                                         <Plus className="h-5 w-5 stroke-[3]" />
                                     </button>
                                 </Card>
 
-                                {/* Each Guest Pays Display */}
+                                {/* Each Guest Pays Card */}
                                 <Card className="p-5 rounded-[2.5rem] border-2 border-slate-100 bg-white shadow-md text-center space-y-0.5">
-                                    <p className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Share Per Guest</p>
-                                    <div className="flex items-baseline justify-center gap-1.5 text-indigo-600">
-                                        <span className="text-base font-bold">AED</span>
+                                    <p className="text-[11px] font-black text-slate-700 uppercase tracking-widest">Share Per Guest</p>
+                                    <div className="flex items-baseline justify-center gap-1.5 text-blue-600">
+                                        <span className="text-base font-black">AED</span>
                                         <span className="text-4xl font-black tabular-nums leading-none tracking-tight">{perPersonAmount.toFixed(2)}</span>
                                     </div>
                                 </Card>
@@ -286,26 +285,26 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                             return (
                                                 <Card key={index} className={cn(
                                                     "flex items-center justify-between p-4 rounded-[1.75rem] border transition-all duration-300",
-                                                    isPaid ? "bg-slate-50/50 border-slate-100 opacity-60" : "bg-white border-slate-100 shadow-sm hover:border-indigo-100"
+                                                    isPaid ? "bg-slate-50 border-slate-100 opacity-60" : "bg-white border-slate-100 shadow-sm hover:border-blue-100"
                                                 )}>
                                                     <div className="flex items-center gap-4">
-                                                        <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100/50">
+                                                        <div className="h-12 w-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100/50">
                                                             <User className="h-6 w-6" />
                                                         </div>
                                                         <div className="space-y-0.5 text-left">
                                                             <p className="text-sm font-black text-slate-900 leading-tight">Guest {index + 1}</p>
-                                                            <p className="text-[11px] font-bold text-slate-700 uppercase leading-none">AED {perPersonAmount.toFixed(2)}</p>
+                                                            <p className="text-[11px] font-black text-slate-700 uppercase leading-none">AED {perPersonAmount.toFixed(2)}</p>
                                                         </div>
                                                     </div>
                                                     {isPaid ? (
-                                                        <div className="flex items-center gap-1.5 text-indigo-700 font-black uppercase text-[10px] px-4 py-2 bg-indigo-50 rounded-2xl border border-indigo-100">
+                                                        <div className="flex items-center gap-1.5 text-blue-700 font-black uppercase text-[10px] px-4 py-2 bg-blue-50 rounded-2xl border border-blue-100">
                                                             <Check className="h-3.5 w-3.5 stroke-[4]" />
                                                             <span>PAID</span>
                                                         </div>
                                                     ) : (
                                                         <Button 
                                                             onClick={() => setTipDetails({ isOpen: true, amount: perPersonAmount, guestIndex: index })}
-                                                            className="h-11 px-8 rounded-2xl font-black uppercase text-[11px] bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg active:scale-95 transition-all"
+                                                            className="h-11 px-8 rounded-2xl font-black uppercase text-[11px] bg-blue-600 hover:bg-blue-700 text-white shadow-lg active:scale-95 transition-all"
                                                         >
                                                             PAY
                                                         </Button>
