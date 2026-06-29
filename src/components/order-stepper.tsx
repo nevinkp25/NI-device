@@ -45,7 +45,7 @@ export function OrderStepper({
                   compact ? "h-5 w-5 text-[9px]" : "h-7 w-7 text-[10px]",
                   (isActive || isCompleted) 
                     ? "bg-primary text-primary-foreground shadow-md" 
-                    : "bg-white border-2 border-slate-100 text-slate-300"
+                    : "bg-white border-2 border-slate-200 text-slate-500"
                 )}>
                   {step.id}
                 </div>
@@ -54,7 +54,7 @@ export function OrderStepper({
                 {!compact && (
                   <span className={cn(
                     "text-[8px] font-black uppercase mt-1.5 tracking-widest transition-colors duration-300",
-                    (isActive || isCompleted) ? "text-primary" : "text-slate-400"
+                    (isActive || isCompleted) ? "text-primary" : "text-slate-600"
                   )}>
                     {step.label}
                   </span>
