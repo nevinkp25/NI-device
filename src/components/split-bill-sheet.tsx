@@ -109,7 +109,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                 
                 <SheetHeader className="p-6 flex-row items-center justify-between bg-white shrink-0">
                     <div className="flex items-center gap-3 text-left">
-                        <SheetTitle className="text-xl font-bold uppercase tracking-tight">Split Options</SheetTitle>
+                        <SheetTitle className="text-xl font-bold uppercase">Split Equally</SheetTitle>
                     </div>
                     <SheetClose asChild>
                         <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-50">
@@ -123,7 +123,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                         <div className="p-6 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="text-center space-y-1 mb-8">
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Grand Total Due</p>
-                                <h2 className="text-6xl font-black text-slate-900 tabular-nums tracking-tighter">${totalAmount.toFixed(2)}</h2>
+                                <h2 className="text-6xl font-black text-slate-900 tabular-nums">${totalAmount.toFixed(2)}</h2>
                             </div>
 
                             <Button 
@@ -135,7 +135,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                         <Equal className="h-7 w-7 text-primary" />
                                     </div>
                                     <div className="text-left">
-                                        <p className="font-black text-base uppercase tracking-tight">Split Equally</p>
+                                        <p className="font-black text-base uppercase">Split Equally</p>
                                         <p className="text-[10px] font-bold text-slate-400 uppercase">Divide total among guests</p>
                                     </div>
                                 </div>
@@ -151,7 +151,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                         <Box className="h-7 w-7 text-primary" />
                                     </div>
                                     <div className="text-left">
-                                        <p className="font-black text-base uppercase tracking-tight">Split by Item</p>
+                                        <p className="font-black text-base uppercase">Split by Item</p>
                                         <p className="text-[10px] font-bold text-slate-400 uppercase">Select specific items to pay</p>
                                     </div>
                                 </div>
@@ -172,7 +172,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 <div className="text-center space-y-1 mb-8">
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Amount</p>
                                     <div className="flex items-center justify-center gap-2">
-                                        <span className="text-6xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">${totalAmount.toFixed(2)}</span>
+                                        <span className="text-6xl font-black text-slate-900 tabular-nums leading-none">${totalAmount.toFixed(2)}</span>
                                     </div>
                                     <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Including Tax & Service</p>
                                 </div>
@@ -206,7 +206,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     <Minus className="h-6 w-6 stroke-[3]" />
                                 </Button>
                                 <div className="text-center">
-                                    <p className="text-4xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">{splitCount}</p>
+                                    <p className="text-4xl font-black text-slate-900 tabular-nums leading-none">{splitCount}</p>
                                     <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Guests</p>
                                 </div>
                                 <Button 
@@ -224,7 +224,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                             <Card className="p-6 rounded-[2rem] border-none bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] text-center">
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Each Guest Pays</p>
                                 <div className="flex items-center justify-center gap-2 text-primary">
-                                    <span className="text-5xl font-black tabular-nums leading-none tracking-tighter">${perPersonAmount.toFixed(2)}</span>
+                                    <span className="text-5xl font-black tabular-nums leading-none">${perPersonAmount.toFixed(2)}</span>
                                 </div>
                             </Card>
 
@@ -276,7 +276,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                         <div className="p-6 space-y-6 animate-in fade-in duration-500">
                              <div className="text-center space-y-1 mb-4">
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Table Total</p>
-                                <h2 className="text-4xl font-black text-slate-900 tabular-nums tracking-tighter">${totalAmount.toFixed(2)}</h2>
+                                <h2 className="text-4xl font-black text-slate-900 tabular-nums">${totalAmount.toFixed(2)}</h2>
                             </div>
 
                             <div className="space-y-3">
@@ -312,11 +312,11 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                     className="h-6 w-6 rounded-lg border-2"
                                                 />
                                                 <div className="space-y-0.5">
-                                                    <p className="text-sm font-black text-slate-900 uppercase leading-none tracking-tight">{item.name}</p>
+                                                    <p className="text-sm font-black text-slate-900 uppercase leading-none">{item.name}</p>
                                                     <p className="text-[10px] font-bold text-slate-400 uppercase">{item.quantity}x • ${getDisplayPrice(item).toFixed(2)}</p>
                                                 </div>
                                             </div>
-                                            <span className="text-sm font-black text-slate-900 tabular-nums tracking-tight">${(getDisplayPrice(item) * item.quantity).toFixed(2)}</span>
+                                            <span className="text-sm font-black text-slate-900 tabular-nums">${(getDisplayPrice(item) * item.quantity).toFixed(2)}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -343,7 +343,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                             className="w-full h-16 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-xl flex items-center justify-between px-8 transition-all active:scale-[0.98]"
                         >
                             <span className="font-black text-sm uppercase">Process Share</span>
-                            <span className="text-2xl font-black tabular-nums tracking-tighter">${itemSplitTotal.toFixed(2)}</span>
+                            <span className="text-2xl font-black tabular-nums">${itemSplitTotal.toFixed(2)}</span>
                         </Button>
                     </footer>
                 )}
