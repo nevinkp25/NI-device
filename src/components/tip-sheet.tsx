@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -94,8 +93,8 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                             <CreditCard className="h-4 w-4 text-primary" />
                         </div>
                         <div className="space-y-0.5">
-                            <SheetTitle className="text-lg font-bold uppercase">Settlement Audit</SheetTitle>
-                            <p className="text-xs font-bold text-slate-400 uppercase leading-none">Review Final Totals</p>
+                            <SheetTitle className="text-lg font-bold uppercase">Check Settlement</SheetTitle>
+                            <p className="text-xs font-bold text-slate-400 uppercase leading-none">Final Review</p>
                         </div>
                     </div>
                     <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="h-9 w-9 rounded-full bg-slate-50">
@@ -104,25 +103,23 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                 </SheetHeader>
 
                 <div className="flex-grow p-4 space-y-5 pb-8 overflow-y-auto no-scrollbar">
-                    {/* Waiter & Amount Info Row */}
                     <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                             <Avatar className="h-10 w-10 border border-slate-100 shadow-sm">
-                                <AvatarImage src={waiterImage?.imageUrl} alt="Waiter" />
+                                <AvatarImage src={waiterImage?.imageUrl} alt="Server" />
                                 <AvatarFallback><User className="h-5 w-5" /></AvatarFallback>
                             </Avatar>
                             <div className="space-y-0.5">
-                                <p className="text-sm font-bold text-slate-900 leading-tight">David R.</p>
-                                <p className="text-xs font-bold text-primary uppercase leading-none">ID: #{staffId}</p>
+                                <p className="text-sm font-bold text-slate-900 leading-tight">Server: David R.</p>
+                                <p className="text-xs font-bold text-primary uppercase leading-none">Employee ID: #{staffId}</p>
                             </div>
                         </div>
                         <div className="text-right space-y-0.5">
-                            <p className="text-xs font-bold text-slate-400 uppercase leading-none">Bill Amount</p>
+                            <p className="text-xs font-bold text-slate-400 uppercase leading-none">Check Total</p>
                             <p className="text-2xl font-bold text-slate-900 tabular-nums">AED {billAmount.toFixed(2)}</p>
                         </div>
                     </div>
 
-                    {/* Tip Selection Grid */}
                     <div className="space-y-3">
                         <p className="text-xs font-bold text-slate-400 uppercase">Add Gratuity</p>
                         <div className="grid grid-cols-4 gap-2">
@@ -190,7 +187,7 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                         <div className="animate-in fade-in slide-in-from-top-1 duration-200">
                             <Input 
                                 type="number"
-                                placeholder="Enter AED amount"
+                                placeholder="Enter AED Amount"
                                 value={customTip}
                                 onChange={(e) => setCustomTip(e.target.value)}
                                 className="h-12 text-center text-xl font-bold border-2 border-primary/20 rounded-xl bg-primary/5 focus-visible:ring-primary/20"
@@ -199,10 +196,9 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                         </div>
                     )}
                     
-                    {/* Summary Card */}
                     <Card className="p-5 space-y-4 bg-white rounded-2xl shadow-sm border border-slate-100">
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-slate-400 font-bold uppercase leading-none">Base Bill</span>
+                            <span className="text-slate-400 font-bold uppercase leading-none">Bill Amount</span>
                             <span className="text-slate-900 font-bold tabular-nums">AED {billAmount.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between items-center text-sm">
@@ -214,8 +210,8 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                         <Separator className="bg-slate-50" />
                         <div className="flex justify-between items-end pt-1">
                             <div className="space-y-0.5">
-                                <span className="text-xs font-bold text-slate-400 uppercase leading-none">Total Authorized</span>
-                                <p className="text-xs font-bold text-primary uppercase leading-none">Order Settlement</p>
+                                <span className="text-xs font-bold text-slate-400 uppercase leading-none">Grand Total</span>
+                                <p className="text-xs font-bold text-primary uppercase leading-none">Authorized Amount</p>
                             </div>
                             <span className="text-3xl font-black text-primary tabular-nums">AED {totalAmount.toFixed(2)}</span>
                         </div>
@@ -229,14 +225,14 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                             className="h-14 text-sm font-bold bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md flex items-center justify-center gap-2 uppercase"
                         >
                             <CreditCard className="h-4 w-4" />
-                            Card
+                            Pay by Card
                         </Button>
                         <Button 
                             onClick={() => handlePayment('cash')} 
                             className="h-14 text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-md flex items-center justify-center gap-2 uppercase"
                         >
                             <Landmark className="h-4 w-4" />
-                            Cash
+                            Pay by Cash
                         </Button>
                     </div>
                     <Button 

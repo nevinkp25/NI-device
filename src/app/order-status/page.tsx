@@ -68,15 +68,15 @@ function OrderStatusContent() {
 
   const handleSyncOrder = () => {
     toast({
-      title: "Syncing Order",
+      title: "Syncing Table Account",
       description: "Fetching latest transaction data from kitchen...",
     });
   };
 
   const handleClearSplits = () => {
     toast({
-      title: "Splits Cleared",
-      description: "Account has been reset to single-payer mode.",
+      title: "Splits Reset",
+      description: "Table account has been reset to single-payer mode.",
     });
   };
 
@@ -89,14 +89,14 @@ function OrderStatusContent() {
               <ArrowLeft className="h-6 w-6 text-slate-900" />
             </Button>
           </Link>
-          <h1 className="text-sm font-bold mx-auto uppercase text-slate-900">Settlement</h1>
+          <h1 className="text-sm font-bold mx-auto uppercase text-slate-900">Check Settlement</h1>
           <div className="w-10"></div>
         </header>
         <div className="flex-grow flex flex-col items-center justify-center p-12 text-center space-y-4">
             <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100">
                 <History className="h-8 w-8 text-slate-300" />
             </div>
-            <p className="text-slate-500 font-bold uppercase text-xs">Select a table to begin settlement</p>
+            <p className="text-slate-500 font-bold uppercase text-xs">Select a table to access guest check</p>
         </div>
       </div>
     );
@@ -111,7 +111,7 @@ function OrderStatusContent() {
               <ArrowLeft className="h-6 w-6 text-slate-900" />
             </Button>
           </Link>
-          <h1 className="text-sm font-bold mx-auto uppercase text-slate-900">Syncing</h1>
+          <h1 className="text-sm font-bold mx-auto uppercase text-slate-900">Synchronizing</h1>
           <div className="w-10"></div>
         </header>
         <div className="flex-grow flex flex-col items-center justify-center p-12">
@@ -170,15 +170,15 @@ function OrderStatusContent() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2">
-              <DropdownMenuLabel className="text-xs font-bold uppercase text-slate-400 p-2">Account Actions</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs font-bold uppercase text-slate-400 p-2">Check Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={handleSyncOrder}>
                 <RefreshCw className="h-4 w-4 text-blue-600" />
-                <span className="font-bold text-sm">Sync Order</span>
+                <span className="font-bold text-sm">Refresh Check</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={handleClearSplits}>
                 <Trash2 className="h-4 w-4 text-red-600" />
-                <span className="font-bold text-sm">Clear Splits</span>
+                <span className="font-bold text-sm">Reset Splits</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -186,14 +186,13 @@ function OrderStatusContent() {
       </header>
 
       <main className="flex-grow p-4 animate-in fade-in duration-500 max-w-[420px] mx-auto w-full space-y-4 pb-44">
-        {/* Order Identity Card */}
         <Card className="p-4 border-slate-200 shadow-sm rounded-2xl bg-white space-y-4">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <h2 className="text-xl font-bold text-slate-900 uppercase">Order #{order.id}</h2>
+              <h2 className="text-xl font-bold text-slate-900 uppercase">Check #{order.id}</h2>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-xs py-0 px-2 rounded-md">Open Account</Badge>
-                <span className="text-xs font-bold text-slate-400 uppercase">Audit Required</span>
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-xs py-0 px-2 rounded-md">Unpaid Check</Badge>
+                <span className="text-xs font-bold text-slate-400 uppercase leading-none">Review Totals</span>
               </div>
             </div>
           </div>
@@ -201,7 +200,7 @@ function OrderStatusContent() {
           <div className="flex items-center gap-5 py-3 border-t border-slate-50 text-slate-500 overflow-x-auto no-scrollbar">
             <div className="flex items-center gap-2 shrink-0">
               <User className="h-4 w-4 text-primary/40" />
-              <span className="text-sm font-bold uppercase">David R.</span>
+              <span className="text-sm font-bold uppercase">Server: David R.</span>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Clock className="h-4 w-4 text-primary/40" />
@@ -209,16 +208,15 @@ function OrderStatusContent() {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Calendar className="h-4 w-4 text-primary/40" />
-              <span className="text-sm font-bold uppercase">{format(new Date(order.date), "MMM d, yyyy")}</span>
+              <span className="text-sm font-bold uppercase">{format(new Date(order.date), "MMM d")}</span>
             </div>
           </div>
         </Card>
 
-        {/* Itemized Statement Card */}
         <Card className="border-slate-200 shadow-sm rounded-2xl bg-white overflow-hidden">
           <div className="p-4 bg-slate-50/50 border-b flex items-center gap-2">
             <Receipt className="h-4 w-4 text-slate-400" />
-            <h3 className="text-xs font-bold text-slate-400 uppercase">Account Statement</h3>
+            <h3 className="text-xs font-bold text-slate-400 uppercase">Itemized Statement</h3>
           </div>
           <div className="divide-y divide-slate-50">
             {order.items.map(item => (
@@ -245,11 +243,10 @@ function OrderStatusContent() {
           </div>
         </Card>
 
-        {/* Financial Breakdown Card */}
         <Card className="border-slate-200 shadow-sm rounded-2xl bg-white overflow-hidden p-5 space-y-4">
           <div className="flex items-center gap-2 px-1 pb-1">
              <FileText className="h-4 w-4 text-slate-400" />
-             <h3 className="text-xs font-bold text-slate-400 uppercase">Billing Summary</h3>
+             <h3 className="text-xs font-bold text-slate-400 uppercase">Check Totals</h3>
           </div>
           
           <div className="space-y-3">
@@ -260,16 +257,12 @@ function OrderStatusContent() {
             
             <div className="px-3 space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-bold text-slate-500 uppercase">Service Charge (10%)</span>
+                <span className="text-sm font-bold text-slate-500 uppercase">Service (10%)</span>
                 <span className="text-sm font-bold text-slate-900 tabular-nums">${extraCharges.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm font-bold text-slate-500 uppercase">VAT (5%)</span>
                 <span className="text-sm font-bold text-slate-900 tabular-nums">${vatAmount.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between items-center opacity-40">
-                <span className="text-sm font-bold text-slate-500 uppercase">Gratuity (Tip)</span>
-                <span className="text-sm font-bold text-slate-900 tabular-nums">$0.00</span>
               </div>
             </div>
           </div>
@@ -286,7 +279,6 @@ function OrderStatusContent() {
         </Card>
       </main>
 
-      {/* Pinned Action Footer */}
       <footer className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] p-5 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 flex flex-col gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
         <Button 
           onClick={handleProceedToPayment} 
@@ -294,7 +286,7 @@ function OrderStatusContent() {
         >
           <div className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
-            <span>Pay Full Amount</span>
+            <span>Process Payment</span>
           </div>
           <div className="h-6 w-px bg-white/20" />
           <span className="bg-white/10 px-3 py-1.5 rounded-xl text-base font-bold tabular-nums">${total.toFixed(2)}</span>
@@ -305,11 +297,10 @@ function OrderStatusContent() {
           variant="outline" 
           className="w-full h-14 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 uppercase hover:bg-slate-50 transition-all active:scale-[0.98] bg-white"
         >
-          Split Bill Between Guests
+          Split Check Between Guests
         </Button>
       </footer>
 
-      {/* Item Detail Sheet */}
       <Sheet open={!!selectedItemForDetail} onOpenChange={(open) => !open && setSelectedItemForDetail(null)}>
         <SheetContent side="bottom" className="h-auto p-0 rounded-t-[2.5rem] border-t-0 bg-white z-[100]" hideCloseButton>
           <div className="mx-auto w-12 h-1.5 bg-slate-100 rounded-full mt-4 mb-2" />
@@ -353,7 +344,7 @@ function OrderStatusContent() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm font-bold text-slate-300 uppercase italic px-1">Standard preparation</p>
+                  <p className="text-sm font-bold text-slate-300 uppercase italic px-1">Standard Preparation</p>
                 )}
                 
                 <div className="space-y-2">
