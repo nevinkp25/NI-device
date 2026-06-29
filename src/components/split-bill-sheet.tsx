@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Minus, Plus, Equal, Box, X, User, Check, Hash, ChevronRight, Receipt, ArrowRight } from 'lucide-react';
+import { Minus, Plus, Equal, Box, X, User, Check, Hash, ArrowRight } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { TipSheet } from './tip-sheet';
 import { Checkbox } from './ui/checkbox';
@@ -147,7 +147,9 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                         </SheetTitle>
                         {step === 'by-item' && (
                             <p className="text-[10px] font-bold text-[#0069B1] uppercase mt-1 tracking-widest">
-                                {byItemStep === 'guests-count' ? 'Setup' : byItemStep === 'assigning' ? `Assign Guest ${currentAssigningGuestIndex + 1}` : byItemStep === 'summary' ? 'Final Audit' : 'Payment Loop'}
+                                {byItemStep === 'guests-count' ? 'Guest Setup' : 
+                                 byItemStep === 'assigning' ? `Assign Guest ${currentAssigningGuestIndex + 1} of ${splitCount}` : 
+                                 byItemStep === 'summary' ? 'Review Splits' : 'Settlement Queue'}
                             </p>
                         )}
                     </div>
@@ -607,4 +609,3 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
         </Sheet>
     );
 }
-

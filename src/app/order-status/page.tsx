@@ -79,7 +79,8 @@ function OrderStatusContent() {
   }, [tableNumber, loadCart]);
 
   useEffect(() => {
-    if (activeSplit === 'equally') {
+    // Open the split sheet if returning from a payment loop
+    if (activeSplit === 'equally' || activeSplit === 'by-item') {
         setIsSplitSheetOpen(true);
     }
     if (justPaid === 'true') {
