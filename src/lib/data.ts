@@ -188,8 +188,15 @@ export const menuItems: MenuItem[] = createMenuItems();
 export const sampleOrder: Order = {
   id: '2536',
   tableNumber: '3',
-  date: '2025-12-04T02:16:00Z',
+  date: new Date().toISOString(),
   items: [
     { ...menuItems.find(i => i.id === 'pizza-1')!, cartItemId: 'pizza-1', quantity: 1, selectedVariations: {} },
+    { ...menuItems.find(i => i.id === 'starters-1')!, cartItemId: 'starters-1', quantity: 2, selectedVariations: {} },
+    { ...menuItems.find(i => i.id === 'salads-1')!, cartItemId: 'salads-1', quantity: 1, selectedVariations: {} },
+    { ...menuItems.find(i => i.id === 'pasta-1')!, cartItemId: 'pasta-1', quantity: 1, selectedVariations: {} },
+    { ...menuItems.find(i => i.id === 'burgers-1')!, cartItemId: 'burgers-1', quantity: 1, selectedVariations: {} },
+    { ...menuItems.find(i => i.id === 'grill-1')!, cartItemId: 'grill-1', quantity: 1, selectedVariations: {} },
+    { ...menuItems.find(i => i.id === 'desserts-1')!, cartItemId: 'desserts-1', quantity: 2, selectedVariations: {} },
+    { ...menuItems.find(i => i.id === 'drinks-1')!, cartItemId: 'drinks-1', quantity: 4, selectedVariations: {} },
   ]
 }
