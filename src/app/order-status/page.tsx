@@ -203,18 +203,18 @@ function OrderStatusContent() {
             </div>
           </div>
 
-          <div className="flex items-center gap-5 py-3 border-t border-slate-50 text-slate-500 overflow-x-auto no-scrollbar">
-            <div className="flex items-center gap-2 shrink-0">
-              <User className="h-4 w-4 text-primary/40" />
-              <span className="text-sm font-bold uppercase">Emp ID: #{staffId}</span>
+          <div className="flex items-center flex-wrap gap-x-4 gap-y-2 py-3 border-t border-slate-50 text-slate-500">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <User className="h-3.5 w-3.5 text-primary/40" />
+              <span className="text-[10px] font-bold uppercase">Emp ID: #{staffId}</span>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <Clock className="h-4 w-4 text-primary/40" />
-              <span className="text-sm font-bold uppercase">{format(new Date(order.date), "hh:mm a")}</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Clock className="h-3.5 w-3.5 text-primary/40" />
+              <span className="text-[10px] font-bold uppercase">{format(new Date(order.date), "hh:mm a")}</span>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <Calendar className="h-4 w-4 text-primary/40" />
-              <span className="text-sm font-bold uppercase">{format(new Date(order.date), "MMM d")}</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Calendar className="h-3.5 w-3.5 text-primary/40" />
+              <span className="text-[10px] font-bold uppercase">{format(new Date(order.date), "MMM d")}</span>
             </div>
           </div>
         </Card>
@@ -321,7 +321,7 @@ function OrderStatusContent() {
                </div>
             </div>
             <SheetClose asChild>
-              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-50">
+              <Button variant="ghost" size="icon" onClick={() => setSelectedItemForDetail(null)} className="h-10 w-10 rounded-full bg-slate-50">
                 <X className="h-5 w-5 text-slate-500" />
               </Button>
             </SheetClose>
