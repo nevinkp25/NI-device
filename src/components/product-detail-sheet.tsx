@@ -214,7 +214,6 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                         <Flame className="h-4 w-4 text-orange-500" />
                         <h3 className="text-xs font-bold uppercase text-slate-500">Nutritional Facts</h3>
                     </div>
-                    <Badge variant="outline" className="text-[10px] font-bold uppercase border-slate-200 text-slate-400">System Audit</Badge>
                </div>
                
                <div className="grid grid-cols-4 gap-3">
