@@ -174,12 +174,12 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                     {step === 'equally' && (
                         <div className="pt-2">
-                            {/* Sticky Minimized Header */}
+                            {/* Sticky Minimized Header - No Background, No Shadow */}
                             <div className={cn(
-                                "sticky top-0 z-50 transition-all duration-300 -mx-5 px-5 bg-white mb-2",
-                                isScrolled ? "opacity-100 py-3 border-b shadow-md" : "opacity-0 h-0 overflow-hidden pointer-events-none"
+                                "sticky top-0 z-50 transition-all duration-300 -mx-5 px-5 bg-transparent mb-2",
+                                isScrolled ? "opacity-100 py-3" : "opacity-0 h-0 overflow-hidden pointer-events-none"
                             )}>
-                                <div className="p-[1.5px] bg-gradient-to-br from-blue-600 via-sky-400 to-orange-300 rounded-[2rem] shadow-xl">
+                                <div className="p-[1.5px] bg-gradient-to-br from-blue-600 via-sky-400 to-orange-300 rounded-[2rem]">
                                     <Card className="relative overflow-hidden rounded-[inherit] p-3 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] flex flex-col gap-2 shadow-none">
                                         <div className="flex items-center justify-between px-2">
                                             <span className="text-[9px] font-black text-slate-700 uppercase">Total Amount</span>
