@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCart } from '@/context/cart-context';
 import type { MenuItem } from '@/lib/data';
-import { Plus, Settings2, Sparkles } from 'lucide-react';
+import { Plus, Settings2 } from 'lucide-react';
 import { QuantitySelector } from './quantity-selector';
 import { ProductDetailSheet } from './product-detail-sheet';
 import { cn } from '@/lib/utils';
@@ -91,17 +91,8 @@ export function FoodCard({ item }: { item: MenuItem }) {
                   handleQuickAdd();
                 }}
               >
-                {hasVariations ? (
-                    <>
-                        <Sparkles className="h-4 w-4 mr-1.5" />
-                        Customize
-                    </>
-                ) : (
-                    <>
-                        <Plus className="h-4 w-4 mr-1.5" />
-                        Add Item
-                    </>
-                )}
+                <Plus className="h-4 w-4 mr-1.5" />
+                Add Item
               </Button>
             )}
           </div>

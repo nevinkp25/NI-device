@@ -61,14 +61,14 @@ export interface TableData {
 }
 
 export const foodCategories: FoodCategory[] = [
-  { id: 'starters', name: 'STARTERS' },
-  { id: 'salads', name: 'SALADS' },
-  { id: 'pizza', name: 'PIZZA' },
-  { id: 'pasta', name: 'PASTA' },
-  { id: 'burgers', name: 'BURGERS' },
-  { id: 'grill', name: 'GRILL' },
-  { id: 'desserts', name: 'DESSERTS' },
-  { id: 'drinks', name: 'BEVERAGES' },
+  { id: 'starters', name: 'Starters' },
+  { id: 'salads', name: 'Salads' },
+  { id: 'pizza', name: 'Pizza' },
+  { id: 'pasta', name: 'Pasta' },
+  { id: 'burgers', name: 'Burgers' },
+  { id: 'grill', name: 'Grill' },
+  { id: 'desserts', name: 'Desserts' },
+  { id: 'drinks', name: 'Beverages' },
 ];
 
 export const TABLES_BY_FLOOR: Record<string, TableData[]> = {
@@ -111,6 +111,10 @@ const createMenuItems = (): MenuItem[] => {
   const addItems = (categoryId: string, names: string[], basePrice: number, imageId: string, variations?: ItemVariation[]) => {
     const image = PlaceHolderImages.find(p => p.id === imageId) || PlaceHolderImages[0];
     names.forEach((name, index) => {
+      // Logic to mix customizable and non-customizable items
+      // Every 3rd item is standard (no variations)
+      const hasVariations = variations && (index % 3 !== 2);
+      
       items.push({
         id: `${categoryId}-${index + 1}`,
         name,
@@ -120,7 +124,7 @@ const createMenuItems = (): MenuItem[] => {
         description: `Experience the authentic taste of our house-special ${name.toLowerCase()}, prepared fresh daily using premium ingredients.`,
         nutrition: { kcal: 300 + (index * 20), protein: 10 + index, carbs: 30 + index, fat: 12 + index },
         allergens: index % 3 === 0 ? ['Gluten', 'Dairy'] : [],
-        variations: variations
+        variations: hasVariations ? variations : undefined
       });
     });
   };
@@ -203,16 +207,6 @@ const createMenuItems = (): MenuItem[] => {
         { id: 'fett', name: 'Fettuccine', priceModifier: 0 },
         { id: 'spag', name: 'Spaghetti', priceModifier: 0 },
       ]
-    },
-    {
-      id: 'ps-extra',
-      name: 'Add-ons',
-      type: 'multiple',
-      options: [
-        { id: 'chilli', name: 'Chilli Flakes', priceModifier: 0 },
-        { id: 'parm', name: 'Extra Parmesan', priceModifier: 1.00 },
-        { id: 'bread', name: 'Extra Garlic Bread', priceModifier: 2.50 },
-      ]
     }
   ];
 
@@ -229,23 +223,12 @@ const createMenuItems = (): MenuItem[] => {
       ]
     },
     {
-      id: 'b-cheese',
-      name: 'Add Cheese',
-      type: 'optional',
-      options: [
-        { id: 'cheddar', name: 'Cheddar', priceModifier: 1.00 },
-        { id: 'swiss', name: 'Swiss', priceModifier: 1.00 },
-        { id: 'blue', name: 'Gorgonzola Blue', priceModifier: 2.00 },
-      ]
-    },
-    {
       id: 'b-addons',
       name: 'Addons',
       type: 'incremental',
       options: [
         { id: 'patty', name: 'Extra Wagyu Patty', priceModifier: 6.00 },
         { id: 'bacon', name: 'Crispy Bacon', priceModifier: 1.50 },
-        { id: 'egg', name: 'Fried Egg', priceModifier: 1.00 },
       ]
     }
   ];
@@ -259,52 +242,6 @@ const createMenuItems = (): MenuItem[] => {
         { id: 'fries', name: 'French Fries', priceModifier: 0 },
         { id: 'potato', name: 'Roasted Potato', priceModifier: 0 },
         { id: 'veg', name: 'Grilled Vegetables', priceModifier: 0 },
-      ]
-    },
-    {
-      id: 'g-sauce',
-      name: 'Select Sauce',
-      type: 'required',
-      options: [
-        { id: 'pep', name: 'Peppercorn', priceModifier: 0 },
-        { id: 'mush', name: 'Mushroom', priceModifier: 0 },
-        { id: 'herb', name: 'Garlic Herb Butter', priceModifier: 0 },
-      ]
-    }
-  ];
-
-  const dessertVariations: ItemVariation[] = [
-    {
-      id: 'd-extra',
-      name: 'Toppings',
-      type: 'multiple',
-      options: [
-        { id: 'scoop', name: 'Vanilla Scoop', priceModifier: 2.00 },
-        { id: 'cream', name: 'Extra Cream', priceModifier: 1.00 },
-        { id: 'choc', name: 'Chocolate Sauce', priceModifier: 0.50 },
-      ]
-    }
-  ];
-
-  const drinkVariations: ItemVariation[] = [
-    {
-      id: 'dr-ice',
-      name: 'Ice Level',
-      type: 'required',
-      options: [
-        { id: 'normal', name: 'Regular Ice', priceModifier: 0 },
-        { id: 'less', name: 'Less Ice', priceModifier: 0 },
-        { id: 'no', name: 'No Ice', priceModifier: 0 },
-      ]
-    },
-    {
-      id: 'dr-sugar',
-      name: 'Sugar Level',
-      type: 'required',
-      options: [
-        { id: '100', name: 'Full Sugar', priceModifier: 0 },
-        { id: '50', name: 'Half Sugar', priceModifier: 0 },
-        { id: '0', name: 'No Sugar', priceModifier: 0 },
       ]
     }
   ];
@@ -343,12 +280,12 @@ const createMenuItems = (): MenuItem[] => {
   addItems('desserts', [
     'Vanilla Panna Cotta', 'Lava Cake', 'Tiramisu', 'NY Cheesecake', 
     'Warm Apple Pie', 'Brownie Sundae'
-  ], 7.00, 'cake', dessertVariations);
+  ], 7.00, 'cake', []);
 
   addItems('drinks', [
     'Iced Coffee', 'Peach Iced Tea', 'Orange Juice', 'Lemonade', 
     'Classic Cola', 'Mango Smoothie', 'Berry Mocktail'
-  ], 4.00, 'coffee', drinkVariations);
+  ], 4.00, 'coffee', []);
 
   return items;
 };
@@ -376,13 +313,13 @@ export const sampleOrder: Order = {
       ...menuItems.find(i => i.id === 'burgers-1')!, 
       cartItemId: 'burgers-1-custom', 
       quantity: 1, 
-      selectedVariations: { 'b-temp': 'med-rare', 'b-cheese': 'blue' } 
+      selectedVariations: { 'b-temp': 'med-rare' } 
     },
     { 
       ...menuItems.find(i => i.id === 'drinks-1')!, 
       cartItemId: 'drinks-1', 
       quantity: 4, 
-      selectedVariations: { 'dr-ice': 'normal', 'dr-sugar': '100' } 
+      selectedVariations: {} 
     },
   ]
 }
