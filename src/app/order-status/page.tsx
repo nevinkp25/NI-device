@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
@@ -144,12 +143,6 @@ function OrderStatusContent() {
                     <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-100 text-[9px] font-black uppercase">Standard</Badge>
                 </div>
              </div>
-             <Link href={`/menu?table=${tableNumber}`} passHref>
-                <Button className="h-12 bg-primary hover:bg-primary/90 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 px-6">
-                    <Plus className="h-4 w-4" />
-                    Add Items
-                </Button>
-             </Link>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
