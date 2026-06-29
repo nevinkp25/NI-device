@@ -108,7 +108,7 @@ const createMenuItems = (): MenuItem[] => {
   const items: MenuItem[] = [];
 
   // Helper to generate items for a category
-  const addItems = (categoryId: string, names: string[], basePrice: number, imageId: string) => {
+  const addItems = (categoryId: string, names: string[], basePrice: number, imageId: string, variations?: ItemVariation[]) => {
     const image = PlaceHolderImages.find(p => p.id === imageId) || PlaceHolderImages[0];
     names.forEach((name, index) => {
       items.push({
@@ -119,10 +119,100 @@ const createMenuItems = (): MenuItem[] => {
         image,
         description: `Experience the authentic taste of our house-special ${name.toLowerCase()}, prepared fresh daily.`,
         nutrition: { kcal: 300 + (index * 20), protein: 10 + index, carbs: 30 + index, fat: 12 + index },
-        allergens: index % 3 === 0 ? ['Gluten', 'Dairy'] : []
+        allergens: index % 3 === 0 ? ['Gluten', 'Dairy'] : [],
+        variations: variations
       });
     });
   };
+
+  const pizzaVariations: ItemVariation[] = [
+    {
+      id: 'p-size',
+      name: 'Select Size',
+      type: 'required',
+      options: [
+        { id: 'reg', name: 'Regular 12"', priceModifier: 0 },
+        { id: 'lrg', name: 'Large 16"', priceModifier: 4.50 },
+      ]
+    },
+    {
+      id: 'p-crust',
+      name: 'Crust Type',
+      type: 'required',
+      options: [
+        { id: 'thin', name: 'Thin & Crispy', priceModifier: 0 },
+        { id: 'deep', name: 'Deep Dish', priceModifier: 2.00 },
+        { id: 'gf', name: 'Gluten Free', priceModifier: 3.50 },
+      ]
+    },
+    {
+      id: 'p-addons',
+      name: 'Extra Toppings',
+      type: 'multiple',
+      options: [
+        { id: 'cheese', name: 'Extra Mozzarella', priceModifier: 1.50 },
+        { id: 'pepperoni', name: 'Pepperoni', priceModifier: 2.00 },
+        { id: 'mushrooms', name: 'Truffle Mushrooms', priceModifier: 2.50 },
+      ]
+    }
+  ];
+
+  const burgerVariations: ItemVariation[] = [
+    {
+      id: 'b-temp',
+      name: 'Cooking Temperature',
+      type: 'required',
+      options: [
+        { id: 'rare', name: 'Rare', priceModifier: 0 },
+        { id: 'med-rare', name: 'Medium Rare', priceModifier: 0 },
+        { id: 'med', name: 'Medium', priceModifier: 0 },
+        { id: 'well', name: 'Well Done', priceModifier: 0 },
+      ]
+    },
+    {
+      id: 'b-cheese',
+      name: 'Add Cheese',
+      type: 'optional',
+      options: [
+        { id: 'cheddar', name: 'Cheddar', priceModifier: 1.00 },
+        { id: 'swiss', name: 'Swiss', priceModifier: 1.00 },
+        { id: 'blue', name: 'Gorgonzola Blue', priceModifier: 2.00 },
+      ]
+    },
+    {
+      id: 'b-addons',
+      name: 'Addons',
+      type: 'incremental',
+      options: [
+        { id: 'patty', name: 'Extra Wagyu Patty', priceModifier: 6.00 },
+        { id: 'bacon', name: 'Crispy Bacon', priceModifier: 1.50 },
+        { id: 'egg', name: 'Fried Egg', priceModifier: 1.00 },
+      ]
+    }
+  ];
+
+  const grillVariations: ItemVariation[] = [
+    {
+      id: 'g-side',
+      name: 'Choice of Side',
+      type: 'required',
+      options: [
+        { id: 'fries', name: 'French Fries', priceModifier: 0 },
+        { id: 'potato', name: 'Roasted Potato', priceModifier: 0 },
+        { id: 'veg', name: 'Grilled Vegetables', priceModifier: 0 },
+      ]
+    },
+    {
+      id: 'g-sauce',
+      name: 'Select Sauce',
+      type: 'required',
+      options: [
+        { id: 'pep', name: 'Peppercorn', priceModifier: 0 },
+        { id: 'mush', name: 'Mushroom', priceModifier: 0 },
+        { id: 'herb', name: 'Garlic Herb Butter', priceModifier: 0 },
+      ]
+    }
+  ];
 
   addItems('starters', [
     'Bruschetta Classica', 'Crispy Calamari', 'Garlic Bread', 'Stuffed Mushrooms', 
@@ -143,7 +233,7 @@ const createMenuItems = (): MenuItem[] => {
     'Hawaiian Classic', 'Meat Lovers', 'Four Cheese', 'Truffle Mushroom', 
     'Pesto Chicken', 'Spicy Salami', 'Seafood Special', 'White Pizza', 
     'Anchovy Salt', 'Mediterranean', 'Breakfast Pizza'
-  ], 15.00, 'pizza');
+  ], 15.00, 'pizza', pizzaVariations);
 
   addItems('pasta', [
     'Truffle Tagliatelle', 'Carbonara Classic', 'Lasagna Tradizionale', 'Penne Arrabbiata', 
@@ -157,14 +247,14 @@ const createMenuItems = (): MenuItem[] => {
     'Veggie Garden', 'Crispy Chicken', 'Zesty Fish', 'BBQ Western', 
     'Spicy Jalapeno', 'Turkey Lean', 'Breakfast Burger', 'Double Stack', 
     'Slider Trio', 'Blue Cheese', 'Hawaiian Burger'
-  ], 18.00, 'burger');
+  ], 18.00, 'burger', burgerVariations);
 
   addItems('grill', [
     'Ribeye Steak 300g', 'Filet Mignon', 'Grilled Salmon', 'BBQ Pork Ribs', 
     'Lamb Chops', 'Grilled Chicken Breast', 'T-Bone Steak', 'Mixed Grill', 
     'Grilled Sea Bass', 'Pork Chops', 'Garlic Shrimp', 'Grilled Veggies', 
     'Turkey Steak', 'Duck Confit', 'Venison Steak'
-  ], 25.00, 'steak');
+  ], 25.00, 'steak', grillVariations);
 
   addItems('desserts', [
     'Vanilla Panna Cotta', 'Lava Cake', 'Tiramisu', 'NY Cheesecake', 
@@ -194,7 +284,7 @@ export const sampleOrder: Order = {
       ...menuItems.find(i => i.id === 'pizza-1')!, 
       cartItemId: 'pizza-1-custom', 
       quantity: 1, 
-      selectedVariations: { size: 'Regular 12"', crust: 'Gluten Free', extras: 'Extra Cheese' } 
+      selectedVariations: { 'p-size': 'reg', 'p-crust': 'gf', 'p-addons': 'cheese' } 
     },
     { 
       ...menuItems.find(i => i.id === 'starters-1')!, 
@@ -203,40 +293,16 @@ export const sampleOrder: Order = {
       selectedVariations: {} 
     },
     { 
-      ...menuItems.find(i => i.id === 'salads-1')!, 
-      cartItemId: 'salads-1-custom', 
-      quantity: 1, 
-      selectedVariations: { dressing: 'Balsamic', toppings: 'No Croutons' } 
-    },
-    { 
-      ...menuItems.find(i => i.id === 'pasta-1')!, 
-      cartItemId: 'pasta-1', 
-      quantity: 1, 
-      selectedVariations: { extras: 'Black Truffle' } 
-    },
-    { 
       ...menuItems.find(i => i.id === 'burgers-1')!, 
       cartItemId: 'burgers-1-custom', 
       quantity: 1, 
-      selectedVariations: { prep: 'Medium Rare', cheese: 'Gorgonzola' } 
-    },
-    { 
-      ...menuItems.find(i => i.id === 'grill-1')!, 
-      cartItemId: 'grill-1', 
-      quantity: 1, 
-      selectedVariations: { side: 'Roasted Potato' } 
-    },
-    { 
-      ...menuItems.find(i => i.id === 'desserts-1')!, 
-      cartItemId: 'desserts-1', 
-      quantity: 2, 
-      selectedVariations: {} 
+      selectedVariations: { 'b-temp': 'med-rare', 'b-cheese': 'blue' } 
     },
     { 
       ...menuItems.find(i => i.id === 'drinks-1')!, 
       cartItemId: 'drinks-1', 
       quantity: 4, 
-      selectedVariations: { prep: 'No Sugar' } 
+      selectedVariations: {} 
     },
   ]
 }
