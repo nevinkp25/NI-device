@@ -56,6 +56,7 @@ function OrderStatusContent() {
   const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number}>({isOpen: false, amount: 0});
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const [selectedItemForDetail, setSelectedItemForDetail] = useState<CartItem | null>(null);
+  const [staffId, setStaffId] = useState('123456');
 
   const tableNumber = searchParams.get('table');
 
@@ -63,6 +64,11 @@ function OrderStatusContent() {
     if (tableNumber) {
       setOrder(sampleOrder);
       loadCart(sampleOrder.items);
+    }
+    
+    if (typeof window !== 'undefined') {
+      const id = localStorage.getItem('staffId');
+      if (id) setStaffId(id);
     }
   }, [tableNumber, loadCart]);
 
@@ -200,7 +206,7 @@ function OrderStatusContent() {
           <div className="flex items-center gap-5 py-3 border-t border-slate-50 text-slate-500 overflow-x-auto no-scrollbar">
             <div className="flex items-center gap-2 shrink-0">
               <User className="h-4 w-4 text-primary/40" />
-              <span className="text-sm font-bold uppercase">Server: David R.</span>
+              <span className="text-sm font-bold uppercase">Emp ID: #{staffId}</span>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Clock className="h-4 w-4 text-primary/40" />
