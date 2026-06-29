@@ -21,25 +21,31 @@ function SuccessContent() {
     date: Date | null;
     amount: number;
     table: string;
+    method: string;
   }>({
     id: '',
     date: new Date(),
     amount: 0,
     table: '',
+    method: 'Card',
   });
 
   const returnUrl = searchParams.get('returnUrl') || '/';
   const amountPaid = searchParams.get('amount');
   const transactionId = searchParams.get('transactionId');
   const tableNumber = searchParams.get('table');
+  const methodParam = searchParams.get('method');
   const isSplitPayment = returnUrl.includes('paidGuest');
 
   useEffect(() => {
+    const methodDisplay = methodParam?.toLowerCase() === 'cash' ? 'Cash' : 'Card';
+    
     setTransactionDetails({
       id: transactionId || `TXN-${Date.now()}`.slice(-10),
       date: new Date(),
       amount: parseFloat(amountPaid || '0'),
       table: tableNumber || 'N/A',
+      method: methodDisplay,
     });
     
     if (isSplitPayment) {
@@ -52,7 +58,7 @@ function SuccessContent() {
           clearCart();
         }
     }
-  }, [amountPaid, transactionId, tableNumber, isSplitPayment, returnUrl, router, clearCart]);
+  }, [amountPaid, transactionId, tableNumber, isSplitPayment, returnUrl, router, clearCart, methodParam]);
 
   if (isSplitPayment) {
     return (
@@ -108,7 +114,7 @@ function SuccessContent() {
                 <Separator className="bg-slate-50" />
                 <DetailRow label="Total Paid" value={`$${transactionDetails.amount.toFixed(2)}`} />
                  <Separator className="bg-slate-50" />
-                <DetailRow label="Payment Method" value="Terminal Auth" />
+                <DetailRow label="Payment Method" value={transactionDetails.method} />
                  <Separator className="bg-slate-50" />
                 <DetailRow label="Table Number" value={`${transactionDetails.table}`} />
             </div>

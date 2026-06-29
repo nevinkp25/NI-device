@@ -41,7 +41,7 @@ function CardPaymentContent() {
         decreaseSubtotal(paymentAmount);
       }
       
-      const successUrl = `/success?returnUrl=${encodeURIComponent(returnUrl)}&amount=${paymentAmount}&transactionId=${transactionId}&table=${table}`;
+      const successUrl = `/success?method=card&returnUrl=${encodeURIComponent(returnUrl)}&amount=${paymentAmount}&transactionId=${transactionId}&table=${table}`;
       router.push(successUrl);
       return;
     }
@@ -102,7 +102,7 @@ function CardPaymentContent() {
 
       <footer className="p-6 space-y-3">
         <Link href={cancelHref} passHref className="w-full">
-          <Button variant="outline" className="w-full h-14 border-2 border-slate-200 rounded-2xl text-slate-500 font-bold uppercase text-xs hover:bg-white active:scale-95 transition-all">
+          <Button variant="outline" className="w-full h-14 border-2 border-slate-200 rounded-2xl text-slate-500 font-bold uppercase text-xs hover:bg-white active:scale-[0.98] transition-all">
             Cancel Authorization
           </Button>
         </Link>

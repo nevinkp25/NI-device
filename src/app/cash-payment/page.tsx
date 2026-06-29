@@ -33,7 +33,7 @@ function CashPaymentContent() {
     if (amountParam) {
       decreaseSubtotal(paymentAmount);
     }
-    router.push(`/success?returnUrl=${encodeURIComponent(returnUrl)}&amount=${paymentAmount}&transactionId=${transactionId}&table=${table}`);
+    router.push(`/success?method=cash&returnUrl=${encodeURIComponent(returnUrl)}&amount=${paymentAmount}&transactionId=${transactionId}&table=${table}`);
   };
   
   const cancelHref = returnUrl.includes('checkout') ? returnUrl : '/checkout';
