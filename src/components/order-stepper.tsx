@@ -27,7 +27,7 @@ export function OrderStepper({
   return (
     <div className={cn(
         "w-full bg-white transition-all duration-300",
-        compact ? "py-1.5 px-6 border-b shadow-sm" : "py-6 px-8"
+        compact ? "py-1.5 px-6 border-b shadow-sm" : "py-4 px-8"
     )}>
       <div className="flex items-start justify-center max-w-[400px] mx-auto">
         {steps.map((step, index) => {
@@ -42,7 +42,7 @@ export function OrderStepper({
                 {/* Numbered Circle */}
                 <div className={cn(
                   "rounded-full flex items-center justify-center font-black transition-all duration-500",
-                  compact ? "h-6 w-6 text-[10px]" : "h-11 w-11 text-sm",
+                  compact ? "h-6 w-6 text-[10px]" : "h-9 w-9 text-xs",
                   (isActive || isCompleted) 
                     ? "bg-primary text-primary-foreground shadow-md" 
                     : "bg-white border-2 border-slate-100 text-slate-300"
@@ -53,7 +53,7 @@ export function OrderStepper({
                 {/* Step Text Label */}
                 {!compact && (
                   <span className={cn(
-                    "text-[10px] font-black uppercase mt-3 tracking-widest transition-colors duration-300",
+                    "text-[9px] font-black uppercase mt-2 tracking-widest transition-colors duration-300",
                     (isActive || isCompleted) ? "text-primary" : "text-slate-400"
                   )}>
                     {step.label}
@@ -65,7 +65,7 @@ export function OrderStepper({
               {!isLast && (
                 <div className={cn(
                   "flex-grow h-[1px] mx-2 transition-colors duration-700",
-                  compact ? "mt-[11.5px]" : "mt-[21.5px]",
+                  compact ? "mt-[11.5px]" : "mt-[17.5px]",
                   isCompleted ? "bg-primary" : "bg-slate-200"
                 )} />
               )}
