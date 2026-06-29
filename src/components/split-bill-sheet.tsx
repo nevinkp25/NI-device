@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,6 @@ import { Card } from '@/components/ui/card';
 import { Minus, Plus, Equal, Box, X, User, Check, Hash, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { TipSheet } from './tip-sheet';
-import { Checkbox } from './ui/checkbox';
 import { cn } from '@/lib/utils';
 import { Separator } from './ui/separator';
 
@@ -33,10 +32,9 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
     const [tipDetails, setTipDetails] = useState<{isOpen: boolean, amount: number, guestIndex: number | null}>({isOpen: false, amount: 0, guestIndex: null});
     const [isScrolled, setIsScrolled] = useState(false);
     
-    // By-Item specific state
-    const [currentAssigningGuestIndex, setCurrentAssigningGuestIndex] = useState(0);
-    const [itemAssignments, setItemAssignments] = useState<Record<number, string[]>>({}); // GuestIndex -> Array of cartItemIds
-    const [tempSelections, setTempSelections] = useState<string[]>([]);
+    // By-Item specific state: GuestIndex -> { cartItemId: quantity }
+    const [itemAssignments, setItemAssignments] = useState<Record<number, Record<string, number>>>({}); 
+    const [tempSelections, setTempSelections] = useState<Record<string, number>>({});
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -48,14 +46,20 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
     // Calculations for Item Split
     const getGuestTotal = (guestIndex: number) => {
-        const assignedIds = itemAssignments[guestIndex] || [];
-        const items = cartItems.filter(item => assignedIds.includes(item.cartItemId));
-        const subtotal = items.reduce((acc, item) => acc + getDisplayPrice(item) * item.quantity, 0);
+        const selections = itemAssignments[guestIndex] || {};
+        const subtotal = Object.entries(selections).reduce((acc, [itemId, qty]) => {
+            const item = cartItems.find(ci => ci.cartItemId === itemId);
+            return item ? acc + getDisplayPrice(item) * qty : acc;
+        }, 0);
         return subtotal * 1.05; // Including 5% VAT
     };
 
-    const isItemAssigned = (cartItemId: string) => {
-        return Object.values(itemAssignments).some(ids => ids.includes(cartItemId));
+    // Total units of a specific item assigned across all PREVIOUS guests
+    const getAssignedQuantity = (cartItemId: string, excludingGuestIndex?: number) => {
+        return Object.entries(itemAssignments).reduce((acc, [gIdx, selections]) => {
+            if (excludingGuestIndex !== undefined && parseInt(gIdx) === excludingGuestIndex) return acc;
+            return acc + (selections[cartItemId] || 0);
+        }, 0);
     };
 
     const handleBack = () => {
@@ -72,7 +76,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                     setByItemStep('guests-count');
                 } else {
                     const prevIndex = currentAssigningGuestIndex - 1;
-                    const prevSelections = itemAssignments[prevIndex] || [];
+                    const prevSelections = itemAssignments[prevIndex] || {};
                     setTempSelections(prevSelections);
                     
                     const nextAssignments = { ...itemAssignments };
@@ -82,7 +86,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                 }
             } else if (byItemStep === 'summary') {
                 const lastIndex = splitCount - 1;
-                const lastSelections = itemAssignments[lastIndex] || [];
+                const lastSelections = itemAssignments[lastIndex] || {};
                 setTempSelections(lastSelections);
                 
                 const nextAssignments = { ...itemAssignments };
@@ -115,7 +119,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
             url.searchParams.set('paidGuests', nextPaidGuests.join(','));
             url.searchParams.set('justPaid', 'true');
             
-            // Persist assignments for item split loop
             if (step === 'by-item') {
                 url.searchParams.set('assignments', JSON.stringify(itemAssignments));
             }
@@ -138,6 +141,8 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
         const scrollTop = e.currentTarget.scrollTop;
         setIsScrolled(scrollTop > 20);
     };
+
+    const [currentAssigningGuestIndex, setCurrentAssigningGuestIndex] = useState(0);
 
     useEffect(() => {
         if (isOpen) {
@@ -165,7 +170,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                 setSplitCount(2);
                 setPaidGuests([]);
                 setItemAssignments({});
-                setTempSelections([]);
+                setTempSelections({});
                 setCurrentAssigningGuestIndex(0);
                 setIsScrolled(false);
             }, 300);
@@ -263,7 +268,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     <Card className="relative overflow-hidden rounded-[inherit] p-3 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] flex flex-col gap-2 shadow-none">
                                         <div className="flex items-center justify-between px-2">
                                             <span className="text-[9px] font-black text-slate-700 uppercase">Total Amount</span>
-                                            <span className="text-xl font-black text-slate-900 tabular-nums">AED {totalAmount.toFixed(2)}</span>
+                                            <span className="text-xl font-black text-slate-900 tabular-nums">${totalAmount.toFixed(2)}</span>
                                             <span className="text-[9px] font-black text-[#0069B1]">{Math.round(progressValue)}%</span>
                                         </div>
                                         <div className="px-2">
@@ -294,8 +299,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                 </div>
                                                 <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Total Balance Due</p>
                                                 <div className="flex items-baseline justify-center gap-1.5">
-                                                    <span className="text-base font-black text-slate-500">AED</span>
-                                                    <span className="text-5xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">{totalAmount.toFixed(2)}</span>
+                                                    <span className="text-5xl font-black text-slate-900 tabular-nums leading-none tracking-tighter">${totalAmount.toFixed(2)}</span>
                                                 </div>
                                             </div>
 
@@ -344,8 +348,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 <Card className="p-5 rounded-[20px] border-2 border-slate-100 bg-white shadow-md text-center space-y-0.5">
                                     <p className="text-[11px] font-black text-slate-700 uppercase tracking-widest">Share Per Guest</p>
                                     <div className="flex items-baseline justify-center gap-1.5 text-[#0069B1]">
-                                        <span className="text-base font-black">AED</span>
-                                        <span className="text-4xl font-black tabular-nums leading-none tracking-tight">{perPersonAmount.toFixed(2)}</span>
+                                        <span className="text-4xl font-black tabular-nums leading-none tracking-tight">${perPersonAmount.toFixed(2)}</span>
                                     </div>
                                 </Card>
 
@@ -365,7 +368,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                         </div>
                                                         <div className="space-y-0.5 text-left">
                                                             <p className="text-sm font-black text-slate-900 leading-tight">Guest {index + 1}</p>
-                                                            <p className="text-[11px] font-black text-slate-700 uppercase leading-none">AED {perPersonAmount.toFixed(2)}</p>
+                                                            <p className="text-[11px] font-black text-slate-700 uppercase leading-none">${perPersonAmount.toFixed(2)}</p>
                                                         </div>
                                                     </div>
                                                     {isPaid ? (
@@ -392,7 +395,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                     {step === 'by-item' && (
                         <div className="pt-4 space-y-6">
-                            {/* Step 1: Guest Count Selection */}
                             {byItemStep === 'guests-count' && (
                                 <div className="space-y-8 py-8 text-center animate-in fade-in duration-500">
                                     <div className="space-y-2">
@@ -425,10 +427,8 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 </div>
                             )}
 
-                            {/* Step 2: Assigning Items per Guest */}
                             {byItemStep === 'assigning' && (
                                 <div className="space-y-6 animate-in fade-in duration-500">
-                                    {/* Horizontal Progress Lines */}
                                     <div className="flex gap-1.5 px-1">
                                         {Array.from({ length: splitCount }).map((_, i) => (
                                             <div 
@@ -454,53 +454,66 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
                                     <div className="space-y-3">
                                         {cartItems.map(item => {
-                                            const assigned = isItemAssigned(item.cartItemId);
-                                            const selectedByCurrent = tempSelections.includes(item.cartItemId);
+                                            const totalInCart = item.quantity;
+                                            const assignedElsewhere = getAssignedQuantity(item.cartItemId, currentAssigningGuestIndex);
+                                            const remainingToAssign = totalInCart - assignedElsewhere;
+                                            const currentTempQty = tempSelections[item.cartItemId] || 0;
                                             
                                             return (
                                                 <div 
                                                     key={item.cartItemId}
-                                                    onClick={() => {
-                                                        if (assigned) return;
-                                                        setTempSelections(prev => 
-                                                            prev.includes(item.cartItemId) 
-                                                                ? prev.filter(id => id !== item.cartItemId)
-                                                                : [...prev, item.cartItemId]
-                                                        );
-                                                    }}
                                                     className={cn(
                                                         "flex items-center justify-between p-4 rounded-2xl border-2 transition-all",
-                                                        assigned ? "bg-slate-50 border-slate-100 opacity-40 pointer-events-none" :
-                                                        selectedByCurrent ? "bg-[#0069B1]/5 border-[#0069B1] shadow-sm" :
+                                                        remainingToAssign <= 0 && currentTempQty === 0 ? "bg-slate-50 border-slate-100 opacity-40 pointer-events-none" :
+                                                        currentTempQty > 0 ? "bg-[#0069B1]/5 border-[#0069B1] shadow-sm" :
                                                         "bg-white border-slate-100"
                                                     )}
                                                 >
-                                                    <div className="flex items-center gap-4">
-                                                        {!assigned && (
-                                                            <Checkbox 
-                                                                checked={selectedByCurrent}
-                                                                className="h-6 w-6 rounded-lg border-2 border-[#0069B1]/30 data-[state=checked]:bg-[#0069B1] data-[state=checked]:border-[#0069B1]"
-                                                            />
-                                                        )}
-                                                        <div className="space-y-0.5 text-left">
-                                                            <p className="font-black text-sm text-slate-800 uppercase leading-none">{item.name}</p>
-                                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                                                {item.quantity}x • ${getDisplayPrice(item).toFixed(2)}
-                                                            </p>
-                                                        </div>
+                                                    <div className="flex flex-col text-left">
+                                                        <p className="font-black text-sm text-slate-800 uppercase leading-none">{item.name}</p>
+                                                        <p className="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-widest">
+                                                            {remainingToAssign} units available • ${getDisplayPrice(item).toFixed(2)}/ea
+                                                        </p>
                                                     </div>
-                                                    <span className="font-black text-slate-900 tabular-nums">${(getDisplayPrice(item) * item.quantity).toFixed(2)}</span>
+
+                                                    <div className="flex items-center gap-3 bg-white p-1 rounded-xl border border-slate-200">
+                                                        <Button 
+                                                            variant="ghost" 
+                                                            size="icon" 
+                                                            className="h-8 w-8 rounded-lg text-slate-400"
+                                                            onClick={() => setTempSelections(prev => ({
+                                                                ...prev,
+                                                                [item.cartItemId]: Math.max(0, currentTempQty - 1)
+                                                            }))}
+                                                            disabled={currentTempQty === 0}
+                                                        >
+                                                            <Minus className="h-4 w-4 stroke-[3]" />
+                                                        </Button>
+                                                        <span className="w-4 text-center font-black text-sm tabular-nums">{currentTempQty}</span>
+                                                        <Button 
+                                                            variant="ghost" 
+                                                            size="icon" 
+                                                            className="h-8 w-8 rounded-lg text-[#0069B1]"
+                                                            onClick={() => setTempSelections(prev => ({
+                                                                ...prev,
+                                                                [item.cartItemId]: Math.min(remainingToAssign, currentTempQty + 1)
+                                                            }))}
+                                                            disabled={currentTempQty >= remainingToAssign}
+                                                        >
+                                                            <Plus className="h-4 w-4 stroke-[3]" />
+                                                        </Button>
+                                                    </div>
                                                 </div>
                                             );
                                         })}
                                     </div>
 
                                     <Button 
-                                        disabled={tempSelections.length === 0}
+                                        disabled={Object.values(tempSelections).every(v => v === 0)}
                                         onClick={() => {
                                             const nextAssignments = { ...itemAssignments, [currentAssigningGuestIndex]: tempSelections };
                                             setItemAssignments(nextAssignments);
-                                            setTempSelections([]);
+                                            setTempSelections({});
                                             
                                             if (currentAssigningGuestIndex < splitCount - 1) {
                                                 setCurrentAssigningGuestIndex(prev => prev + 1);
@@ -516,7 +529,6 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 </div>
                             )}
 
-                            {/* Step 3: Final Audit Summary */}
                             {byItemStep === 'summary' && (
                                 <div className="space-y-6 animate-in fade-in duration-500">
                                     <div className="text-center space-y-1 py-4">
@@ -540,12 +552,12 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                     <span className="text-lg font-black text-[#0069B1] tabular-nums">${getGuestTotal(i).toFixed(2)}</span>
                                                 </div>
                                                 <div className="space-y-2">
-                                                    {(itemAssignments[i] || []).map(itemId => {
+                                                    {Object.entries(itemAssignments[i] || {}).map(([itemId, qty]) => {
                                                         const item = cartItems.find(ci => ci.cartItemId === itemId);
-                                                        return item && (
+                                                        return item && qty > 0 && (
                                                             <div key={itemId} className="flex justify-between text-[11px] font-bold text-slate-500 uppercase">
-                                                                <span>{item.quantity}x {item.name}</span>
-                                                                <span className="tabular-nums">${(getDisplayPrice(item) * item.quantity).toFixed(2)}</span>
+                                                                <span>{qty}x {item.name}</span>
+                                                                <span className="tabular-nums">${(getDisplayPrice(item) * qty).toFixed(2)}</span>
                                                             </div>
                                                         );
                                                     })}
@@ -574,10 +586,8 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                 </div>
                             )}
 
-                            {/* Step 4: Final Payment Loop */}
                             {byItemStep === 'payment' && (
                                 <div className="space-y-6 pt-2 animate-in fade-in duration-500">
-                                     {/* Universal Preloader Bar */}
                                     <div className="p-[1.5px] bg-gradient-to-br from-[#0069B1] via-sky-400 to-orange-300 rounded-[20px]">
                                         <Card className="relative overflow-hidden rounded-[20px] p-5 border-none bg-gradient-to-br from-[#F0F7FF] via-white to-[#FFF9F5] space-y-4 shadow-none">
                                             <div className="text-center space-y-1">
@@ -656,3 +666,4 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
         </Sheet>
     );
 }
+
