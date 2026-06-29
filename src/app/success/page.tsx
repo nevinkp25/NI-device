@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Download, Home, Printer, Receipt, Loader2 } from 'lucide-react';
+import { CheckCircle2, Home, Printer, Receipt, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
@@ -120,19 +121,13 @@ function SuccessContent() {
             </div>
         </Card>
         
-        <div className="space-y-2">
-            <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="h-12 border border-slate-200 rounded-xl font-bold uppercase text-[9px] flex items-center justify-center gap-2 bg-white hover:bg-slate-50">
-                    <Printer className="h-4 w-4" />
-                    Print
-                </Button>
-                <Button variant="outline" className="h-12 border border-slate-200 rounded-xl font-bold uppercase text-[9px] flex items-center justify-center gap-2 bg-white hover:bg-slate-50">
-                    <Download className="h-4 w-4" />
-                    Download
-                </Button>
-            </div>
+        <div className="space-y-2 w-full">
+            <Button variant="outline" className="w-full h-12 border border-slate-200 rounded-xl font-bold uppercase text-[9px] flex items-center justify-center gap-2 bg-white hover:bg-slate-50 transition-all active:scale-95">
+                <Printer className="h-4 w-4" />
+                Print Receipt
+            </Button>
             
-            <Link href="/navigation" passHref>
+            <Link href="/navigation" passHref className="block w-full">
                 <Button className="w-full h-16 text-lg font-black bg-primary text-white hover:bg-primary/90 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] uppercase">
                     <Home className="h-5 w-5"/>
                     <span>Done</span>
