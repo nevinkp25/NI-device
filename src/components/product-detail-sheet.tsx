@@ -11,11 +11,26 @@ import {
   SheetClose,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, X, Info, Flame, Scale, Wheat, Beef, MessageSquareText, Check, AlertCircle } from 'lucide-react';
+import { 
+  Minus, 
+  Plus, 
+  X, 
+  Info, 
+  MessageSquareText, 
+  Check, 
+  AlertCircle, 
+  Flame, 
+  Zap, 
+  Dna, 
+  Wheat,
+  Circle
+} from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { cn } from '@/lib/utils';
 import type { MenuItem, CartItemVariationSelection } from '@/lib/data';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface ProductDetailSheetProps {
   isOpen: boolean;
@@ -172,20 +187,65 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
 
         <div ref={scrollContainerRef} className="flex-grow overflow-y-auto p-6 space-y-10 no-scrollbar pb-32">
           {/* Item Bio */}
-          <section className="space-y-3">
+          <section className="space-y-4">
              <div className="flex items-center gap-2 text-slate-400">
                 <Info className="h-4 w-4" />
                 <h3 className="text-[10px] font-black uppercase tracking-widest">Kitchen Bio</h3>
              </div>
-             <p className="text-slate-600 text-sm leading-relaxed font-medium italic">
-                {item.description || "Freshly prepared house specialty using premium seasonal ingredients."}
-             </p>
+             <div className="space-y-4">
+               <p className="text-slate-600 text-sm leading-relaxed font-medium italic">
+                  {item.description || "Freshly prepared house specialty using premium seasonal ingredients."}
+               </p>
+               
+               {item.allergens && item.allergens.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <div className="flex items-center gap-1.5 text-[9px] font-black text-red-500 uppercase tracking-widest mr-1">
+                        <AlertCircle className="h-3 w-3" />
+                        <span>Allergens:</span>
+                    </div>
+                    {item.allergens.map((allergen, idx) => (
+                      <Badge key={idx} variant="outline" className="text-[9px] font-bold border-red-100 text-red-600 bg-red-50/30 px-2 py-0">
+                        {allergen}
+                      </Badge>
+                    ))}
+                  </div>
+               )}
+             </div>
           </section>
+
+          {/* Nutritional Facts */}
+          {item.nutrition && (
+            <section className="space-y-4">
+               <div className="flex items-center gap-2 text-slate-400">
+                  <Flame className="h-4 w-4" />
+                  <h3 className="text-[10px] font-black uppercase tracking-widest">Nutritional Info</h3>
+               </div>
+               <div className="grid grid-cols-4 gap-2">
+                  <div className="bg-slate-50 rounded-2xl p-3 text-center space-y-1">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-none">Energy</p>
+                    <p className="text-sm font-black text-slate-900 leading-none">{item.nutrition.kcal} <span className="text-[8px] opacity-60">kcal</span></p>
+                  </div>
+                  <div className="bg-slate-50 rounded-2xl p-3 text-center space-y-1">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-none">Protein</p>
+                    <p className="text-sm font-black text-slate-900 leading-none">{item.nutrition.protein}<span className="text-[8px] opacity-60">g</span></p>
+                  </div>
+                  <div className="bg-slate-50 rounded-2xl p-3 text-center space-y-1">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-none">Carbs</p>
+                    <p className="text-sm font-black text-slate-900 leading-none">{item.nutrition.carbs}<span className="text-[8px] opacity-60">g</span></p>
+                  </div>
+                  <div className="bg-slate-50 rounded-2xl p-3 text-center space-y-1">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-none">Fat</p>
+                    <p className="text-sm font-black text-slate-900 leading-none">{item.nutrition.fat}<span className="text-[8px] opacity-60">g</span></p>
+                  </div>
+               </div>
+            </section>
+          )}
 
           {/* Configuration Sections */}
           {item.variations?.map((variation) => {
              const isIncremental = variation.type === 'incremental';
              const isMultiple = variation.type === 'multiple';
+             const isSingle = variation.type === 'required' || variation.type === 'optional';
              const selectedValue = selectedVariations[variation.id] || '';
              const selectedIds = selectedValue.split(',').map(v => v.split(':')[0]);
 
@@ -198,7 +258,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                   <div className="flex items-center justify-between px-1">
                     <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
                       {variation.name}
-                      {(isMultiple || isIncremental) && <span className="text-[9px] font-bold text-slate-400 normal-case">(Add multiples)</span>}
+                      {(isMultiple || isIncremental) && <span className="text-[9px] font-bold text-slate-400 normal-case">(Select multiple)</span>}
                     </h3>
                     <span className={cn(
                         "text-[9px] font-black px-2 py-0.5 rounded-md uppercase border",
@@ -221,17 +281,27 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                             "flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer",
                             (isActive || qty > 0) ? "border-primary bg-primary/5 shadow-sm" : "border-slate-100 bg-white"
                         )}>
-                            <div className="flex flex-col">
-                                <span className="font-black text-sm leading-tight text-slate-900 uppercase">{option.name}</span>
-                                <span className={cn(
-                                    "text-[10px] font-bold opacity-60 uppercase",
-                                    option.priceModifier > 0 ? "text-green-600" : ""
-                                )}>
-                                    {option.priceModifier !== 0 ? `+$${option.priceModifier.toFixed(2)} unit` : "Included"}
-                                </span>
+                            <div className="flex items-center gap-4">
+                                {isMultiple ? (
+                                    <Checkbox checked={isActive} className="h-5 w-5 rounded-md border-2 border-slate-200 data-[state=checked]:border-primary" />
+                                ) : isSingle ? (
+                                    <div className="h-5 w-5 rounded-full border-2 border-slate-200 flex items-center justify-center">
+                                        {isActive && <div className="h-2.5 w-2.5 rounded-full bg-primary" />}
+                                    </div>
+                                ) : null}
+
+                                <div className="flex flex-col">
+                                    <span className="font-black text-sm leading-tight text-slate-900 uppercase">{option.name}</span>
+                                    <span className={cn(
+                                        "text-[10px] font-bold opacity-60 uppercase",
+                                        option.priceModifier > 0 ? "text-green-600" : ""
+                                    )}>
+                                        {option.priceModifier !== 0 ? `+$${option.priceModifier.toFixed(2)} unit` : "Included"}
+                                    </span>
+                                </div>
                             </div>
 
-                            {isIncremental ? (
+                            {isIncremental && (
                                 <div className="flex items-center gap-4 bg-white p-1 rounded-xl border border-slate-200" onClick={(e) => e.stopPropagation()}>
                                     <Button 
                                         variant="ghost" 
@@ -251,16 +321,6 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                                     >
                                         <Plus className="h-5 w-5 stroke-[3]" />
                                     </Button>
-                                </div>
-                            ) : (
-                                <div className="h-10 w-10 flex items-center justify-center">
-                                    {isActive ? (
-                                        <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center text-white shadow-md">
-                                            <Check className="h-5 w-5 stroke-[4]" />
-                                        </div>
-                                    ) : (
-                                        <div className="h-8 w-8 rounded-full border-2 border-slate-200" />
-                                    )}
                                 </div>
                             )}
                         </div>
