@@ -34,7 +34,6 @@ function SuccessContent() {
   const tableNumber = searchParams.get('table');
   const isSplitPayment = returnUrl.includes('paidGuest');
 
-
   useEffect(() => {
     setTransactionDetails({
       id: transactionId || `TXN-${Date.now()}`.slice(-10),
@@ -46,29 +45,28 @@ function SuccessContent() {
     if (isSplitPayment) {
         const timer = setTimeout(() => {
             router.push(returnUrl);
-        }, 2000);
+        }, 1500);
         return () => clearTimeout(timer);
     } else {
         if (!returnUrl.includes('post-paid')) {
           clearCart();
         }
     }
-
   }, [amountPaid, transactionId, tableNumber, isSplitPayment, returnUrl, router, clearCart]);
 
   if (isSplitPayment) {
     return (
         <div className="flex flex-col items-center justify-center text-center min-h-screen bg-slate-50 p-6 animate-in fade-in duration-500">
-            <div className="w-full max-w-sm p-8 bg-white rounded-[2.5rem] shadow-xl space-y-6">
+            <div className="w-full max-w-sm p-8 bg-white rounded-[2rem] shadow-xl space-y-4">
                 <div className="flex justify-center">
-                    <div className="h-20 w-20 bg-green-50 rounded-full flex items-center justify-center animate-in zoom-in-50 duration-500">
-                        <CheckCircle2 className="h-10 w-10 text-green-500" />
+                    <div className="h-16 w-16 bg-green-50 rounded-full flex items-center justify-center animate-in zoom-in-50 duration-500">
+                        <CheckCircle2 className="h-8 w-8 text-green-500" />
                     </div>
                 </div>
                 <div className="space-y-1">
-                    <h1 className="text-xl font-bold text-slate-900 uppercase">Partial Paid</h1>
-                    <p className="text-xs font-medium text-slate-400 uppercase">
-                        Returning to the bill...
+                    <h1 className="text-lg font-bold text-slate-900 uppercase">Payment Authorized</h1>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase">
+                        Syncing remaining balance...
                     </p>
                 </div>
             </div>
@@ -77,79 +75,81 @@ function SuccessContent() {
   }
   
   const DetailRow = ({ label, value }: { label: string, value: string | number }) => (
-    <div className="flex justify-between items-center py-3">
-        <p className="text-[10px] font-bold text-slate-400 uppercase">{label}</p>
-        <p className="text-sm font-black text-slate-900 text-right uppercase">{value}</p>
+    <div className="flex justify-between items-center py-2">
+        <p className="text-[9px] font-bold text-slate-400 uppercase">{label}</p>
+        <p className="text-xs font-black text-slate-900 text-right uppercase">{value}</p>
     </div>
   );
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50/50 p-6">
-      <div className="w-full max-w-sm text-center space-y-8 animate-in fade-in duration-700">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50/50 p-4">
+      <div className="w-full max-w-sm text-center space-y-4 animate-in fade-in duration-700">
         <div className="flex justify-center">
-            <div className="bg-white p-6 rounded-full shadow-lg animate-in zoom-in-50 duration-500">
-                <CheckCircle2 className="h-20 w-20 text-green-500 stroke-[1.5]" />
+            <div className="bg-white p-4 rounded-full shadow-md animate-in zoom-in-50 duration-500">
+                <CheckCircle2 className="h-14 w-14 text-green-500 stroke-[1.5]" />
             </div>
         </div>
         
-        <div className="space-y-1">
-            <h1 className="text-4xl font-black text-slate-900 uppercase">Settled!</h1>
-            <p className="text-xs font-bold text-slate-400 uppercase">Table Account Closed</p>
+        <div className="space-y-0.5">
+            <h1 className="text-3xl font-black text-slate-900 uppercase">Settled!</h1>
+            <p className="text-[10px] font-bold text-slate-400 uppercase">Terminal Audit Closed</p>
         </div>
 
-        <Card className="text-left border-slate-200 shadow-xl rounded-[2.5rem] bg-white overflow-hidden p-6 space-y-4">
+        <Card className="text-left border-slate-200 shadow-lg rounded-[2rem] bg-white overflow-hidden p-5 space-y-3">
             <div className="flex items-center gap-2 pb-1 border-b border-slate-50">
-                <Receipt className="h-4 w-4 text-primary" />
-                <h3 className="text-[10px] font-black text-primary uppercase">Transaction Voucher</h3>
+                <Receipt className="h-3.5 w-3.5 text-primary" />
+                <h3 className="text-[9px] font-black text-primary uppercase">Transaction Audit</h3>
             </div>
             
-            <div className="space-y-1">
-                <DetailRow label="Order Reference" value={`#${transactionDetails.id}`} />
+            <div className="space-y-0.5">
+                <DetailRow label="Audit Reference" value={`#${transactionDetails.id}`} />
                 <Separator className="bg-slate-50" />
-                <DetailRow label="Date & Time" value={transactionDetails.date ? format(transactionDetails.date, "MMM d, hh:mm a") : '...'} />
+                <DetailRow label="Settlement Time" value={transactionDetails.date ? format(transactionDetails.date, "hh:mm a") : '...'} />
                 <Separator className="bg-slate-50" />
-                <DetailRow label="Account Total" value={`$${transactionDetails.amount.toFixed(2)}`} />
+                <DetailRow label="Final Total" value={`$${transactionDetails.amount.toFixed(2)}`} />
                  <Separator className="bg-slate-50" />
-                <DetailRow label="Method" value="EMV Card Auth" />
+                <DetailRow label="Payment Source" value="Terminal Auth" />
                  <Separator className="bg-slate-50" />
-                <DetailRow label="Table" value={`${transactionDetails.table}`} />
+                <DetailRow label="Table Identity" value={`${transactionDetails.table}`} />
             </div>
 
-            <div className="pt-2">
-                <div className="bg-slate-50 rounded-2xl p-4 text-center">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Approved by Network POS</p>
-                    <p className="text-[8px] font-medium text-slate-300 uppercase">Auth: 00921-X12 | Terminal: BRANCH-01</p>
+            <div className="pt-1">
+                <div className="bg-slate-50 rounded-xl p-3 text-center">
+                    <p className="text-[9px] font-bold text-slate-400 uppercase mb-0.5">Approved by Network POS</p>
+                    <p className="text-[8px] font-medium text-slate-300 uppercase leading-none">Terminal: BRANCH-01-SECURE</p>
                 </div>
             </div>
         </Card>
         
-        <div className="pt-2 space-y-3">
-            <div className="grid grid-cols-3 gap-2">
-                <Button variant="outline" className="h-12 border-2 border-slate-100 rounded-xl font-bold uppercase text-[9px] flex flex-col items-center justify-center gap-1 bg-white hover:bg-slate-50">
+        <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" className="h-12 border border-slate-200 rounded-xl font-bold uppercase text-[9px] flex items-center justify-center gap-2 bg-white hover:bg-slate-50">
                     <Printer className="h-4 w-4" />
                     Print
                 </Button>
-                <Button variant="outline" className="h-12 border-2 border-slate-100 rounded-xl font-bold uppercase text-[9px] flex flex-col items-center justify-center gap-1 bg-white hover:bg-slate-50">
-                    <Mail className="h-4 w-4" />
-                    Email
-                </Button>
-                <Button variant="outline" className="h-12 border-2 border-slate-100 rounded-xl font-bold uppercase text-[9px] flex flex-col items-center justify-center gap-1 bg-white hover:bg-slate-50">
+                <Button variant="outline" className="h-12 border border-slate-200 rounded-xl font-bold uppercase text-[9px] flex items-center justify-center gap-2 bg-white hover:bg-slate-50">
                     <Download className="h-4 w-4" />
-                    Receipt
+                    Download
                 </Button>
             </div>
             
             <Link href="/navigation" passHref>
-                <Button className="w-full h-16 text-lg font-black bg-primary text-white hover:bg-primary/90 rounded-2xl shadow-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] uppercase">
+                <Button className="w-full h-16 text-lg font-black bg-primary text-white hover:bg-primary/90 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] uppercase">
                     <Home className="h-5 w-5"/>
                     <span>Done</span>
                 </Button>
             </Link>
             
-            <Button variant="ghost" className="w-full h-10 text-[10px] font-bold text-slate-300 uppercase hover:bg-transparent">
-                <Share2 className="h-3 w-3 mr-2" />
-                Send Digital Voucher
-            </Button>
+            <div className="flex justify-center gap-4 opacity-40">
+                <Button variant="ghost" className="h-8 p-0 text-[9px] font-bold text-slate-400 uppercase hover:bg-transparent flex items-center gap-1.5">
+                    <Mail className="h-3 w-3" />
+                    Email
+                </Button>
+                <Button variant="ghost" className="h-8 p-0 text-[9px] font-bold text-slate-400 uppercase hover:bg-transparent flex items-center gap-1.5">
+                    <Share2 className="h-3 w-3" />
+                    Share
+                </Button>
+            </div>
         </div>
       </div>
     </div>
