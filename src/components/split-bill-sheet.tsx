@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Minus, Plus, Equal, Box, X, User, Check, Hash, ArrowRight } from 'lucide-react';
+import { Minus, Plus, Equal, Box, X, User, Check, Hash, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { TipSheet } from './tip-sheet';
 import { Checkbox } from './ui/checkbox';
@@ -56,6 +56,46 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
 
     const isItemAssigned = (cartItemId: string) => {
         return Object.values(itemAssignments).some(ids => ids.includes(cartItemId));
+    };
+
+    const handleBack = () => {
+        if (step === 'equally') {
+            if (paidGuests.length === 0) setStep('choice');
+            return;
+        }
+
+        if (step === 'by-item') {
+            if (byItemStep === 'guests-count') {
+                setStep('choice');
+            } else if (byItemStep === 'assigning') {
+                if (currentAssigningGuestIndex === 0) {
+                    setByItemStep('guests-count');
+                } else {
+                    const prevIndex = currentAssigningGuestIndex - 1;
+                    const prevSelections = itemAssignments[prevIndex] || [];
+                    setTempSelections(prevSelections);
+                    
+                    const nextAssignments = { ...itemAssignments };
+                    delete nextAssignments[prevIndex];
+                    setItemAssignments(nextAssignments);
+                    setCurrentAssigningGuestIndex(prevIndex);
+                }
+            } else if (byItemStep === 'summary') {
+                const lastIndex = splitCount - 1;
+                const lastSelections = itemAssignments[lastIndex] || [];
+                setTempSelections(lastSelections);
+                
+                const nextAssignments = { ...itemAssignments };
+                delete nextAssignments[lastIndex];
+                setItemAssignments(nextAssignments);
+                setCurrentAssigningGuestIndex(lastIndex);
+                setByItemStep('assigning');
+            } else if (byItemStep === 'payment') {
+                if (paidGuests.length === 0) {
+                    setByItemStep('summary');
+                }
+            }
+        }
     };
 
     const handlePaymentConfirmed = (finalAmount: number, method: 'card' | 'cash', guestIndex: number | null) => {
@@ -141,17 +181,24 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                 <div className="mx-auto w-12 h-1.5 bg-slate-200 rounded-full mt-3 shrink-0" />
                 
                 <SheetHeader className="p-4 flex-row items-center justify-between bg-white shrink-0 border-b">
-                    <div className="flex flex-col text-left">
-                        <SheetTitle className="text-xl font-black uppercase text-slate-900 leading-none">
-                            {step === 'equally' ? 'Split Equally' : step === 'by-item' ? 'Split by Item' : 'Split Bill'}
-                        </SheetTitle>
-                        {step === 'by-item' && (
-                            <p className="text-[10px] font-bold text-[#0069B1] uppercase mt-1 tracking-widest">
-                                {byItemStep === 'guests-count' ? 'Guest Setup' : 
-                                 byItemStep === 'assigning' ? `Assign Guest ${currentAssigningGuestIndex + 1} of ${splitCount}` : 
-                                 byItemStep === 'summary' ? 'Review Splits' : 'Settlement Queue'}
-                            </p>
+                    <div className="flex items-center gap-3">
+                        {(step !== 'choice' && paidGuests.length === 0) && (
+                            <Button variant="ghost" size="icon" onClick={handleBack} className="h-10 w-10 rounded-full bg-slate-50 mr-1 hover:bg-slate-100">
+                                <ArrowLeft className="h-5 w-5 text-slate-500" />
+                            </Button>
                         )}
+                        <div className="flex flex-col text-left">
+                            <SheetTitle className="text-xl font-black uppercase text-slate-900 leading-none">
+                                {step === 'equally' ? 'Split Equally' : step === 'by-item' ? 'Split by Item' : 'Split Bill'}
+                            </SheetTitle>
+                            {step === 'by-item' && (
+                                <p className="text-[10px] font-bold text-[#0069B1] uppercase mt-1 tracking-widest">
+                                    {byItemStep === 'guests-count' ? 'Guest Setup' : 
+                                    byItemStep === 'assigning' ? `Assign Guest ${currentAssigningGuestIndex + 1} of ${splitCount}` : 
+                                    byItemStep === 'summary' ? 'Review Splits' : 'Settlement Queue'}
+                                </p>
+                            )}
+                        </div>
                     </div>
                     <SheetClose asChild>
                         <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-50">
