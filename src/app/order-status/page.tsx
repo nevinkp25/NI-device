@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Home, Plus, Receipt, User, Clock, ChevronRight, Info, MoreHorizontal } from 'lucide-react';
+import { ArrowLeft, Home, Plus, Receipt, User, Clock, ChevronRight, Info, MoreHorizontal, Hash } from 'lucide-react';
 import Link from 'next/link';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
@@ -86,9 +86,12 @@ function OrderStatusContent() {
     )
   }
 
+  // Financial Calculations
   const subtotal = order.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const vatAmount = subtotal * 0.05;
-  const total = subtotal + vatAmount;
+  const extraCharges = subtotal * 0.10; // 10% Service Charge
+  const vatAmount = (subtotal + extraCharges) * 0.05; // 5% VAT on subtotal + extras
+  const tips = 0; // Default 0 for this view
+  const total = subtotal + extraCharges + vatAmount + tips;
 
   const handleProceedToPayment = () => {
     setTipDetails({isOpen: true, amount: total});
@@ -176,7 +179,10 @@ function OrderStatusContent() {
                     <Receipt className="h-4 w-4 text-slate-400" />
                     <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Account Statement</h3>
                 </div>
-                <Badge className="bg-slate-200 text-slate-600 hover:bg-slate-200 border-none font-bold text-[9px]">{order.items.length} Items</Badge>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-black text-slate-400 uppercase">T-{tableNumber}</span>
+                  <Badge className="bg-slate-200 text-slate-600 hover:bg-slate-200 border-none font-bold text-[9px]">{order.items.length} Items</Badge>
+                </div>
             </div>
             <div className="divide-y divide-slate-100">
                 {order.items.map(item => (
@@ -207,17 +213,28 @@ function OrderStatusContent() {
             </div>
 
             <div className="p-6 bg-slate-50/80 space-y-3">
-                <div className="flex justify-between text-xs font-black text-slate-400 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-xs font-black text-slate-400 uppercase tracking-widest">
                     <span>Subtotal</span>
                     <span className="tabular-nums">${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-xs font-black text-slate-400 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-xs font-black text-slate-400 uppercase tracking-widest">
+                    <span>Extra Charges (10%)</span>
+                    <span className="tabular-nums">${extraCharges.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs font-black text-slate-400 uppercase tracking-widest">
                     <span>VAT (5%)</span>
                     <span className="tabular-nums">${vatAmount.toFixed(2)}</span>
                 </div>
+                <div className="flex justify-between items-center text-xs font-black text-slate-400 uppercase tracking-widest">
+                    <span>Tips</span>
+                    <span className="tabular-nums">${tips.toFixed(2)}</span>
+                </div>
                 <Separator className="bg-slate-200/50" />
                 <div className="flex justify-between items-end pt-1">
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Outstanding</span>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-none">Final Bill</span>
+                      <span className="text-[9px] font-black text-slate-300 uppercase tracking-tighter leading-none">REF #{order.id} | TABLE {tableNumber}</span>
+                    </div>
                     <span className="text-4xl font-black text-primary tracking-tighter tabular-nums">${total.toFixed(2)}</span>
                 </div>
             </div>
