@@ -190,13 +190,53 @@ export const sampleOrder: Order = {
   tableNumber: '3',
   date: new Date().toISOString(),
   items: [
-    { ...menuItems.find(i => i.id === 'pizza-1')!, cartItemId: 'pizza-1', quantity: 1, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'starters-1')!, cartItemId: 'starters-1', quantity: 2, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'salads-1')!, cartItemId: 'salads-1', quantity: 1, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'pasta-1')!, cartItemId: 'pasta-1', quantity: 1, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'burgers-1')!, cartItemId: 'burgers-1', quantity: 1, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'grill-1')!, cartItemId: 'grill-1', quantity: 1, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'desserts-1')!, cartItemId: 'desserts-1', quantity: 2, selectedVariations: {} },
-    { ...menuItems.find(i => i.id === 'drinks-1')!, cartItemId: 'drinks-1', quantity: 4, selectedVariations: {} },
+    { 
+      ...menuItems.find(i => i.id === 'pizza-1')!, 
+      cartItemId: 'pizza-1-custom', 
+      quantity: 1, 
+      selectedVariations: { size: 'Regular 12"', crust: 'Gluten Free', extras: 'Extra Cheese' } 
+    },
+    { 
+      ...menuItems.find(i => i.id === 'starters-1')!, 
+      cartItemId: 'starters-1', 
+      quantity: 2, 
+      selectedVariations: {} 
+    },
+    { 
+      ...menuItems.find(i => i.id === 'salads-1')!, 
+      cartItemId: 'salads-1-custom', 
+      quantity: 1, 
+      selectedVariations: { dressing: 'Balsamic', toppings: 'No Croutons' } 
+    },
+    { 
+      ...menuItems.find(i => i.id === 'pasta-1')!, 
+      cartItemId: 'pasta-1', 
+      quantity: 1, 
+      selectedVariations: { extras: 'Black Truffle' } 
+    },
+    { 
+      ...menuItems.find(i => i.id === 'burgers-1')!, 
+      cartItemId: 'burgers-1-custom', 
+      quantity: 1, 
+      selectedVariations: { prep: 'Medium Rare', cheese: 'Gorgonzola' } 
+    },
+    { 
+      ...menuItems.find(i => i.id === 'grill-1')!, 
+      cartItemId: 'grill-1', 
+      quantity: 1, 
+      selectedVariations: { side: 'Roasted Potato' } 
+    },
+    { 
+      ...menuItems.find(i => i.id === 'desserts-1')!, 
+      cartItemId: 'desserts-1', 
+      quantity: 2, 
+      selectedVariations: {} 
+    },
+    { 
+      ...menuItems.find(i => i.id === 'drinks-1')!, 
+      cartItemId: 'drinks-1', 
+      quantity: 4, 
+      selectedVariations: { prep: 'No Sugar' } 
+    },
   ]
 }

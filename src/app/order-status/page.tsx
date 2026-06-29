@@ -19,7 +19,9 @@ import {
   FileText,
   MoreVertical,
   RefreshCw,
-  Trash2
+  Trash2,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
@@ -58,6 +60,7 @@ function OrderStatusContent() {
   const [isSplitSheetOpen, setIsSplitSheetOpen] = useState(false);
   const [selectedItemForDetail, setSelectedItemForDetail] = useState<CartItem | null>(null);
   const [staffId, setStaffId] = useState('000000');
+  const [showAllItems, setShowAllItems] = useState(false);
 
   const tableNumber = searchParams.get('table');
   const activeSplit = searchParams.get('activeSplit');
@@ -166,6 +169,8 @@ function OrderStatusContent() {
     router.push(`/${method}-payment?${params.toString()}`);
   };
 
+  const visibleItems = showAllItems ? order.items : order.items.slice(0, 5);
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50/50">
       <header className="sticky top-0 z-50 bg-white border-b px-4 h-16 flex items-center justify-between shadow-sm">
@@ -240,7 +245,7 @@ function OrderStatusContent() {
             <h3 className="text-xs font-bold text-slate-400 uppercase">Itemized Statement</h3>
           </div>
           <div className="divide-y divide-slate-50">
-            {order.items.map(item => (
+            {visibleItems.map(item => (
               <div 
                 key={item.cartItemId} 
                 className="group flex items-center justify-between p-4 hover:bg-slate-50/80 transition-colors cursor-pointer"
@@ -252,6 +257,15 @@ function OrderStatusContent() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-slate-800 uppercase leading-none">{item.name}</span>
+                    {item.selectedVariations && Object.values(item.selectedVariations).length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {Object.values(item.selectedVariations).map((v, i) => (
+                          <span key={i} className="text-[9px] font-bold text-[#0069B1] uppercase bg-[#0069B1]/5 px-1.5 py-0.5 rounded leading-none">
+                            {v}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     <span className="text-xs font-bold text-slate-400 uppercase mt-1">${item.price.toFixed(2)} unit</span>
                   </div>
                 </div>
@@ -262,6 +276,18 @@ function OrderStatusContent() {
               </div>
             ))}
           </div>
+          {order.items.length > 5 && (
+            <button 
+              onClick={() => setShowAllItems(!showAllItems)}
+              className="w-full py-4 text-xs font-bold text-[#0069B1] uppercase bg-slate-50/50 hover:bg-[#0069B1]/5 transition-colors flex items-center justify-center gap-2 border-t border-slate-50"
+            >
+              {showAllItems ? (
+                <>Show Less <ChevronUp className="h-3.5 w-3.5" /></>
+              ) : (
+                <>Show {order.items.length - 5} More Items <ChevronDown className="h-3.5 w-3.5" /></>
+              )}
+            </button>
+          )}
         </Card>
 
         <Card className="border-slate-200 shadow-sm rounded-2xl bg-white overflow-hidden p-5 space-y-4">
