@@ -160,8 +160,15 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
     return price * quantity;
   }, [item, selectedVariations, quantity]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
     if (!areAllRequiredSelected) return;
+
+    // Trigger dot animation
+    const rect = e.currentTarget.getBoundingClientRect();
+    window.dispatchEvent(new CustomEvent('add-to-cart-animation', {
+      detail: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+    }));
+
     addToCart(item, selectedVariations, quantity);
     onOpenChange(false);
   };

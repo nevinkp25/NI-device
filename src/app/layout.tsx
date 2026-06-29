@@ -7,6 +7,7 @@ import { MobileContainer } from '@/components/mobile-container';
 import { Lexend } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { DesignGuard } from '@/components/design-guard';
+import { CartAnimation } from '@/components/cart-animation';
 
 export const metadata: Metadata = {
   title: 'SwiftBite',
@@ -28,6 +29,7 @@ export default function RootLayout({
             <MobileContainer>
               {children}
             </MobileContainer>
+            <CartAnimation />
             <Toaster />
           </CartProvider>
         </DesignGuard>

@@ -143,7 +143,7 @@ export function FloatingCartButton() {
           <div className="bg-slate-900 text-white rounded-full p-1.5 shadow-2xl flex items-center gap-1.5 border border-white/10 backdrop-blur-md">
             <CollapsibleTrigger asChild>
               <button className="flex items-center gap-3 pl-4 pr-3 py-2 outline-none group hover:bg-white/5 rounded-full transition-colors">
-                <div className="relative">
+                <div className="relative" id="floating-cart-target">
                   <div className="h-10 w-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                       <ShoppingBasket className="h-5 w-5" />
                   </div>

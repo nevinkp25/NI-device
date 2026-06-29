@@ -19,10 +19,16 @@ export function FoodCard({ item }: { item: MenuItem }) {
   const cartItem = itemsInCart.length > 0 ? itemsInCart[0] : undefined;
   const hasVariations = item.variations && item.variations.length > 0;
 
-  const handleQuickAdd = () => {
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (hasVariations) {
         setDetailSheetOpen(true);
     } else {
+        // Trigger dot animation
+        const rect = e.currentTarget.getBoundingClientRect();
+        window.dispatchEvent(new CustomEvent('add-to-cart-animation', {
+          detail: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+        }));
         addToCart(item, {});
     }
   };
@@ -86,10 +92,7 @@ export function FoodCard({ item }: { item: MenuItem }) {
             ) : (
               <Button
                 className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-white text-[10px] font-bold shadow-sm transition-all active:scale-[0.98] uppercase tracking-tight"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleQuickAdd();
-                }}
+                onClick={handleQuickAdd}
               >
                 <Plus className="h-4 w-4 mr-1.5" />
                 Add Item
