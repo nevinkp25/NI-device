@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -572,13 +571,13 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                             )}
 
                             {byItemStep === 'summary' && (
-                                <div className="space-y-6 animate-in fade-in duration-500 py-4">
-                                    <div className="text-center space-y-1 mb-2">
+                                <div className="animate-in fade-in duration-500 pt-4">
+                                    <div className="text-center space-y-1 mb-6">
                                         <h3 className="text-2xl font-black text-slate-900 uppercase">Review Splits</h3>
                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Audit table # {orderId} assignments</p>
                                     </div>
 
-                                    <div className="space-y-4">
+                                    <div className="space-y-4 mb-6">
                                         {Array.from({ length: splitCount }).map((_, i) => (
                                             <Card key={i} className="rounded-[2rem] border-none bg-white shadow-xl shadow-slate-100 overflow-hidden relative group transition-all duration-300">
                                                 <div className="bg-[#0069B1]/5 p-5 flex justify-between items-center border-b border-[#0069B1]/10">
@@ -622,12 +621,12 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                         ))}
                                     </div>
 
-                                    <div className="sticky bottom-0 pt-4 bg-white/80 backdrop-blur-sm pb-4">
+                                    <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-5 px-5 py-2">
                                         <Button 
                                             onClick={() => setByItemStep('payment')}
                                             className="w-full h-18 bg-[#0069B1] hover:bg-[#0069B1]/90 text-white font-black text-lg rounded-[1.5rem] shadow-2xl shadow-[#0069B1]/30 uppercase tracking-tight flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
                                         >
-                                            <span>Confirm & Open Terminal</span>
+                                            <span>Confirm & Create Payments</span>
                                             <ArrowRight className="h-6 w-6" />
                                         </Button>
                                         <Button 
@@ -638,7 +637,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                                 setItemAssignments({});
                                                 setTempSelections({});
                                             }}
-                                            className="w-full h-12 mt-2 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-[#E54360]"
+                                            className="w-full h-10 mt-1 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-[#E54360]"
                                         >
                                             Reset All Assignments
                                         </Button>
