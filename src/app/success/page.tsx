@@ -1,11 +1,10 @@
-
 "use client";
 
 import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Download, Mail, Home, Printer, Share2, Receipt, Loader2 } from 'lucide-react';
+import { CheckCircle2, Download, Home, Printer, Receipt, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
@@ -139,17 +138,6 @@ function SuccessContent() {
                     <span>Done</span>
                 </Button>
             </Link>
-            
-            <div className="flex justify-center gap-4 opacity-40">
-                <Button variant="ghost" className="h-8 p-0 text-[9px] font-bold text-slate-400 uppercase hover:bg-transparent flex items-center gap-1.5">
-                    <Mail className="h-3 w-3" />
-                    Email
-                </Button>
-                <Button variant="ghost" className="h-8 p-0 text-[9px] font-bold text-slate-400 uppercase hover:bg-transparent flex items-center gap-1.5">
-                    <Share2 className="h-3 w-3" />
-                    Share
-                </Button>
-            </div>
         </div>
       </div>
     </div>
