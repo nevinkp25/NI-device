@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -121,7 +122,7 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                     </div>
 
                     <div className="space-y-3">
-                        <p className="text-xs font-bold text-slate-400 uppercase">Add Gratuity</p>
+                        <p className="text-xs font-bold text-slate-400 uppercase">Add Tips</p>
                         <div className="grid grid-cols-4 gap-2">
                             {tipOptions.map(opt => {
                                 const isActive = selectedTip === opt.value && !showCustomTip;
@@ -202,7 +203,7 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                             <span className="text-slate-900 font-bold tabular-nums">AED {billAmount.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-slate-400 font-bold uppercase leading-none">Gratuity</span>
+                            <span className="text-slate-400 font-bold uppercase leading-none">Tips</span>
                             <span className={cn("font-bold tabular-nums", tipAmount > 0 ? "text-green-600" : "text-slate-400")}>
                                 + AED {tipAmount.toFixed(2)}
                             </span>
@@ -211,7 +212,6 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                         <div className="flex justify-between items-end pt-1">
                             <div className="space-y-0.5">
                                 <span className="text-xs font-bold text-slate-400 uppercase leading-none">Grand Total</span>
-                                <p className="text-xs font-bold text-primary uppercase leading-none">Authorized Amount</p>
                             </div>
                             <span className="text-3xl font-black text-primary tabular-nums">AED {totalAmount.toFixed(2)}</span>
                         </div>
