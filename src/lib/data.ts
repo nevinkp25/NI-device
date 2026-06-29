@@ -117,13 +117,49 @@ const createMenuItems = (): MenuItem[] => {
         price: basePrice + (index * 0.5),
         category: categoryId,
         image,
-        description: `Experience the authentic taste of our house-special ${name.toLowerCase()}, prepared fresh daily.`,
+        description: `Experience the authentic taste of our house-special ${name.toLowerCase()}, prepared fresh daily using premium ingredients.`,
         nutrition: { kcal: 300 + (index * 20), protein: 10 + index, carbs: 30 + index, fat: 12 + index },
         allergens: index % 3 === 0 ? ['Gluten', 'Dairy'] : [],
         variations: variations
       });
     });
   };
+
+  const starterVariations: ItemVariation[] = [
+    {
+      id: 's-dip',
+      name: 'Choice of Dip',
+      type: 'required',
+      options: [
+        { id: 'garlic', name: 'Garlic Aioli', priceModifier: 0 },
+        { id: 'spicy', name: 'Spicy Mayo', priceModifier: 0.50 },
+        { id: 'truffle', name: 'Truffle Dip', priceModifier: 2.00 },
+      ]
+    }
+  ];
+
+  const saladVariations: ItemVariation[] = [
+    {
+      id: 'sl-dressing',
+      name: 'Select Dressing',
+      type: 'required',
+      options: [
+        { id: 'caesar', name: 'Classic Caesar', priceModifier: 0 },
+        { id: 'vinaigrette', name: 'Balsamic Vinaigrette', priceModifier: 0 },
+        { id: 'lemon', name: 'Lemon Tahini', priceModifier: 0 },
+      ]
+    },
+    {
+      id: 'sl-protein',
+      name: 'Add Protein',
+      type: 'optional',
+      options: [
+        { id: 'chicken', name: 'Grilled Chicken', priceModifier: 4.00 },
+        { id: 'salmon', name: 'Seared Salmon', priceModifier: 6.50 },
+        { id: 'tofu', name: 'Crispy Tofu', priceModifier: 3.00 },
+      ]
+    }
+  ];
 
   const pizzaVariations: ItemVariation[] = [
     {
@@ -153,6 +189,29 @@ const createMenuItems = (): MenuItem[] => {
         { id: 'cheese', name: 'Extra Mozzarella', priceModifier: 1.50 },
         { id: 'pepperoni', name: 'Pepperoni', priceModifier: 2.00 },
         { id: 'mushrooms', name: 'Truffle Mushrooms', priceModifier: 2.50 },
+      ]
+    }
+  ];
+
+  const pastaVariations: ItemVariation[] = [
+    {
+      id: 'ps-type',
+      name: 'Pasta Shape',
+      type: 'required',
+      options: [
+        { id: 'penne', name: 'Penne', priceModifier: 0 },
+        { id: 'fett', name: 'Fettuccine', priceModifier: 0 },
+        { id: 'spag', name: 'Spaghetti', priceModifier: 0 },
+      ]
+    },
+    {
+      id: 'ps-extra',
+      name: 'Add-ons',
+      type: 'multiple',
+      options: [
+        { id: 'chilli', name: 'Chilli Flakes', priceModifier: 0 },
+        { id: 'parm', name: 'Extra Parmesan', priceModifier: 1.00 },
+        { id: 'bread', name: 'Extra Garlic Bread', priceModifier: 2.50 },
       ]
     }
   ];
@@ -214,61 +273,82 @@ const createMenuItems = (): MenuItem[] => {
     }
   ];
 
+  const dessertVariations: ItemVariation[] = [
+    {
+      id: 'd-extra',
+      name: 'Toppings',
+      type: 'multiple',
+      options: [
+        { id: 'scoop', name: 'Vanilla Scoop', priceModifier: 2.00 },
+        { id: 'cream', name: 'Extra Cream', priceModifier: 1.00 },
+        { id: 'choc', name: 'Chocolate Sauce', priceModifier: 0.50 },
+      ]
+    }
+  ];
+
+  const drinkVariations: ItemVariation[] = [
+    {
+      id: 'dr-ice',
+      name: 'Ice Level',
+      type: 'required',
+      options: [
+        { id: 'normal', name: 'Regular Ice', priceModifier: 0 },
+        { id: 'less', name: 'Less Ice', priceModifier: 0 },
+        { id: 'no', name: 'No Ice', priceModifier: 0 },
+      ]
+    },
+    {
+      id: 'dr-sugar',
+      name: 'Sugar Level',
+      type: 'required',
+      options: [
+        { id: '100', name: 'Full Sugar', priceModifier: 0 },
+        { id: '50', name: 'Half Sugar', priceModifier: 0 },
+        { id: '0', name: 'No Sugar', priceModifier: 0 },
+      ]
+    }
+  ];
+
   addItems('starters', [
     'Bruschetta Classica', 'Crispy Calamari', 'Garlic Bread', 'Stuffed Mushrooms', 
     'Arancini Balls', 'Caprese Skewers', 'Shrimp Cocktail', 'Onion Rings', 
-    'Buffalo Wings', 'Mozzarella Sticks', 'Spinach Dip', 'Potato Skins', 
-    'Chicken Tenders', 'Quesadilla', 'Spring Rolls'
-  ], 8.00, 'sushi');
+    'Buffalo Wings', 'Mozzarella Sticks'
+  ], 8.00, 'sushi', starterVariations);
 
   addItems('salads', [
     'Classic Caesar', 'Greek Salad', 'Garden Salad', 'Cobb Salad', 
-    'Quinoa Salad', 'Waldorf Salad', 'Wedge Salad', 'Caprese Salad', 
-    'Nicoise Salad', 'Spinach Salad', 'Fruit Salad', 'Coleslaw', 
-    'Potato Salad', 'Pasta Salad', 'Asian Noodle Salad'
-  ], 10.00, 'salad');
+    'Quinoa Salad', 'Waldorf Salad', 'Wedge Salad', 'Caprese Salad'
+  ], 10.00, 'salad', saladVariations);
 
   addItems('pizza', [
     'Buffalo Margherita', 'Pepperoni Feast', 'BBQ Chicken', 'Veggie Supreme', 
-    'Hawaiian Classic', 'Meat Lovers', 'Four Cheese', 'Truffle Mushroom', 
-    'Pesto Chicken', 'Spicy Salami', 'Seafood Special', 'White Pizza', 
-    'Anchovy Salt', 'Mediterranean', 'Breakfast Pizza'
+    'Hawaiian Classic', 'Meat Lovers', 'Four Cheese', 'Truffle Mushroom'
   ], 15.00, 'pizza', pizzaVariations);
 
   addItems('pasta', [
     'Truffle Tagliatelle', 'Carbonara Classic', 'Lasagna Tradizionale', 'Penne Arrabbiata', 
-    'Fettuccine Alfredo', 'Spaghetti Bolognese', 'Seafood Linguine', 'Ravioli Ricotta', 
-    'Gnocchi Pesto', 'Mac & Cheese', 'Tortellini Broth', 'Pasta Primavera', 
-    'Fusilli Pink Sauce', 'Rigatoni Ragu', 'Angel Hair Garlic'
-  ], 14.00, 'pasta');
+    'Fettuccine Alfredo', 'Spaghetti Bolognese', 'Seafood Linguine'
+  ], 14.00, 'pasta', pastaVariations);
 
   addItems('burgers', [
     'The Wagyu Signature', 'Classic Cheeseburger', 'Bacon King', 'Mushroom Swiss', 
-    'Veggie Garden', 'Crispy Chicken', 'Zesty Fish', 'BBQ Western', 
-    'Spicy Jalapeno', 'Turkey Lean', 'Breakfast Burger', 'Double Stack', 
-    'Slider Trio', 'Blue Cheese', 'Hawaiian Burger'
+    'Veggie Garden', 'Crispy Chicken', 'Zesty Fish', 'BBQ Western'
   ], 18.00, 'burger', burgerVariations);
 
   addItems('grill', [
     'Ribeye Steak 300g', 'Filet Mignon', 'Grilled Salmon', 'BBQ Pork Ribs', 
-    'Lamb Chops', 'Grilled Chicken Breast', 'T-Bone Steak', 'Mixed Grill', 
-    'Grilled Sea Bass', 'Pork Chops', 'Garlic Shrimp', 'Grilled Veggies', 
-    'Turkey Steak', 'Duck Confit', 'Venison Steak'
+    'Lamb Chops', 'Grilled Chicken Breast', 'T-Bone Steak'
   ], 25.00, 'steak', grillVariations);
 
   addItems('desserts', [
     'Vanilla Panna Cotta', 'Lava Cake', 'Tiramisu', 'NY Cheesecake', 
-    'Warm Apple Pie', 'Brownie Sundae', 'Gelato Selection', 'Fruit Tart', 
-    'Creme Brulee', 'Sicilian Cannoli', 'French Macarons', 'Berry Sorbet', 
-    'Churros Con Chocolate', 'Red Velvet', 'Bread Pudding'
-  ], 7.00, 'cake');
+    'Warm Apple Pie', 'Brownie Sundae'
+  ], 7.00, 'cake', dessertVariations);
 
   addItems('drinks', [
-    'Double Espresso', 'Cappuccino', 'Caffe Latte', 'Iced Coffee', 
-    'English Breakfast Tea', 'Peach Iced Tea', 'Orange Juice', 'Lemonade', 
-    'Classic Cola', 'Diet Soda', 'Mineral Water', 'Sparkling Water', 
-    'Chocolate Milkshake', 'Mango Smoothie', 'Berry Mocktail'
-  ], 4.00, 'coffee');
+    'Iced Coffee', 'Peach Iced Tea', 'Orange Juice', 'Lemonade', 
+    'Classic Cola', 'Mango Smoothie', 'Berry Mocktail'
+  ], 4.00, 'coffee', drinkVariations);
 
   return items;
 };
@@ -290,7 +370,7 @@ export const sampleOrder: Order = {
       ...menuItems.find(i => i.id === 'starters-1')!, 
       cartItemId: 'starters-1', 
       quantity: 2, 
-      selectedVariations: {} 
+      selectedVariations: { 's-dip': 'garlic' } 
     },
     { 
       ...menuItems.find(i => i.id === 'burgers-1')!, 
@@ -302,7 +382,7 @@ export const sampleOrder: Order = {
       ...menuItems.find(i => i.id === 'drinks-1')!, 
       cartItemId: 'drinks-1', 
       quantity: 4, 
-      selectedVariations: {} 
+      selectedVariations: { 'dr-ice': 'normal', 'dr-sugar': '100' } 
     },
   ]
 }

@@ -11,7 +11,7 @@ import {
   SheetClose,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, X, Info, Flame, Scale, Wheat, Beef, MessageSquareText, Check } from 'lucide-react';
+import { Minus, Plus, X, Info, Flame, Scale, Wheat, Beef, MessageSquareText, Check, AlertCircle } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { cn } from '@/lib/utils';
 import type { MenuItem, CartItemVariationSelection } from '@/lib/data';
@@ -54,8 +54,6 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
         } else {
           newSelections[variationId] = [...parts, optionId].join(',');
         }
-      } else if (type === 'incremental') {
-        // Handled separately by handleIncrementalChange for better clarity
       } else {
         if (type === 'optional' && currentVal === optionId) {
           delete newSelections[variationId];
@@ -158,66 +156,33 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
       <SheetContent side="bottom" className="h-[95dvh] flex flex-col p-0 rounded-t-[2.5rem] border-t-0 shadow-2xl z-[110]" hideCloseButton>
         <div className="mx-auto w-12 h-1.5 bg-slate-200 rounded-full mt-3 shrink-0" />
         
-        <SheetHeader className="p-6 border-b flex-row items-center justify-between">
+        <SheetHeader className="p-6 border-b flex-row items-center justify-between bg-white shrink-0">
           <div className="text-left">
-            <SheetTitle className="text-2xl font-bold text-slate-900 tracking-tight uppercase">{item.name}</SheetTitle>
-            <p className="text-sm font-bold text-primary uppercase tracking-tight mt-1">Starting from ${item.price.toFixed(2)}</p>
+            <div className="flex items-center gap-2 mb-1">
+                <SheetTitle className="text-2xl font-black text-slate-900 tracking-tight uppercase leading-none">{item.name}</SheetTitle>
+            </div>
+            <p className="text-sm font-bold text-primary uppercase tracking-tight">Terminal Order Setup</p>
           </div>
           <SheetClose asChild>
-            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-slate-100">
-              <X className="h-6 w-6" />
+            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-slate-50">
+              <X className="h-6 w-6 text-slate-500" />
             </Button>
           </SheetClose>
         </SheetHeader>
 
-        <div ref={scrollContainerRef} className="flex-grow overflow-y-auto p-6 space-y-10 no-scrollbar pb-24">
+        <div ref={scrollContainerRef} className="flex-grow overflow-y-auto p-6 space-y-10 no-scrollbar pb-32">
+          {/* Item Bio */}
           <section className="space-y-3">
              <div className="flex items-center gap-2 text-slate-400">
                 <Info className="h-4 w-4" />
-                <h3 className="text-[10px] font-bold uppercase tracking-widest">About this Dish</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-widest">Kitchen Bio</h3>
              </div>
              <p className="text-slate-600 text-sm leading-relaxed font-medium italic">
                 {item.description || "Freshly prepared house specialty using premium seasonal ingredients."}
              </p>
           </section>
 
-          {item.nutrition && (
-            <section className="bg-slate-50/50 p-5 rounded-[2rem] border border-slate-100 space-y-4">
-              <div className="flex items-center gap-2 text-slate-500">
-                <Scale className="h-4 w-4" />
-                <h3 className="text-[10px] font-bold uppercase tracking-widest">Nutritional Info</h3>
-              </div>
-              <div className="grid grid-cols-4 gap-3">
-                 {[
-                   { label: 'KCAL', val: item.nutrition.kcal, icon: Flame, color: 'text-orange-500' },
-                   { label: 'PROT', val: `${item.nutrition.protein}g`, icon: Beef, color: 'text-red-500' },
-                   { label: 'CARB', val: `${item.nutrition.carbs}g`, icon: Wheat, color: 'text-amber-600' },
-                   { label: 'FAT', val: `${item.nutrition.fat}g`, icon: Scale, color: 'text-blue-500' }
-                 ].map((stat, i) => (
-                   <div key={i} className="flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm border border-slate-100">
-                      <span className="text-[10px] font-bold tracking-tighter mb-1 opacity-60">{stat.label}</span>
-                      <span className="text-sm font-black text-slate-900">{stat.val}</span>
-                   </div>
-                 ))}
-              </div>
-            </section>
-          )}
-
-          {item.allergens && item.allergens.length > 0 && (
-            <section className="space-y-3 px-1">
-               <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                  Allergen Warnings
-               </h3>
-               <div className="flex flex-wrap gap-2">
-                  {item.allergens.map((allergen, i) => (
-                    <span key={i} className="px-4 py-2 bg-red-50 text-red-600 text-[10px] font-bold rounded-full border border-red-100 uppercase tracking-tight">
-                        {allergen}
-                    </span>
-                  ))}
-               </div>
-            </section>
-          )}
-
+          {/* Configuration Sections */}
           {item.variations?.map((variation) => {
              const isIncremental = variation.type === 'incremental';
              const isMultiple = variation.type === 'multiple';
@@ -231,12 +196,12 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                   className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500"
                 >
                   <div className="flex items-center justify-between px-1">
-                    <h3 className="text-xs font-bold text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
                       {variation.name}
                       {(isMultiple || isIncremental) && <span className="text-[9px] font-bold text-slate-400 normal-case">(Add multiples)</span>}
                     </h3>
                     <span className={cn(
-                        "text-[9px] font-bold px-2 py-0.5 rounded-md uppercase border",
+                        "text-[9px] font-black px-2 py-0.5 rounded-md uppercase border",
                         variation.type === 'required' ? "text-red-600 bg-red-50 border-red-100" : "text-slate-400 border-slate-200"
                     )}>
                         {variation.type === 'required' ? 'Mandatory' : 'Optional'}
@@ -249,26 +214,29 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                       const qty = isIncremental ? getIncrementalQty(variation.id, option.id) : 0;
                       
                       return (
-                        <div key={option.id} className={cn(
-                            "flex items-center justify-between p-4 rounded-2xl border-2 transition-all",
+                        <div 
+                            key={option.id} 
+                            onClick={() => !isIncremental && handleVariationSelect(variation.id, option.id, variation.type)}
+                            className={cn(
+                            "flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer",
                             (isActive || qty > 0) ? "border-primary bg-primary/5 shadow-sm" : "border-slate-100 bg-white"
                         )}>
                             <div className="flex flex-col">
-                                <span className="font-bold text-sm leading-tight text-slate-900">{option.name}</span>
+                                <span className="font-black text-sm leading-tight text-slate-900 uppercase">{option.name}</span>
                                 <span className={cn(
-                                    "text-[10px] font-bold opacity-60",
+                                    "text-[10px] font-bold opacity-60 uppercase",
                                     option.priceModifier > 0 ? "text-green-600" : ""
                                 )}>
-                                    {option.priceModifier !== 0 ? `+$${option.priceModifier.toFixed(2)} unit` : "Standard"}
+                                    {option.priceModifier !== 0 ? `+$${option.priceModifier.toFixed(2)} unit` : "Included"}
                                 </span>
                             </div>
 
                             {isIncremental ? (
-                                <div className="flex items-center gap-4 bg-white p-1 rounded-xl border border-slate-200">
+                                <div className="flex items-center gap-4 bg-white p-1 rounded-xl border border-slate-200" onClick={(e) => e.stopPropagation()}>
                                     <Button 
                                         variant="ghost" 
                                         size="icon" 
-                                        className="h-10 w-10 rounded-lg text-slate-400" 
+                                        className="h-10 w-10 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500" 
                                         onClick={() => handleIncrementalChange(variation.id, option.id, -1)}
                                         disabled={qty <= 0}
                                     >
@@ -278,26 +246,22 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                                     <Button 
                                         variant="ghost" 
                                         size="icon" 
-                                        className="h-10 w-10 rounded-lg text-primary" 
+                                        className="h-10 w-10 rounded-lg text-primary hover:bg-primary/5" 
                                         onClick={() => handleIncrementalChange(variation.id, option.id, 1)}
                                     >
                                         <Plus className="h-5 w-5 stroke-[3]" />
                                     </Button>
                                 </div>
                             ) : (
-                                <Button
-                                    variant="ghost"
-                                    onClick={() => handleVariationSelect(variation.id, option.id, variation.type)}
-                                    className="h-12 w-12 rounded-full hover:bg-transparent"
-                                >
+                                <div className="h-10 w-10 flex items-center justify-center">
                                     {isActive ? (
                                         <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center text-white shadow-md">
-                                            <Check className="h-5 w-5 stroke-[3]" />
+                                            <Check className="h-5 w-5 stroke-[4]" />
                                         </div>
                                     ) : (
                                         <div className="h-8 w-8 rounded-full border-2 border-slate-200" />
                                     )}
-                                </Button>
+                                </div>
                             )}
                         </div>
                       )
@@ -310,29 +274,29 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
           <section className="space-y-3 pb-8">
             <div className="flex items-center gap-2 text-slate-500 px-1">
                 <MessageSquareText className="h-4 w-4" />
-                <h3 className="text-[10px] font-bold uppercase tracking-widest">Kitchen Prep Request</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-widest">Kitchen Prep Request</h3>
             </div>
             <Textarea 
                 placeholder="Ex: No onions, well done, extra hot..."
-                className="min-h-[100px] bg-slate-50 border-slate-200 rounded-[1.5rem] p-4 text-sm font-medium focus-visible:ring-primary/20 resize-none"
+                className="min-h-[100px] bg-slate-50 border-slate-200 rounded-[1.5rem] p-4 text-sm font-medium focus-visible:ring-primary/20 resize-none shadow-inner"
                 value={specialInstructions}
                 onChange={(e) => setSpecialInstructions(e.target.value)}
             />
           </section>
         </div>
 
-        <SheetFooter className="p-6 border-t bg-white shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
+        <SheetFooter className="p-6 border-t bg-white shadow-[0_-15px_40px_rgba(0,0,0,0.08)] shrink-0">
           <div className="w-full space-y-6">
             <div className="flex items-center justify-between px-2">
                 <div className="space-y-0.5">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Batch Size</p>
-                    <p className="text-lg font-bold text-slate-900 tracking-tight">Quantity</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Order Volume</p>
+                    <p className="text-lg font-black text-slate-900 tracking-tight uppercase">Base Quantity</p>
                 </div>
-                <div className="flex items-center gap-6 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+                <div className="flex items-center gap-6 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 shadow-inner">
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-12 w-12 rounded-xl bg-white shadow-sm border border-slate-200" 
+                        className="h-12 w-12 rounded-xl bg-white shadow-sm border border-slate-200 active:scale-90" 
                         onClick={() => setQuantity(Math.max(1, quantity - 1))} 
                         disabled={quantity <= 1}
                     >
@@ -342,7 +306,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-12 w-12 rounded-xl bg-white shadow-sm border border-primary/20 text-primary" 
+                        className="h-12 w-12 rounded-xl bg-white shadow-sm border border-primary/20 text-primary active:scale-90" 
                         onClick={() => setQuantity(quantity + 1)}
                     >
                         <Plus className="h-6 w-6 stroke-[3]" />
@@ -354,18 +318,21 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
               onClick={handleAddToCart}
               disabled={!areAllRequiredSelected}
               className={cn(
-                "w-full h-20 text-white text-xl font-bold rounded-[1.75rem] shadow-xl uppercase tracking-tight flex items-center justify-center gap-4",
-                areAllRequiredSelected ? "bg-[#E54360] hover:bg-[#D43D56]" : "bg-slate-300"
+                "w-full h-20 text-white text-xl font-black rounded-[1.75rem] shadow-xl uppercase tracking-tight flex items-center justify-center gap-4 transition-all duration-300",
+                areAllRequiredSelected ? "bg-[#E54360] hover:bg-[#D43D56] active:scale-[0.98]" : "bg-slate-200"
               )}
             >
               {areAllRequiredSelected ? (
                 <>
-                  <span>Add to Order</span>
+                  <span>Commit to Order</span>
                   <div className="h-10 w-px bg-white/20 mx-1" />
-                  <span className="bg-white/10 px-4 py-1.5 rounded-xl text-lg font-bold tracking-tight">${finalPrice.toFixed(2)}</span>
+                  <span className="bg-white/10 px-4 py-1.5 rounded-xl text-lg font-black tracking-tighter tabular-nums">${finalPrice.toFixed(2)}</span>
                 </>
               ) : (
-                <span>Complete Selections</span>
+                <div className="flex items-center gap-2">
+                    <AlertCircle className="h-5 w-5" />
+                    <span>Incomplete Prep</span>
+                </div>
               )}
             </Button>
           </div>
