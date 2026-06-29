@@ -126,35 +126,63 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                     <div className="space-y-3">
                         <p className="text-xs font-bold text-slate-400 uppercase">Add Gratuity</p>
                         <div className="grid grid-cols-4 gap-2">
-                            {tipOptions.map(opt => (
+                            {tipOptions.map(opt => {
+                                const isActive = selectedTip === opt.value && !showCustomTip;
+                                return (
+                                    <div key={opt.value} className="relative">
+                                        <Button 
+                                            variant="ghost"
+                                            onClick={() => handleTipSelection(opt.value)}
+                                            className={cn(
+                                                "w-full h-14 rounded-xl border-2 flex flex-col items-center justify-center transition-all",
+                                                isActive
+                                                    ? "bg-primary text-white border-primary shadow-md"
+                                                    : "bg-white border-slate-100 text-slate-900"
+                                            )}
+                                        >
+                                            <span className="text-[10px] font-bold uppercase opacity-60 leading-none">AED</span>
+                                            <span className="text-base font-bold">{opt.label}</span>
+                                        </Button>
+                                        {isActive && (
+                                            <button 
+                                                className="absolute -top-1.5 -right-1.5 h-5 w-5 bg-red-600 rounded-full flex items-center justify-center text-white border-2 border-white shadow-sm z-10 active:scale-90 transition-transform"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    resetTips();
+                                                }}
+                                            >
+                                                <X className="h-3 w-3 stroke-[4]" />
+                                            </button>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                            <div className="relative">
                                 <Button 
-                                    key={opt.value}
                                     variant="ghost"
-                                    onClick={() => handleTipSelection(opt.value)}
+                                    onClick={handleCustomTipClick}
                                     className={cn(
-                                        "h-14 rounded-xl border-2 flex flex-col items-center justify-center transition-all",
-                                        selectedTip === opt.value && !showCustomTip
+                                        "w-full h-14 rounded-xl border-2 flex flex-col items-center justify-center gap-0.5 transition-all",
+                                        showCustomTip
                                             ? "bg-primary text-white border-primary shadow-md"
                                             : "bg-white border-slate-100 text-slate-900"
                                     )}
                                 >
-                                    <span className="text-[10px] font-bold uppercase opacity-60 leading-none">AED</span>
-                                    <span className="text-base font-bold">{opt.label}</span>
+                                    <Pen className={cn("h-4 w-4", showCustomTip ? "text-white" : "text-slate-400")} />
+                                    <span className="text-[9px] font-bold uppercase leading-none">Custom</span>
                                 </Button>
-                            ))}
-                            <Button 
-                                variant="ghost"
-                                onClick={handleCustomTipClick}
-                                className={cn(
-                                    "h-14 rounded-xl border-2 flex flex-col items-center justify-center gap-0.5 transition-all",
-                                    showCustomTip
-                                        ? "bg-primary text-white border-primary shadow-md"
-                                        : "bg-white border-slate-100 text-slate-900"
+                                {showCustomTip && (
+                                    <button 
+                                        className="absolute -top-1.5 -right-1.5 h-5 w-5 bg-red-600 rounded-full flex items-center justify-center text-white border-2 border-white shadow-sm z-10 active:scale-90 transition-transform"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            resetTips();
+                                        }}
+                                    >
+                                        <X className="h-3 w-3 stroke-[4]" />
+                                    </button>
                                 )}
-                            >
-                                <Pen className={cn("h-4 w-4", showCustomTip ? "text-white" : "text-slate-400")} />
-                                <span className="text-[9px] font-bold uppercase leading-none">Custom</span>
-                            </Button>
+                            </div>
                         </div>
                     </div>
 
