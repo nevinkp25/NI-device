@@ -85,50 +85,50 @@ function SuccessContent() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50/50 p-4">
       <div className="w-full max-w-sm text-center space-y-4 animate-in fade-in duration-700">
         <div className="flex justify-center">
-            <div className="bg-white p-4 rounded-full shadow-md animate-in zoom-in-50 duration-500">
+            <div className="bg-white p-4 rounded-full shadow-md animate-in zoom-in-50 duration-500 border border-slate-50">
                 <CheckCircle2 className="h-14 w-14 text-green-500 stroke-[1.5]" />
             </div>
         </div>
         
         <div className="space-y-0.5">
-            <h1 className="text-3xl font-black text-slate-900 uppercase">Settled!</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Terminal Audit Closed</p>
+            <h1 className="text-3xl font-black text-slate-900 uppercase leading-none tracking-tight">Settled!</h1>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Terminal Audit Closed</p>
         </div>
 
-        <Card className="text-left border-slate-200 shadow-lg rounded-[2rem] bg-white overflow-hidden p-5 space-y-3">
-            <div className="flex items-center gap-2 pb-1 border-b border-slate-50">
-                <Receipt className="h-3.5 w-3.5 text-primary" />
-                <h3 className="text-[9px] font-black text-primary uppercase">Transaction Audit</h3>
+        <Card className="text-left border-slate-200 shadow-xl rounded-[2.5rem] bg-white overflow-hidden p-6 space-y-4">
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
+                <Receipt className="h-4 w-4 text-primary" />
+                <h3 className="text-[10px] font-black text-primary uppercase">Transaction Details</h3>
             </div>
             
             <div className="space-y-0.5">
-                <DetailRow label="Audit Reference" value={`#${transactionDetails.id}`} />
+                <DetailRow label="Transaction ID" value={`#${transactionDetails.id}`} />
                 <Separator className="bg-slate-50" />
-                <DetailRow label="Settlement Time" value={transactionDetails.date ? format(transactionDetails.date, "hh:mm a") : '...'} />
+                <DetailRow label="Closing Time" value={transactionDetails.date ? format(transactionDetails.date, "hh:mm a") : '...'} />
                 <Separator className="bg-slate-50" />
-                <DetailRow label="Final Total" value={`$${transactionDetails.amount.toFixed(2)}`} />
+                <DetailRow label="Total Paid" value={`$${transactionDetails.amount.toFixed(2)}`} />
                  <Separator className="bg-slate-50" />
-                <DetailRow label="Payment Source" value="Terminal Auth" />
+                <DetailRow label="Payment Method" value="Terminal Auth" />
                  <Separator className="bg-slate-50" />
-                <DetailRow label="Table Identity" value={`${transactionDetails.table}`} />
+                <DetailRow label="Table Number" value={`${transactionDetails.table}`} />
             </div>
 
-            <div className="pt-1">
-                <div className="bg-slate-50 rounded-xl p-3 text-center">
-                    <p className="text-[9px] font-bold text-slate-400 uppercase mb-0.5">Approved by Network POS</p>
+            <div className="pt-2">
+                <div className="bg-slate-50 rounded-2xl p-4 text-center border border-slate-100 shadow-inner">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1 leading-none">Approved by Network POS</p>
                     <p className="text-[8px] font-medium text-slate-300 uppercase leading-none">Terminal: BRANCH-01-SECURE</p>
                 </div>
             </div>
         </Card>
         
-        <div className="space-y-2 w-full">
-            <Button variant="outline" className="w-full h-12 border border-slate-200 rounded-xl font-bold uppercase text-[9px] flex items-center justify-center gap-2 bg-white hover:bg-slate-50 transition-all active:scale-95">
-                <Printer className="h-4 w-4" />
+        <div className="space-y-3 w-full max-w-[320px] mx-auto">
+            <Button variant="outline" className="w-full h-14 border-2 border-slate-100 rounded-2xl font-bold uppercase text-xs flex items-center justify-center gap-3 bg-white hover:bg-slate-50 transition-all active:scale-95 text-slate-600">
+                <Printer className="h-5 w-5" />
                 Print Receipt
             </Button>
             
             <Link href="/navigation" passHref className="block w-full">
-                <Button className="w-full h-16 text-lg font-black bg-primary text-white hover:bg-primary/90 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] uppercase">
+                <Button className="w-full h-16 text-lg font-black bg-primary text-white hover:bg-primary/90 rounded-2xl shadow-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] uppercase">
                     <Home className="h-5 w-5"/>
                     <span>Done</span>
                 </Button>
