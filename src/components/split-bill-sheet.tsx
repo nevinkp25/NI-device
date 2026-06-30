@@ -302,7 +302,9 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     disabled={paidGuests.length > 0}
                                     className="h-12 w-12 rounded-2xl bg-white text-slate-700 hover:bg-[#0069B1]/5 shadow-sm border border-slate-200 flex items-center justify-center active:scale-90 transition-all disabled:opacity-50"
                                 >
-                                    <Minus className="h-5 w-5 stroke-[3]" />
+                                    <div className="h-full w-full flex items-center justify-center">
+                                        <Minus className="h-5 w-5 stroke-[3]" />
+                                    </div>
                                 </button>
                                 <div className="text-center">
                                     <p className="text-2xl font-black text-slate-900 tabular-nums leading-none">{splitCount}</p>
@@ -313,7 +315,9 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                     disabled={paidGuests.length > 0}
                                     className="h-12 w-12 rounded-2xl bg-[#0069B1] text-white hover:bg-[#0069B1]/90 shadow-md flex items-center justify-center active:scale-90 transition-all disabled:opacity-50"
                                 >
-                                    <Plus className="h-5 w-5 stroke-[3]" />
+                                    <div className="h-full w-full flex items-center justify-center">
+                                        <Plus className="h-5 w-5 stroke-[3]" />
+                                    </div>
                                 </button>
                             </Card>
 
