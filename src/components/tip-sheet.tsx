@@ -120,7 +120,7 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                                 </div>
                                 <div className="space-y-0.5">
                                     <p className="text-xs font-bold text-primary uppercase leading-none tracking-tight">Employee ID: #{staffId}</p>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-none">Session Active</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-none">Verified Staff</p>
                                 </div>
                             </div>
                             <div className="text-right space-y-0.5">
