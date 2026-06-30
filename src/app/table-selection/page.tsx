@@ -215,7 +215,7 @@ function TableSelectionContent() {
                <div>
                   <SheetTitle className="text-lg font-bold uppercase tracking-tighter">Table {tempSelectedTable?.id}</SheetTitle>
                   <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-                    {isSettlementMode ? 'Account Settlement' : 'New Order'}
+                    {isSettlementMode ? 'BILL SETTLEMENT' : 'New Order'}
                   </p>
                </div>
             </div>
@@ -234,7 +234,9 @@ function TableSelectionContent() {
                         onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
                         className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
                     >
-                        <Minus className="h-8 w-8 stroke-[4]" />
+                        <div className="h-8 w-8 flex items-center justify-center">
+                            <Minus className="h-8 w-8 stroke-[4]" />
+                        </div>
                     </Button>
                     <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums tracking-tighter">{guestCount}</span>
                     <Button 
@@ -242,7 +244,9 @@ function TableSelectionContent() {
                         onClick={() => setGuestCount(guestCount + 1)}
                         className="h-16 w-16 rounded-2xl border-4 border-primary text-primary hover:bg-primary/5"
                     >
-                        <Plus className="h-8 w-8 stroke-[4]" />
+                        <div className="h-8 w-8 flex items-center justify-center">
+                            <Plus className="h-8 w-8 stroke-[4]" />
+                        </div>
                     </Button>
                   </div>
                 </div>

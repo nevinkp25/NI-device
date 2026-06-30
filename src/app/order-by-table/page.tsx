@@ -219,7 +219,7 @@ function OrderByTableContent() {
                <div>
                   <SheetTitle className="text-lg font-bold uppercase">Table {tableNumber.toUpperCase()}</SheetTitle>
                   <p className="text-xs text-muted-foreground font-bold uppercase">
-                    {isSettlementMode ? 'Account Settlement' : 'New Order'}
+                    {isSettlementMode ? 'BILL SETTLEMENT' : 'New Order'}
                   </p>
                </div>
             </div>
@@ -238,7 +238,9 @@ function OrderByTableContent() {
                          onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
                          className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
                       >
-                         <Minus className="h-8 w-8 stroke-[3]" />
+                         <div className="h-8 w-8 flex items-center justify-center">
+                            <Minus className="h-8 w-8 stroke-[3]" />
+                         </div>
                       </Button>
                       <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums">{guestCount}</span>
                       <Button 
@@ -246,7 +248,9 @@ function OrderByTableContent() {
                          onClick={() => setGuestCount(guestCount + 1)}
                          className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
                       >
-                         <Plus className="h-8 w-8 stroke-[3]" />
+                         <div className="h-8 w-8 flex items-center justify-center">
+                            <Plus className="h-8 w-8 stroke-[3]" />
+                         </div>
                       </Button>
                    </div>
                 </div>
