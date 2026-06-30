@@ -217,7 +217,7 @@ function OrderStatusContent() {
             <div className="space-y-1">
               <h2 className="text-xl font-bold text-slate-900 uppercase">Check #{order.id}</h2>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-xs py-0 px-2 rounded-md">Unpaid Check</Badge>
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-xs py-0 px-2 rounded-md">Opened</Badge>
                 <span className="text-xs font-bold text-slate-400 uppercase leading-none">Review Totals</span>
               </div>
             </div>
@@ -258,7 +258,7 @@ function OrderStatusContent() {
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-slate-800 uppercase leading-none">{item.name}</span>
                     {item.selectedVariations && Object.values(item.selectedVariations).length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-1">
+                      <div className="flex wrap gap-1 mt-1">
                         {Object.values(item.selectedVariations).map((v, i) => (
                           <span key={i} className="text-[9px] font-bold text-[#0069B1] uppercase bg-[#0069B1]/5 px-1.5 py-0.5 rounded leading-none">
                             {v}
