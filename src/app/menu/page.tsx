@@ -40,15 +40,15 @@ function MenuHeader({ isScrolled, scrollDirection }: { isScrolled: boolean, scro
       </header>
       
       <div className={cn(
-        "transition-all duration-300 ease-in-out",
-        isScrolled ? "h-0 opacity-0 overflow-hidden" : "h-auto opacity-100"
+        "transition-all duration-500 ease-in-out overflow-hidden",
+        isScrolled ? "max-h-0 opacity-0" : "max-h-20 opacity-100"
       )}>
         <OrderStepper currentStep={2} />
       </div>
 
       <div className={cn(
         "transition-all duration-500 ease-in-out overflow-hidden",
-        (isScrolled && isVisible) ? "max-h-20 opacity-100 py-1" : "max-h-0 opacity-0 py-0"
+        (isScrolled && isVisible) ? "max-h-20 opacity-100 py-1 translate-y-0" : "max-h-0 opacity-0 py-0 -translate-y-2"
       )}>
           <OrderStepper currentStep={2} compact />
       </div>
@@ -72,11 +72,11 @@ export default function MenuPage() {
     const handleScroll = () => {
       const scrollPos = window.scrollY || document.documentElement.scrollTop;
       
-      // Threshold for sticking
-      setIsScrolled(scrollPos > 40);
+      // Increased threshold to prevent layout feedback-loop shaking
+      setIsScrolled(scrollPos > 80);
 
-      // Determine direction with a small buffer
-      if (Math.abs(scrollPos - lastScrollY.current) > 5) {
+      // Determine direction with a buffer to avoid jitter
+      if (Math.abs(scrollPos - lastScrollY.current) > 8) {
         const direction = scrollPos > lastScrollY.current ? 'down' : 'up';
         setScrollDirection(direction);
       }
