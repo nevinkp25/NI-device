@@ -267,7 +267,7 @@ function OrderStatusContent() {
                         ))}
                       </div>
                     )}
-                    <span className="text-xs font-bold text-slate-400 uppercase mt-1">${item.price.toFixed(2)} unit</span>
+                    <span className="text-xs font-bold text-slate-400 uppercase mt-1">${item.price.toFixed(2)} each</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -375,7 +375,7 @@ function OrderStatusContent() {
                 <p className="text-2xl font-bold text-slate-900">{selectedItemForDetail?.quantity}x</p>
               </Card>
               <Card className="bg-slate-50 p-5 rounded-2xl space-y-1 text-right border-none shadow-none">
-                <p className="text-xs font-bold text-slate-400 uppercase">Unit Price</p>
+                <p className="text-xs font-bold text-slate-400 uppercase">Item Price</p>
                 <p className="text-2xl font-bold text-slate-900 tabular-nums">${selectedItemForDetail?.price.toFixed(2)}</p>
               </Card>
             </div>
@@ -384,7 +384,7 @@ function OrderStatusContent() {
               <h4 className="text-xs font-bold text-slate-400 uppercase px-1">Order Customizations</h4>
               <div className="space-y-6">
                 {selectedItemForDetail?.selectedVariations && Object.keys(selectedItemForDetail.selectedVariations).length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex wrap gap-2">
                     {Object.values(selectedItemForDetail.selectedVariations).map((v, i) => (
                       <Badge key={i} className="bg-white text-slate-700 border border-slate-200 font-bold text-xs uppercase px-3 py-1.5 rounded-lg shadow-sm">
                         {v}

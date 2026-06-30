@@ -120,7 +120,7 @@ export default function CheckoutPage() {
                                 <div className="flex justify-between items-start gap-4">
                                     <div className="flex-grow">
                                         <span className="text-base font-bold text-slate-900 block leading-tight tracking-tight">{item.name}</span>
-                                        <span className="text-[10px] font-bold text-slate-400 block mt-1 uppercase tracking-widest">${displayPrice.toFixed(2)} unit</span>
+                                        <span className="text-[10px] font-bold text-slate-400 block mt-1 uppercase tracking-widest">${displayPrice.toFixed(2)} each</span>
                                         {variationString && (
                                           <div className="mt-2 flex flex-wrap gap-1">
                                             <span className="bg-slate-100 text-slate-600 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md">
@@ -171,7 +171,7 @@ export default function CheckoutPage() {
                     </div>
                     <div className="h-px bg-slate-100 my-2" />
                     <div className="flex justify-between items-end">
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Amount</span>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Order Total</span>
                         <span className="text-3xl font-bold text-slate-900 tracking-tighter tabular-nums">${total.toFixed(2)}</span>
                     </div>
                 </div>

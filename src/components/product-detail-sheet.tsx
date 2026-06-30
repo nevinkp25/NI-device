@@ -363,7 +363,7 @@ export function ProductDetailSheet({ isOpen, onOpenChange, item }: ProductDetail
             <div className="flex items-center justify-between px-1">
                 <div className="space-y-0.5">
                     <p className="text-[10px] font-bold text-slate-400 uppercase">Quantity</p>
-                    <p className="text-lg font-bold text-slate-900 uppercase">Base Units</p>
+                    <p className="text-lg font-bold text-slate-900 uppercase">Item Count</p>
                 </div>
                 <div className="flex items-center gap-6 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 shadow-inner">
                     <Button 
