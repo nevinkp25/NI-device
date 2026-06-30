@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo, Suspense } from 'react';
@@ -193,7 +194,7 @@ function OrderByTableContent() {
                <div>
                   <SheetTitle className="text-lg font-bold uppercase">Table {tableNumber.toUpperCase()}</SheetTitle>
                   <p className="text-xs text-muted-foreground font-bold uppercase">
-                    {isSettlementMode ? 'Account Settlement' : 'Initialization'}
+                    {isSettlementMode ? 'Account Settlement' : 'New Order'}
                   </p>
                </div>
             </div>
