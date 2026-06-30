@@ -105,7 +105,7 @@ export default function NavigationPage() {
               </div>
               <div className="text-center">
                 <p className="text-base font-black text-slate-800 leading-tight">New<br/>Order</p>
-                <p className="text-[10px] font-medium text-slate-400 mt-1">Create invoice</p>
+                <p className="text-[10px] font-medium text-slate-400 mt-1">create new order</p>
               </div>
             </button>
 
