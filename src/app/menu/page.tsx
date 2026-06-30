@@ -15,9 +15,10 @@ import { OrderStepper } from '@/components/order-stepper';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useCart } from '@/context/cart-context';
 
-function MenuHeader({ isScrolled }: { isScrolled: boolean }) {
+function MenuHeader({ isScrolled, scrollDirection }: { isScrolled: boolean, scrollDirection: 'up' | 'down' }) {
   const searchParams = useSearchParams();
   const tableNumber = searchParams.get('table');
+  const isVisible = scrollDirection === 'up';
 
   return (
     <div className="bg-white">
@@ -46,11 +47,13 @@ function MenuHeader({ isScrolled }: { isScrolled: boolean }) {
       )}>
         <OrderStepper currentStep={2} />
       </div>
-      {isScrolled && (
-        <div className="animate-in fade-in slide-in-from-top-1 duration-300">
-            <OrderStepper currentStep={2} compact />
-        </div>
-      )}
+
+      <div className={cn(
+        "transition-all duration-500 ease-in-out overflow-hidden",
+        (isScrolled && isVisible) ? "max-h-20 opacity-100 py-1" : "max-h-0 opacity-0 py-0"
+      )}>
+          <OrderStepper currentStep={2} compact />
+      </div>
     </div>
   );
 }
@@ -61,14 +64,26 @@ export default function MenuPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
+  const lastScrollY = useRef(0);
   const { cartItems } = useCart();
   const navRef = useRef<HTMLDivElement>(null);
 
-  // Scroll listener to manage sticky behavior
+  // Scroll listener to manage sticky behavior and scroll direction
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY || document.documentElement.scrollTop;
+      
+      // Threshold for sticking
       setIsScrolled(scrollPos > 40);
+
+      // Determine direction with a small buffer
+      if (Math.abs(scrollPos - lastScrollY.current) > 5) {
+        const direction = scrollPos > lastScrollY.current ? 'down' : 'up';
+        setScrollDirection(direction);
+      }
+      
+      lastScrollY.current = scrollPos > 0 ? scrollPos : 0;
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -127,7 +142,7 @@ export default function MenuPage() {
     <div className="bg-slate-50 min-h-screen">
       <div className="sticky top-0 z-50 bg-white shadow-md transition-all duration-300">
         <Suspense fallback={<div className="h-16 bg-white" />}>
-          <MenuHeader isScrolled={isScrolled} />
+          <MenuHeader isScrolled={isScrolled} scrollDirection={scrollDirection} />
         </Suspense>
 
         {/* INTEGRATED NAVIGATION BAR */}
