@@ -29,7 +29,7 @@ function MenuHeader({ isScrolled, scrollDirection }: { isScrolled: boolean, scro
         </Link>
         <div className="flex flex-col items-center mx-auto">
             <h1 className="text-sm font-black flex items-center gap-2 text-slate-900 tracking-tight uppercase">
-            {tableNumber ? `Table ${tableNumber}` : 'Current Order'}
+            {tableNumber ? `Table ${tableNumber}` : 'Table Number'}
             </h1>
         </div>
         <Link href="/navigation" passHref>
