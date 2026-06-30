@@ -215,30 +215,53 @@ function OrderStatusContent() {
         <Card className="p-4 border-slate-200 shadow-sm rounded-2xl bg-white space-y-4">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <h2 className="text-xl font-bold text-slate-900 uppercase">Check #{order.id}</h2>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-xs py-0 px-2 rounded-md">Opened</Badge>
-                <span className="text-xs font-bold text-slate-400 uppercase leading-none">Review Totals</span>
+              <h2 className="text-xl font-bold text-slate-900 uppercase leading-none">Check #{order.id}</h2>
+              <div className="flex items-center gap-2 mt-2">
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 font-bold uppercase text-[10px] py-0 px-2 rounded-md">Opened</Badge>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Review Totals</span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 py-3 border-t border-slate-50 text-slate-500 flex-wrap">
-            <div className="flex items-center gap-1.5 shrink-0">
-              <User className="h-3.5 w-3.5 text-primary/40" />
-              <span className="text-[10px] font-bold uppercase">Emp ID: #{staffId}</span>
+          <div className="grid grid-cols-2 gap-y-4 gap-x-4 py-4 border-t border-slate-50 text-slate-500">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-xl bg-primary/5 flex items-center justify-center shrink-0 border border-primary/10">
+                <User className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Staff</span>
+                <span className="text-[11px] font-bold text-slate-900 uppercase tabular-nums">#{staffId}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <LayoutGrid className="h-3.5 w-3.5 text-primary/40" />
-              <span className="text-[10px] font-bold uppercase">Main Floor</span>
+            
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-xl bg-primary/5 flex items-center justify-center shrink-0 border border-primary/10">
+                <LayoutGrid className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Section</span>
+                <span className="text-[11px] font-bold text-slate-900 uppercase">Main Floor</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <Clock className="h-3.5 w-3.5 text-primary/40" />
-              <span className="text-[10px] font-bold uppercase">{format(new Date(order.date), "hh:mm a")}</span>
+
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-xl bg-primary/5 flex items-center justify-center shrink-0 border border-primary/10">
+                <Clock className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Opened</span>
+                <span className="text-[11px] font-bold text-slate-900 uppercase tabular-nums">{format(new Date(order.date), "hh:mm a")}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <Calendar className="h-3.5 w-3.5 text-primary/40" />
-              <span className="text-[10px] font-bold uppercase">{format(new Date(order.date), "MMM d")}</span>
+
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-xl bg-primary/5 flex items-center justify-center shrink-0 border border-primary/10">
+                <Calendar className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Date</span>
+                <span className="text-[11px] font-bold text-slate-900 uppercase tabular-nums">{format(new Date(order.date), "MMM d")}</span>
+              </div>
             </div>
           </div>
         </Card>
