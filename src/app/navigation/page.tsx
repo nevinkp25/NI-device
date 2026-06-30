@@ -27,6 +27,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from '@/hooks/use-toast';
 
+const QUICK_ACTIONS = [
+  { id: 'new-order', label: 'New Order', sub: 'create new order', icon: FileText, path: '/order-by-table' },
+  { id: 'table-settlement', label: 'Table Settlement', sub: 'Close & pay', icon: LayoutGrid, path: '/order-by-table?mode=settlement' },
+  { id: 'scan-qr', label: 'Scan HR Code', sub: 'Quick scan', icon: QrCode, path: '/scan-qr' },
+  { id: 'direct-sale', label: 'Direct Sale', sub: 'Instant checkout', icon: Zap, path: '/transaction-history' },
+];
+
 export default function NavigationPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -72,7 +79,8 @@ export default function NavigationPage() {
     router.push('/');
   };
 
-  const activeCount = Object.values(visibleActions).filter(v => v).length;
+  const enabledActions = QUICK_ACTIONS.filter(action => visibleActions[action.id]);
+  const activeCount = enabledActions.length;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0051B5] overflow-hidden">
@@ -157,69 +165,29 @@ export default function NavigationPage() {
             "grid gap-4 auto-rows-fr",
             activeCount <= 1 ? "grid-cols-1" : "grid-cols-2"
           )}>
-            {/* New Order */}
-            {visibleActions['new-order'] && (
-              <button
-                onClick={() => handleNavigation('/order-by-table')}
-                className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
-              >
-                <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                  <FileText className="h-7 w-7" />
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-black text-slate-800 leading-tight">New<br/>Order</p>
-                  <p className="text-[10px] font-medium text-slate-400 mt-1">create new order</p>
-                </div>
-              </button>
-            )}
-
-            {/* Table Settlement */}
-            {visibleActions['table-settlement'] && (
-              <button
-                onClick={() => handleNavigation('/order-by-table?mode=settlement')}
-                className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
-              >
-                <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                  <LayoutGrid className="h-7 w-7" />
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-black text-slate-800 leading-tight">Table<br/>Settlement</p>
-                  <p className="text-[10px] font-medium text-slate-400 mt-1">Close & pay</p>
-                </div>
-              </button>
-            )}
-
-            {/* Scan HR Code */}
-            {visibleActions['scan-qr'] && (
-              <button
-                onClick={() => handleNavigation('/scan-qr')}
-                className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
-              >
-                <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                  <QrCode className="h-7 w-7" />
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-black text-slate-800 leading-tight">Scan<br/>HR Code</p>
-                  <p className="text-[10px] font-medium text-slate-400 mt-1">Quick scan</p>
-                </div>
-              </button>
-            )}
-
-            {/* Direct Sale */}
-            {visibleActions['direct-sale'] && (
-              <button
-                onClick={() => handleNavigation('/transaction-history')}
-                className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
-              >
-                <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                  <Zap className="h-7 w-7" />
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-black text-slate-800 leading-tight">Direct<br/>Sale</p>
-                  <p className="text-[10px] font-medium text-slate-400 mt-1">Instant checkout</p>
-                </div>
-              </button>
-            )}
+            {enabledActions.map((action, index) => {
+              // Special balancing logic: If there are 3 cards, make the 3rd one full width
+              const isThirdOfThree = activeCount === 3 && index === 2;
+              
+              return (
+                <button
+                  key={action.id}
+                  onClick={() => handleNavigation(action.path)}
+                  className={cn(
+                    "flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group",
+                    isThirdOfThree ? "col-span-2" : ""
+                  )}
+                >
+                  <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                    <action.icon className="h-7 w-7" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-base font-black text-slate-800 leading-tight uppercase whitespace-pre-line">{action.label.replace(' ', '\n')}</p>
+                    <p className="text-[10px] font-medium text-slate-400 mt-1 uppercase">{action.sub}</p>
+                  </div>
+                </button>
+              )
+            })}
           </div>
 
           <div className="mt-10 mb-2">
