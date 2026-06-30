@@ -20,7 +20,8 @@ import {
   RefreshCw,
   Trash2,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  LayoutGrid
 } from 'lucide-react';
 import { sampleOrder, type Order, type CartItem } from '@/lib/data';
 import { useCart } from '@/context/cart-context';
@@ -226,6 +227,10 @@ function OrderStatusContent() {
             <div className="flex items-center gap-1.5 shrink-0">
               <User className="h-3.5 w-3.5 text-primary/40" />
               <span className="text-[10px] font-bold uppercase">Emp ID: #{staffId}</span>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <LayoutGrid className="h-3.5 w-3.5 text-primary/40" />
+              <span className="text-[10px] font-bold uppercase">Main Floor</span>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
               <Clock className="h-3.5 w-3.5 text-primary/40" />
