@@ -182,7 +182,6 @@ function OrderStatusContent() {
         </Link>
         <div className="flex flex-col items-center">
           <h1 className="text-sm font-bold uppercase text-slate-900">Table {tableNumber} Account</h1>
-          <p className="text-xs font-bold text-slate-400 uppercase leading-none mt-0.5">Terminal Dashboard</p>
         </div>
         <div className="flex items-center gap-1">
           <Link href="/navigation">
@@ -267,7 +266,7 @@ function OrderStatusContent() {
                         ))}
                       </div>
                     )}
-                    <span className="text-xs font-bold text-slate-400 uppercase mt-1">${item.price.toFixed(2)} each</span>
+                    <span className="text-xs font-bold text-slate-400 uppercase mt-1">${item.price.toFixed(2)} EACH</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
