@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo, Suspense, useEffect, useRef } from 'react';
@@ -37,7 +36,6 @@ function OrderByTableContent() {
     const handleScroll = () => {
       const scrollPos = window.scrollY || document.documentElement.scrollTop;
       
-      // Use a larger threshold to avoid shaking
       setIsScrolled(scrollPos > 60);
 
       if (Math.abs(scrollPos - lastScrollY.current) > 8) {
@@ -230,51 +228,37 @@ function OrderByTableContent() {
             </Button>
           </SheetHeader>
 
-          <div className="p-8 space-y-6">
-             {isSettlementMode ? (
-               <div className="space-y-4 text-center">
-                  <div className="flex flex-col items-center justify-center py-6 space-y-4">
-                      <div className="h-20 w-20 bg-primary/10 rounded-full flex items-center justify-center">
-                          <Receipt className="h-10 w-10 text-primary" />
-                      </div>
-                      <div className="space-y-1">
-                          <p className="text-xl font-bold uppercase">Access Account</p>
-                          <p className="text-xs text-muted-foreground font-medium uppercase max-w-[200px] mx-auto leading-relaxed">
-                            Confirm order details for Table {tableNumber.toUpperCase()} to proceed with payment.
-                          </p>
-                      </div>
-                  </div>
-               </div>
-             ) : (
-               <div className="space-y-4 text-center">
-                  <p className="text-sm font-bold text-slate-400 uppercase">Cover Count</p>
-                  <div className="flex items-center justify-center gap-8">
-                     <Button 
-                        variant="outline" 
-                        onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                        className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
-                     >
-                        <Minus className="h-8 w-8 stroke-[3]" />
-                     </Button>
-                     <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums">{guestCount}</span>
-                     <Button 
-                        variant="outline" 
-                        onClick={() => setGuestCount(guestCount + 1)}
-                        className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
-                     >
-                        <Plus className="h-8 w-8 stroke-[3]" />
-                     </Button>
-                  </div>
-               </div>
-             )}
-          </div>
+          {!isSettlementMode && (
+             <div className="p-8 space-y-6">
+                <div className="space-y-4 text-center">
+                   <p className="text-sm font-bold text-slate-400 uppercase">Cover Count</p>
+                   <div className="flex items-center justify-center gap-8">
+                      <Button 
+                         variant="outline" 
+                         onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                         className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
+                      >
+                         <Minus className="h-8 w-8 stroke-[3]" />
+                      </Button>
+                      <span className="text-6xl font-bold min-w-[100px] text-primary tabular-nums">{guestCount}</span>
+                      <Button 
+                         variant="outline" 
+                         onClick={() => setGuestCount(guestCount + 1)}
+                         className="h-16 w-16 rounded-2xl border-2 border-primary text-primary hover:bg-primary/5"
+                      >
+                         <Plus className="h-8 w-8 stroke-[3]" />
+                      </Button>
+                   </div>
+                </div>
+             </div>
+          )}
 
           <SheetFooter className="p-4 bg-background border-t">
              <Button 
                 onClick={handleFinalConfirm}
                 className="w-full h-16 text-2xl font-bold bg-primary text-white rounded-2xl shadow-xl active:scale-95 transition-transform uppercase"
              >
-                {isSettlementMode ? 'Go to Order' : 'Confirm Covers'}
+                {isSettlementMode ? 'GO TO BILL' : 'Confirm Covers'}
              </Button>
           </SheetFooter>
         </SheetContent>
