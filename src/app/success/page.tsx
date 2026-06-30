@@ -100,7 +100,7 @@ function SuccessContent() {
         
         <div className="space-y-0.5">
             <h1 className="text-3xl font-black text-slate-900 uppercase leading-none tracking-tight">Settled!</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Terminal Audit Closed</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Table Account Finalized</p>
         </div>
 
         <Card className="text-left border-slate-200 shadow-xl rounded-[2.5rem] bg-white overflow-hidden p-6 space-y-4">
