@@ -224,7 +224,7 @@ export default function MenuPage() {
         <div className="mb-4 px-1">
             {isSearchOpen && searchQuery ? (
               <>
-                <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">
+                <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase mt-10">
                     Search Results
                 </h2>
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">
@@ -233,7 +233,7 @@ export default function MenuPage() {
               </>
             ) : (
               <>
-                <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">
+                <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase mt-10">
                     {activeCategoryName}
                 </h2>
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">
