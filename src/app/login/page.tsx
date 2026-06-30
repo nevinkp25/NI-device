@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, UserCheck, Store, Menu, ShieldAlert, DollarSign, Settings, ArrowRight } from 'lucide-react';
+import { Loader2, UserCheck, Store, Menu, ShieldAlert, DollarSign, Settings, ArrowRight, FileText, LogOut } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   DropdownMenu,
@@ -66,6 +67,14 @@ export default function StaffLoginPage() {
     router.push('/transaction-history');
   };
 
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('restaurantSlug');
+      localStorage.removeItem('staffId');
+    }
+    router.push('/');
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white p-8 relative">
       {/* Quick Access Menu - Top Right */}
@@ -76,38 +85,60 @@ export default function StaffLoginPage() {
               <Menu className="h-6 w-6" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-64 rounded-2xl p-2 border-slate-200 shadow-2xl">
-            <DropdownMenuLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-3 py-2">Terminal Systems</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-64 rounded-3xl p-2 border-slate-200 shadow-2xl">
+            <DropdownMenuLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-3 py-3">Terminal Systems</DropdownMenuLabel>
             <DropdownMenuSeparator />
             
             <DropdownMenuItem 
-              className="rounded-xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
-              onClick={() => toast({ title: "Supervisor Mode", description: "Manager credential override required." })}
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
+              onClick={() => toast({ title: "Supervisor Mode", description: "Manager override required." })}
             >
-              <div className="h-10 w-10 bg-amber-50 rounded-lg flex items-center justify-center">
+              <div className="h-10 w-10 bg-amber-50 rounded-full flex items-center justify-center">
                 <ShieldAlert className="h-5 w-5 text-amber-600" />
               </div>
               <span className="font-bold text-slate-900 text-sm">Supervisor Menu</span>
             </DropdownMenuItem>
             
             <DropdownMenuItem 
-              className="rounded-xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
               onClick={handleManualSale}
             >
-              <div className="h-10 w-10 bg-blue-50 rounded-lg flex items-center justify-center">
+              <div className="h-10 w-10 bg-blue-50 rounded-full flex items-center justify-center">
                 <DollarSign className="h-5 w-5 text-blue-600" />
               </div>
-              <span className="font-bold text-slate-900 text-sm">Manual Sales</span>
+              <span className="font-bold text-slate-900 text-sm">Manual Sale</span>
             </DropdownMenuItem>
 
             <DropdownMenuItem 
-              className="rounded-xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
               onClick={() => router.push('/settings')}
             >
-              <div className="h-10 w-10 bg-slate-100 rounded-lg flex items-center justify-center">
+              <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center">
                 <Settings className="h-5 w-5 text-slate-600" />
               </div>
               <span className="font-bold text-slate-900 text-sm">Settings</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem 
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-emerald-50" 
+              onClick={() => toast({ title: "Z-Report", description: "Calculating daily totals..." })}
+            >
+              <div className="h-10 w-10 bg-emerald-50 rounded-full flex items-center justify-center">
+                <FileText className="h-5 w-5 text-emerald-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Z-Report</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem 
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-red-50" 
+              onClick={handleLogout}
+            >
+              <div className="h-10 w-10 bg-red-50 rounded-full flex items-center justify-center">
+                <LogOut className="h-5 w-5 text-red-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Logout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -12,7 +12,10 @@ import {
   LayoutGrid, 
   QrCode, 
   Zap,
-  LogOut 
+  LogOut,
+  ShieldAlert,
+  DollarSign,
+  Settings
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -74,16 +77,60 @@ export default function NavigationPage() {
               <Menu className="h-6 w-6" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-64 rounded-2xl p-2 border-slate-200 shadow-2xl">
-            <DropdownMenuLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-3 py-2">Quick Controls</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-64 rounded-3xl p-2 border-slate-200 shadow-2xl">
+            <DropdownMenuLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-3 py-3">Terminal Systems</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => toast({ title: "Z-Report", description: "Calculating daily totals..." })}>
-              <FileText className="h-4 w-4 text-slate-600" />
-              <span className="font-bold text-slate-700 text-sm">Z-Report</span>
+            
+            <DropdownMenuItem 
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
+              onClick={() => toast({ title: "Supervisor Mode", description: "Manager override required." })}
+            >
+              <div className="h-10 w-10 bg-amber-50 rounded-full flex items-center justify-center">
+                <ShieldAlert className="h-5 w-5 text-amber-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Supervisor Menu</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer text-red-600" onClick={handleLogout}>
-              <LogOut className="h-4 w-4" />
-              <span className="font-bold text-sm">Logout</span>
+            
+            <DropdownMenuItem 
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
+              onClick={() => handleNavigation('/transaction-history')}
+            >
+              <div className="h-10 w-10 bg-blue-50 rounded-full flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-blue-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Manual Sale</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem 
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-slate-50" 
+              onClick={() => handleNavigation('/settings')}
+            >
+              <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center">
+                <Settings className="h-5 w-5 text-slate-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Settings</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem 
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-emerald-50" 
+              onClick={() => toast({ title: "Z-Report", description: "Calculating daily totals..." })}
+            >
+              <div className="h-10 w-10 bg-emerald-50 rounded-full flex items-center justify-center">
+                <FileText className="h-5 w-5 text-emerald-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Z-Report</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem 
+              className="rounded-2xl h-14 gap-3 cursor-pointer focus:bg-red-50" 
+              onClick={handleLogout}
+            >
+              <div className="h-10 w-10 bg-red-50 rounded-full flex items-center justify-center">
+                <LogOut className="h-5 w-5 text-red-600" />
+              </div>
+              <span className="font-bold text-slate-900 text-sm">Logout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
