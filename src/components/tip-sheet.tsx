@@ -113,18 +113,20 @@ export function TipSheet({ isOpen, onOpenChange, billAmount, onPaymentConfirmed 
                     </SheetHeader>
 
                     <div className="flex-grow p-4 space-y-5 pb-8 overflow-y-auto no-scrollbar">
-                        <div className="flex items-center justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200 shadow-sm">
-                                    <User className="h-5 w-5 text-slate-500" />
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-slate-50/80 p-4 rounded-2xl border border-slate-100 flex items-center gap-3 shadow-sm">
+                                <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-slate-100 shrink-0">
+                                    <User className="h-5 w-5 text-primary" />
                                 </div>
-                                <div className="space-y-0.5">
-                                    <p className="text-xs font-bold text-primary uppercase leading-none tracking-tight">Emp ID: #{staffId}</p>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Emp ID</span>
+                                    <span className="text-sm font-black text-slate-900 uppercase tabular-nums tracking-tight">#{staffId}</span>
                                 </div>
                             </div>
-                            <div className="text-right space-y-0.5">
-                                <p className="text-xs font-bold text-slate-400 uppercase leading-none">Check Total</p>
-                                <p className="text-2xl font-bold text-slate-900 tabular-nums">AED {billAmount.toFixed(2)}</p>
+                            
+                            <div className="bg-slate-50/80 p-4 rounded-2xl border border-slate-100 flex flex-col justify-center items-end px-4 shadow-sm">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Bill Amount</span>
+                                <span className="text-lg font-black text-primary tabular-nums tracking-tighter leading-none">AED {billAmount.toFixed(2)}</span>
                             </div>
                         </div>
 
