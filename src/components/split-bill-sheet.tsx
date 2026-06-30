@@ -618,7 +618,7 @@ export function SplitBillSheet({ isOpen, onOpenChange, totalAmount, orderId, bas
                                             </div>
                                             <div className="space-y-3">
                                                 <div className="flex justify-between items-center px-1">
-                                                    <span className="text-[10px] font-black text-slate-700 uppercase">Settlement Progress</span>
+                                                    <span className="text-[10px] font-black text-slate-700 uppercase">Payment Progress</span>
                                                     <span className="text-[10px] font-black text-[#0069B1]">{Math.round(progressValue)}% Complete</span>
                                                 </div>
                                                 <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-200">
