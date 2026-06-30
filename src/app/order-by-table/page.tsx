@@ -36,8 +36,11 @@ function OrderByTableContent() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY || document.documentElement.scrollTop;
-      setIsScrolled(scrollPos > 40);
-      if (Math.abs(scrollPos - lastScrollY.current) > 5) {
+      
+      // Use a larger threshold to avoid shaking
+      setIsScrolled(scrollPos > 60);
+
+      if (Math.abs(scrollPos - lastScrollY.current) > 8) {
         setScrollDirection(scrollPos > lastScrollY.current ? 'down' : 'up');
       }
       lastScrollY.current = scrollPos > 0 ? scrollPos : 0;
@@ -92,6 +95,8 @@ function OrderByTableContent() {
     handleOpenGuestSheet(table.id);
   };
 
+  const shouldHideStepper = isScrolled && scrollDirection === 'down';
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-slate-100">
@@ -105,8 +110,8 @@ function OrderByTableContent() {
           <div className="w-10"></div>
         </div>
         <div className={cn(
-          "transition-all duration-300 ease-in-out",
-          (isScrolled && scrollDirection === 'down') ? "max-h-0 opacity-0 overflow-hidden" : "max-h-20 opacity-100"
+          "transition-all duration-500 ease-in-out overflow-hidden",
+          shouldHideStepper ? "max-h-0 opacity-0 transform -translate-y-2" : "max-h-20 opacity-100 transform translate-y-0"
         )}>
           <OrderStepper 
             currentStep={1} 

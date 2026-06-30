@@ -23,8 +23,11 @@ export default function CheckoutPage() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY || document.documentElement.scrollTop;
-      setIsScrolled(scrollPos > 40);
-      if (Math.abs(scrollPos - lastScrollY.current) > 5) {
+      
+      // Increased threshold to prevent layout feedback-loop shaking
+      setIsScrolled(scrollPos > 60);
+
+      if (Math.abs(scrollPos - lastScrollY.current) > 8) {
         setScrollDirection(scrollPos > lastScrollY.current ? 'down' : 'up');
       }
       lastScrollY.current = scrollPos > 0 ? scrollPos : 0;
@@ -56,6 +59,8 @@ export default function CheckoutPage() {
     return variationValues.join(', ');
   }
 
+  const shouldHideStepper = isScrolled && scrollDirection === 'down';
+
   return (
     <div className="flex flex-col bg-slate-50/50 min-h-screen">
         <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
@@ -73,8 +78,8 @@ export default function CheckoutPage() {
             </Link>
           </div>
           <div className={cn(
-            "transition-all duration-300 ease-in-out",
-            (isScrolled && scrollDirection === 'down') ? "max-h-0 opacity-0 overflow-hidden" : "max-h-20 opacity-100"
+            "transition-all duration-500 ease-in-out overflow-hidden",
+            shouldHideStepper ? "max-h-0 opacity-0 transform -translate-y-2" : "max-h-20 opacity-100 transform translate-y-0"
           )}>
             <OrderStepper currentStep={3} />
           </div>
