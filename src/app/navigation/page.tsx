@@ -31,17 +31,27 @@ export default function NavigationPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [restaurantName, setRestaurantName] = useState('BRANCH TERMINAL');
+  const [visibleActions, setVisibleActions] = useState<Record<string, boolean>>({
+    'new-order': true,
+    'table-settlement': true,
+    'scan-qr': true,
+    'direct-sale': true,
+  });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const slug = localStorage.getItem('restaurantSlug');
       if (slug) {
-        // Remove hyphens and capitalize words for display
         const formatted = slug
           .split('-')
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
         setRestaurantName(formatted);
+      }
+
+      const stored = localStorage.getItem('dashboard-quick-actions');
+      if (stored) {
+        setVisibleActions(JSON.parse(stored));
       }
     }
   }, []);
@@ -61,6 +71,8 @@ export default function NavigationPage() {
     });
     router.push('/');
   };
+
+  const activeCount = Object.values(visibleActions).filter(v => v).length;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0051B5] overflow-hidden">
@@ -141,62 +153,73 @@ export default function NavigationPage() {
         <div className="bg-white rounded-t-[3.5rem] flex-grow p-8 shadow-[0_-20px_50px_rgba(0,0,0,0.1)] flex flex-col">
           <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 pl-1">Quick Actions</h2>
           
-          <div className="grid grid-cols-2 gap-4 auto-rows-fr">
+          <div className={cn(
+            "grid gap-4 auto-rows-fr",
+            activeCount <= 1 ? "grid-cols-1" : "grid-cols-2"
+          )}>
             {/* New Order */}
-            <button
-              onClick={() => handleNavigation('/order-by-table')}
-              className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
-            >
-              <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                <FileText className="h-7 w-7" />
-              </div>
-              <div className="text-center">
-                <p className="text-base font-black text-slate-800 leading-tight">New<br/>Order</p>
-                <p className="text-[10px] font-medium text-slate-400 mt-1">create new order</p>
-              </div>
-            </button>
+            {visibleActions['new-order'] && (
+              <button
+                onClick={() => handleNavigation('/order-by-table')}
+                className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
+              >
+                <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                  <FileText className="h-7 w-7" />
+                </div>
+                <div className="text-center">
+                  <p className="text-base font-black text-slate-800 leading-tight">New<br/>Order</p>
+                  <p className="text-[10px] font-medium text-slate-400 mt-1">create new order</p>
+                </div>
+              </button>
+            )}
 
             {/* Table Settlement */}
-            <button
-              onClick={() => handleNavigation('/order-by-table?mode=settlement')}
-              className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
-            >
-              <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                <LayoutGrid className="h-7 w-7" />
-              </div>
-              <div className="text-center">
-                <p className="text-base font-black text-slate-800 leading-tight">Table<br/>Settlement</p>
-                <p className="text-[10px] font-medium text-slate-400 mt-1">Close & pay</p>
-              </div>
-            </button>
+            {visibleActions['table-settlement'] && (
+              <button
+                onClick={() => handleNavigation('/order-by-table?mode=settlement')}
+                className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
+              >
+                <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                  <LayoutGrid className="h-7 w-7" />
+                </div>
+                <div className="text-center">
+                  <p className="text-base font-black text-slate-800 leading-tight">Table<br/>Settlement</p>
+                  <p className="text-[10px] font-medium text-slate-400 mt-1">Close & pay</p>
+                </div>
+              </button>
+            )}
 
             {/* Scan HR Code */}
-            <button
-              onClick={() => handleNavigation('/scan-qr')}
-              className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
-            >
-              <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                <QrCode className="h-7 w-7" />
-              </div>
-              <div className="text-center">
-                <p className="text-base font-black text-slate-800 leading-tight">Scan<br/>HR Code</p>
-                <p className="text-[10px] font-medium text-slate-400 mt-1">Quick scan</p>
-              </div>
-            </button>
+            {visibleActions['scan-qr'] && (
+              <button
+                onClick={() => handleNavigation('/scan-qr')}
+                className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
+              >
+                <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                  <QrCode className="h-7 w-7" />
+                </div>
+                <div className="text-center">
+                  <p className="text-base font-black text-slate-800 leading-tight">Scan<br/>HR Code</p>
+                  <p className="text-[10px] font-medium text-slate-400 mt-1">Quick scan</p>
+                </div>
+              </button>
+            )}
 
             {/* Direct Sale */}
-            <button
-              onClick={() => handleNavigation('/transaction-history')}
-              className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
-            >
-              <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                <Zap className="h-7 w-7" />
-              </div>
-              <div className="text-center">
-                <p className="text-base font-black text-slate-800 leading-tight">Direct<br/>Sale</p>
-                <p className="text-[10px] font-medium text-slate-400 mt-1">Instant checkout</p>
-              </div>
-            </button>
+            {visibleActions['direct-sale'] && (
+              <button
+                onClick={() => handleNavigation('/transaction-history')}
+                className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
+              >
+                <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                  <Zap className="h-7 w-7" />
+                </div>
+                <div className="text-center">
+                  <p className="text-base font-black text-slate-800 leading-tight">Direct<br/>Sale</p>
+                  <p className="text-[10px] font-medium text-slate-400 mt-1">Instant checkout</p>
+                </div>
+              </button>
+            )}
           </div>
 
           <div className="mt-10 mb-2">
