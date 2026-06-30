@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +18,10 @@ function OrderByTableContent() {
   const [guestCount, setGuestCount] = useState(1);
   const [isGuestSheetOpen, setIsGuestSheetOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
+  const lastScrollY = useRef(0);
+  
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -28,6 +32,19 @@ function OrderByTableContent() {
     { id: 1, label: "TABLE" },
     { id: 2, label: "STATUS" },
   ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPos = window.scrollY || document.documentElement.scrollTop;
+      setIsScrolled(scrollPos > 40);
+      if (Math.abs(scrollPos - lastScrollY.current) > 5) {
+        setScrollDirection(scrollPos > lastScrollY.current ? 'down' : 'up');
+      }
+      lastScrollY.current = scrollPos > 0 ? scrollPos : 0;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const suggestions = useMemo(() => {
     if (!tableNumber.trim()) return [];
@@ -87,10 +104,15 @@ function OrderByTableContent() {
           <h1 className="text-xl font-bold mx-auto uppercase text-slate-900">Identify Table</h1>
           <div className="w-10"></div>
         </div>
-        <OrderStepper 
-          currentStep={1} 
-          steps={isSettlementMode ? settlementSteps : undefined} 
-        />
+        <div className={cn(
+          "transition-all duration-300 ease-in-out",
+          (isScrolled && scrollDirection === 'down') ? "max-h-0 opacity-0 overflow-hidden" : "max-h-20 opacity-100"
+        )}>
+          <OrderStepper 
+            currentStep={1} 
+            steps={isSettlementMode ? settlementSteps : undefined} 
+          />
+        </div>
       </header>
 
       <main className={cn(

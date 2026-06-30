@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
@@ -10,11 +10,28 @@ import { ArrowLeft, ShoppingBag, Loader2, Info, MessageSquareText, Home } from '
 import Link from 'next/link';
 import { QuantitySelector } from '@/components/quantity-selector';
 import { OrderStepper } from '@/components/order-stepper';
+import { cn } from '@/lib/utils';
 
 export default function CheckoutPage() {
   const { cartItems, updateQuantity, subtotal, getDisplayPrice, orderInstructions } = useCart();
   const [isPlacing, setIsPlacing] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
+  const lastScrollY = useRef(0);
   const router = useRouter();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPos = window.scrollY || document.documentElement.scrollTop;
+      setIsScrolled(scrollPos > 40);
+      if (Math.abs(scrollPos - lastScrollY.current) > 5) {
+        setScrollDirection(scrollPos > lastScrollY.current ? 'down' : 'up');
+      }
+      lastScrollY.current = scrollPos > 0 ? scrollPos : 0;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const vatRate = 0.05;
   const vatAmount = subtotal * vatRate;
@@ -55,7 +72,12 @@ export default function CheckoutPage() {
               </Button>
             </Link>
           </div>
-          <OrderStepper currentStep={3} />
+          <div className={cn(
+            "transition-all duration-300 ease-in-out",
+            (isScrolled && scrollDirection === 'down') ? "max-h-0 opacity-0 overflow-hidden" : "max-h-20 opacity-100"
+          )}>
+            <OrderStepper currentStep={3} />
+          </div>
         </header>
 
         {cartItems.length === 0 ? (

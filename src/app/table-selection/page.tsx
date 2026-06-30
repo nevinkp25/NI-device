@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, Suspense } from 'react';
+import { useState, useMemo, Suspense, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +28,9 @@ function TableSelectionContent() {
   const [isGuestSheetOpen, setIsGuestSheetOpen] = useState(false);
   const [isFloorSheetOpen, setIsFloorSheetOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
+  const lastScrollY = useRef(0);
 
   const isSettlementMode = searchParams.get('mode') === 'settlement';
 
@@ -35,6 +38,19 @@ function TableSelectionContent() {
     { id: 1, label: "TABLE" },
     { id: 2, label: "ORDER STATUS" },
   ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPos = window.scrollY || document.documentElement.scrollTop;
+      setIsScrolled(scrollPos > 40);
+      if (Math.abs(scrollPos - lastScrollY.current) > 5) {
+        setScrollDirection(scrollPos > lastScrollY.current ? 'down' : 'up');
+      }
+      lastScrollY.current = scrollPos > 0 ? scrollPos : 0;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const tables = TABLES_BY_FLOOR[selectedFloor] || [];
   
@@ -81,10 +97,15 @@ function TableSelectionContent() {
           <div className="w-10"></div>
         </header>
         
-        <OrderStepper 
-          currentStep={1} 
-          steps={isSettlementMode ? settlementSteps : undefined}
-        />
+        <div className={cn(
+          "transition-all duration-300 ease-in-out",
+          (isScrolled && scrollDirection === 'down') ? "max-h-0 opacity-0 overflow-hidden" : "max-h-20 opacity-100"
+        )}>
+          <OrderStepper 
+            currentStep={1} 
+            steps={isSettlementMode ? settlementSteps : undefined}
+          />
+        </div>
         
         <div className="px-4 py-3 space-y-3">
           <div className="flex items-center gap-3">
