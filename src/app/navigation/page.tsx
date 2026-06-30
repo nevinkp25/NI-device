@@ -30,7 +30,7 @@ import { useToast } from '@/hooks/use-toast';
 const QUICK_ACTIONS = [
   { id: 'new-order', label: 'New Order', sub: 'create new order', icon: FileText, path: '/order-by-table' },
   { id: 'table-settlement', label: 'Table Settlement', sub: 'Close & pay', icon: LayoutGrid, path: '/order-by-table?mode=settlement' },
-  { id: 'scan-qr', label: 'Scan HR Code', sub: 'Quick scan', icon: QrCode, path: '/scan-qr' },
+  { id: 'scan-qr', label: 'Scan QR Code', sub: 'Scan & Pay', icon: QrCode, path: '/scan-qr' },
   { id: 'direct-sale', label: 'Direct Sale', sub: 'Instant checkout', icon: Zap, path: '/transaction-history' },
 ];
 
