@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -76,6 +76,21 @@ export default function NavigationPage() {
   const { toast } = useToast();
   const [isAdminLogoutDialogOpen, setIsAdminLogoutDialogOpen] = useState(false);
   const [authId, setAuthId] = useState('');
+  const [restaurantName, setRestaurantName] = useState('BRANCH TERMINAL');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const slug = localStorage.getItem('restaurantSlug');
+      if (slug) {
+        // Replace hyphens with spaces and capitalize words for display
+        const formatted = slug
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        setRestaurantName(formatted);
+      }
+    }
+  }, []);
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -121,7 +136,7 @@ export default function NavigationPage() {
       {/* Header */}
       <header className="px-8 pt-10 pb-6 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Bella Cucina</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight">{restaurantName}</h1>
           <p className="text-white/60 text-sm mt-1">POS Terminal Dashboard</p>
         </div>
 
