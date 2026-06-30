@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
@@ -181,7 +180,7 @@ function OrderStatusContent() {
           </Button>
         </Link>
         <div className="flex flex-col items-center">
-          <h1 className="text-sm font-bold uppercase text-slate-900">Table {tableNumber} Account</h1>
+          <h1 className="text-sm font-bold uppercase text-slate-900">Table {tableNumber}</h1>
         </div>
         <div className="flex items-center gap-1">
           <Link href="/navigation">
