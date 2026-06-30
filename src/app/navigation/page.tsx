@@ -8,12 +8,10 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { 
   Menu, 
-  ShieldAlert, 
-  FileBarChart, 
-  RefreshCcw, 
-  History, 
-  Settings, 
-  DollarSign, 
+  FileText, 
+  LayoutGrid, 
+  QrCode, 
+  Zap,
   LogOut 
 } from 'lucide-react';
 import {
@@ -24,65 +22,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { useToast } from '@/hooks/use-toast';
-
-// Bespoke, polished SVG Icons
-const IconOrderMenu = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4 19.5C4 18.1193 5.11929 17 6.5 17H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M6.5 2H20V22H6.5C5.11929 22 4 20.8807 4 19.5V4.5C4 3.11929 5.11929 2 6.5 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M10 7H16M10 11H16M10 15H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const IconPayByTable = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4 21L7 5H17L20 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M7 5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <text x="12" y="16" fontSize="7.5" textAnchor="middle" fill="currentColor" stroke="none" fontWeight="800" fontFamily="inherit">#</text>
-  </svg>
-);
-
-const IconScanQR = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M3 7V5C3 3.89543 3.89543 3 5 3H7M17 3H19C20.1046 3 21 3.89543 21 5V7M21 17V19C21 20.1046 20.1046 21 19 21H17M7 21H5C3.89543 21 3 20.1046 3 19V17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <rect x="7" y="7" width="3" height="3" fill="currentColor" rx="0.5"/>
-    <rect x="14" y="7" width="3" height="3" fill="currentColor" rx="0.5"/>
-    <rect x="14" y="14" width="3" height="3" fill="currentColor" rx="0.5"/>
-    <rect x="7" y="14" width="3" height="3" fill="currentColor" rx="0.5"/>
-  </svg>
-);
-
-const IconManualSale = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4 10H20V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V10Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M8 10V6C8 3.79086 9.79086 2 12 2C14.2091 2 16 3.79086 16 6V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <rect x="15" y="13" width="2" height="4" fill="currentColor" rx="0.2"/>
-    <path d="M7 14H12M7 17H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
 
 export default function NavigationPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [isAdminLogoutDialogOpen, setIsAdminLogoutDialogOpen] = useState(false);
-  const [authId, setAuthId] = useState('');
   const [restaurantName, setRestaurantName] = useState('BRANCH TERMINAL');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const slug = localStorage.getItem('restaurantSlug');
       if (slug) {
-        // Replace hyphens with spaces and capitalize words for display
+        // Remove hyphens and capitalize words for display
         const formatted = slug
           .split('-')
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -96,48 +47,25 @@ export default function NavigationPage() {
     router.push(path);
   };
 
-  const handleSyncData = () => {
-    toast({
-      title: "Syncing Terminal",
-      description: "Fetching latest menu and restaurant configuration...",
-    });
-  };
-
-  const handleZReport = () => {
-    toast({
-      title: "Generating Z-Report",
-      description: "Calculating daily totals and shift data...",
-    });
-  };
-
-  const handleAdminLogout = () => {
-    if (!authId) {
-      toast({
-        variant: 'destructive',
-        title: "Authorization Required",
-        description: "Please enter a valid Staff ID to authorize logout.",
-      });
-      return;
-    }
-
+  const handleLogout = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('restaurantSlug');
       localStorage.removeItem('staffId');
     }
     toast({
-      title: "Terminal Reset",
-      description: "Returning to restaurant configuration...",
+      title: "Terminal Session Ended",
+      description: "Successfully logged out.",
     });
     router.push('/');
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0051B5]">
+    <div className="flex flex-col min-h-screen bg-[#0051B5] overflow-hidden">
       {/* Header */}
-      <header className="px-8 pt-10 pb-6 flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">{restaurantName}</h1>
-          <p className="text-white/60 text-sm mt-1">POS Terminal Dashboard</p>
+      <header className="px-8 pt-12 pb-10 flex items-start justify-between">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-bold text-white tracking-tight leading-none">{restaurantName}</h1>
+          <p className="text-white/70 text-sm font-medium">POS Terminal Dashboard</p>
         </div>
 
         <DropdownMenu>
@@ -147,158 +75,107 @@ export default function NavigationPage() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-64 rounded-2xl p-2 border-slate-200 shadow-2xl">
-            <DropdownMenuLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-3 py-2">System Controls</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-3 py-2">Quick Controls</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => toast({ title: "Supervisor Access", description: "Credential override required." })}>
-              <ShieldAlert className="h-4 w-4 text-amber-600" />
-              <span className="font-bold text-slate-700 text-sm">Supervisor Menu</span>
-            </DropdownMenuItem>
-            
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={handleZReport}>
-              <FileBarChart className="h-4 w-4 text-slate-600" />
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => toast({ title: "Z-Report", description: "Calculating daily totals..." })}>
+              <FileText className="h-4 w-4 text-slate-600" />
               <span className="font-bold text-slate-700 text-sm">Z-Report</span>
             </DropdownMenuItem>
-
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={handleSyncData}>
-              <RefreshCcw className="h-4 w-4 text-blue-600" />
-              <span className="font-bold text-slate-700 text-sm">Re-sync Restaurant Data</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => router.push('/transaction-history')}>
-              <History className="h-4 w-4 text-slate-600" />
-              <span className="font-bold text-slate-700 text-sm">History</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => router.push('/settings')}>
-              <Settings className="h-4 w-4 text-slate-600" />
-              <span className="font-bold text-slate-700 text-sm">Settings</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer" onClick={() => router.push('/transaction-history')}>
-              <DollarSign className="h-4 w-4 text-green-600" />
-              <span className="font-bold text-slate-700 text-sm">Manual Sale</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-700" onClick={() => setIsAdminLogoutDialogOpen(true)}>
+            <DropdownMenuItem className="rounded-xl h-12 gap-3 cursor-pointer text-red-600" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
-              <span className="font-bold text-sm">Admin Logout</span>
+              <span className="font-bold text-sm">Logout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </header>
 
-      {/* Main Content Card */}
-      <main className="flex-grow px-4 pb-8">
-        <div className="bg-white rounded-[2.5rem] p-6 shadow-2xl flex flex-col gap-6 min-h-[500px]">
+      {/* Main Content White Card */}
+      <main className="flex-grow flex flex-col pt-4">
+        <div className="bg-white rounded-t-[3.5rem] flex-grow p-8 shadow-[0_-20px_50px_rgba(0,0,0,0.1)] flex flex-col">
+          <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 pl-1">Quick Actions</h2>
+          
           <div className="grid grid-cols-2 gap-4 auto-rows-fr">
+            {/* New Order */}
             <button
               onClick={() => handleNavigation('/order-by-table')}
-              className="flex flex-col items-center justify-center rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group h-full w-full"
+              className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
             >
-              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
-                <IconOrderMenu />
+              <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                <FileText className="h-7 w-7" />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">New Order</span>
+              <div className="text-center">
+                <p className="text-base font-black text-slate-800 leading-tight">New<br/>Order</p>
+                <p className="text-[10px] font-medium text-slate-400 mt-1">Create invoice</p>
+              </div>
             </button>
 
+            {/* Table Settlement */}
             <button
               onClick={() => handleNavigation('/order-by-table?mode=settlement')}
-              className="flex flex-col items-center justify-center rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group h-full w-full"
+              className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
             >
-              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
-                <IconPayByTable />
+              <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                <LayoutGrid className="h-7 w-7" />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Table Settlement</span>
+              <div className="text-center">
+                <p className="text-base font-black text-slate-800 leading-tight">Table<br/>Settlement</p>
+                <p className="text-[10px] font-medium text-slate-400 mt-1">Close & pay</p>
+              </div>
             </button>
 
+            {/* Scan HR Code */}
             <button
               onClick={() => handleNavigation('/scan-qr')}
-              className="flex flex-col items-center justify-center rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group h-full w-full"
+              className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15px_40px_rgba(0,0,0,0.04)] group"
             >
-              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
-                <IconScanQR />
+              <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                <QrCode className="h-7 w-7" />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Scan QR</span>
+              <div className="text-center">
+                <p className="text-base font-black text-slate-800 leading-tight">Scan<br/>HR Code</p>
+                <p className="text-[10px] font-medium text-slate-400 mt-1">Quick scan</p>
+              </div>
             </button>
 
+            {/* Direct Sale */}
             <button
               onClick={() => handleNavigation('/transaction-history')}
-              className="flex flex-col items-center justify-center rounded-[2rem] border-2 border-slate-50 bg-white hover:bg-slate-50 active:scale-[0.96] transition-all duration-200 gap-4 py-8 shadow-sm group h-full w-full"
+              className="flex flex-col items-center justify-center rounded-[2.5rem] bg-white border border-slate-50 hover:bg-slate-50 active:scale-[0.96] transition-all duration-300 gap-3 py-10 shadow-[0_15_40px_rgba(0,0,0,0.04)] group"
             >
-              <div className="text-[#0051B5] group-hover:scale-110 transition-transform duration-300">
-                <IconManualSale />
+              <div className="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-[#0051B5] group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                <Zap className="h-7 w-7" />
               </div>
-              <span className="text-base font-black text-slate-800 uppercase tracking-tight text-center px-2">Direct Sale</span>
+              <div className="text-center">
+                <p className="text-base font-black text-slate-800 leading-tight">Direct<br/>Sale</p>
+                <p className="text-[10px] font-medium text-slate-400 mt-1">Instant checkout</p>
+              </div>
             </button>
           </div>
 
-          <div className="mt-auto">
-            <Link href="/login" passHref className="w-full">
-              <Button 
-                variant="outline" 
-                className="w-full h-20 text-xl font-black border border-[#FF0000] text-[#FF0000] rounded-[1.5rem] bg-white hover:bg-red-50 hover:text-red-700 transition-all active:scale-[0.98] uppercase tracking-tighter"
-              >
-                Logout
-              </Button>
-            </Link>
+          <div className="mt-10 mb-2">
+            <Button 
+              onClick={handleLogout}
+              variant="outline" 
+              className="w-full h-16 text-sm font-black border-2 border-red-100 text-red-600 rounded-2xl bg-white hover:bg-red-50 hover:border-red-200 transition-all active:scale-[0.98] uppercase tracking-widest flex items-center justify-center gap-3"
+            >
+              <LogOut className="h-5 w-5" />
+              <span>Logout</span>
+            </Button>
           </div>
         </div>
       </main>
 
-      {/* Admin Logout Authorization Dialog */}
-      <Dialog open={isAdminLogoutDialogOpen} onOpenChange={setIsAdminLogoutDialogOpen}>
-        <DialogContent className="rounded-3xl p-8 max-w-[340px] z-[100]">
-          <DialogHeader className="items-center text-center space-y-3">
-            <div className="h-16 w-16 bg-red-50 rounded-full flex items-center justify-center mb-2">
-              <ShieldAlert className="h-8 w-8 text-red-600" />
-            </div>
-            <DialogTitle className="text-xl font-black uppercase tracking-tight">Admin Authorization</DialogTitle>
-            <DialogDescription className="text-xs font-medium text-slate-500 leading-relaxed">
-              Enter Staff ID to authorize terminal reset and branch logout.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-6">
-            <Input
-              type="number"
-              placeholder="0000"
-              value={authId}
-              onChange={(e) => setAuthId(e.target.value)}
-              className="text-center text-2xl h-16 font-black border-2 border-slate-200 rounded-2xl focus-visible:ring-red-500/20"
-              autoFocus
-            />
+      {/* Footer Branding Area */}
+      <div className="bg-white py-12 flex flex-col items-center justify-end">
+        <div className="flex flex-col items-center">
+          <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] mb-1">Powered by</p>
+          <div className="flex items-center gap-1">
+            <span className="text-[#0051B5] text-4xl font-black tracking-tighter">network</span>
+            <span className="text-[#FF2E56] text-4xl font-black -ml-1 select-none leading-none">&gt;</span>
           </div>
-          <DialogFooter className="flex flex-col gap-2">
-            <Button 
-              onClick={handleAdminLogout}
-              className="w-full h-14 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl uppercase tracking-tight transition-all active:scale-[0.98]"
-            >
-              Authorize Logout
-            </Button>
-            <Button 
-              variant="ghost" 
-              onClick={() => setIsAdminLogoutDialogOpen(false)}
-              className="w-full h-10 text-slate-400 font-bold uppercase text-[10px] tracking-widest"
-            >
-              Cancel
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Footer Branding */}
-      <footer className="pb-10 flex flex-col items-center gap-1 opacity-80">
-        <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em]">Powered by</p>
-        <div className="flex items-center gap-1">
-          <span className="text-white text-3xl font-black tracking-tighter">network</span>
-          <span className="text-[#FF0000] text-3xl font-black -ml-1 select-none">&gt;</span>
+          <p className="text-[#0051B5] text-[11px] font-black uppercase tracking-[0.5em] -mt-1 pl-1">dine</p>
         </div>
-        <p className="text-white text-[10px] font-black uppercase tracking-[0.4em] -mt-1 opacity-60">dine</p>
-      </footer>
+      </div>
     </div>
   );
 }
