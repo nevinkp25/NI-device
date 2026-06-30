@@ -166,18 +166,18 @@ function TableSelectionContent() {
               key={table.id}
               onClick={() => handleTableClick(table)}
               className={cn(
-                "h-24 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 shadow-sm",
+                "h-24 rounded-[2rem] border-2 transition-all flex flex-col items-center justify-center gap-1 shadow-sm uppercase font-black tracking-tight",
                 table.isOccupied 
-                  ? "bg-destructive/10 text-destructive border-destructive/20"
-                  : "bg-white text-primary border-primary/5 active:bg-primary active:text-white"
+                  ? "bg-red-50/50 text-red-600 border-red-100 hover:bg-red-100/50 active:scale-95"
+                  : "bg-white text-slate-900 border-slate-100 hover:border-primary/30 hover:bg-blue-50/30 active:bg-primary/5 active:scale-95"
               )}
             >
-              <span className="text-xl font-bold uppercase">{table.id}</span>
+              <span className="text-xl">{table.id}</span>
               <span className={cn(
-                "text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border",
+                "text-[8px] font-bold uppercase tracking-[0.15em] px-2.5 py-0.5 rounded-full border shadow-sm",
                 table.isOccupied
-                  ? "bg-destructive/20 text-destructive border-destructive/30"
-                  : "bg-green-50 text-green-600 border-green-200"
+                  ? "bg-white text-red-600 border-red-200"
+                  : "bg-white text-emerald-600 border-emerald-100"
               )}>
                 {table.isOccupied ? 'Occupied' : 'Available'}
               </span>

@@ -158,24 +158,24 @@ function OrderByTableContent() {
                           type="button"
                           onClick={() => handleSuggestionClick(table)}
                           className={cn(
-                            "flex flex-col items-center justify-center p-4 rounded-2xl transition-all hover:bg-slate-50 active:scale-[0.98] border-2 text-center",
+                            "flex flex-col items-center justify-center p-4 rounded-3xl transition-all active:scale-[0.95] border-2 text-center",
                             table.isOccupied 
-                              ? "bg-red-50/30 border-red-100" 
-                              : "bg-white border-slate-100"
+                              ? "bg-red-50/50 border-red-100 text-red-600" 
+                              : "bg-white border-slate-100 hover:border-primary/30 hover:bg-blue-50/30 text-slate-900"
                           )}
                         >
                           <div className="flex items-center gap-2 mb-1.5">
                             <div className={cn(
-                              "h-2 w-2 rounded-full shadow-sm",
-                              table.isOccupied ? "bg-red-500" : "bg-green-500"
+                              "h-1.5 w-1.5 rounded-full shadow-sm",
+                              table.isOccupied ? "bg-red-500" : "bg-emerald-500"
                             )} />
-                            <span className="font-black text-sm text-slate-900 uppercase">Table {table.id}</span>
+                            <span className="font-black text-sm uppercase">Table {table.id}</span>
                           </div>
                           <span className={cn(
-                            "text-xs font-black uppercase px-2 py-0.5 rounded-md border",
+                            "text-[8px] font-black uppercase px-2 py-0.5 rounded-md border shadow-sm bg-white",
                             table.isOccupied 
-                              ? "bg-red-50 text-red-600 border-red-100" 
-                              : "bg-green-50 text-green-600 border-green-100"
+                              ? "text-red-600 border-red-100" 
+                              : "text-emerald-600 border-emerald-100"
                           )}>
                             {table.isOccupied ? 'Occupied' : 'Available'}
                           </span>
