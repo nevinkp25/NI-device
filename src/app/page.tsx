@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -113,11 +112,6 @@ export default function RestaurantEntryPage() {
             </defs>
           </svg>
         </div>
-        <div className="flex items-center justify-center gap-3 mt-3">
-            <span className="h-px w-8 bg-white/20"></span>
-            <p className="text-xs font-bold uppercase tracking-[0.4em] opacity-70">Dine Terminal</p>
-            <span className="h-px w-8 bg-white/20"></span>
-        </div>
       </div>
       
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-8">
@@ -170,4 +164,3 @@ export default function RestaurantEntryPage() {
     </div>
   );
 }
-
