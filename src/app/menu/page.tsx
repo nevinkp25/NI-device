@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, Suspense, useMemo, useEffect, useRef } from 'react';
@@ -32,7 +31,6 @@ function MenuHeader({ isScrolled, scrollDirection }: { isScrolled: boolean, scro
             <h1 className="text-sm font-black flex items-center gap-2 text-slate-900 tracking-tight uppercase">
             {tableNumber ? `Table ${tableNumber}` : 'Current Order'}
             </h1>
-            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Branch Terminal v2.4</p>
         </div>
         <Link href="/navigation" passHref>
           <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-100 text-slate-900 border-2 border-primary/20 hover:bg-slate-200 shadow-sm">
