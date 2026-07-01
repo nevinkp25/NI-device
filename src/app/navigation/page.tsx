@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -88,7 +87,7 @@ export default function NavigationPage() {
       <header className="px-8 pt-12 pb-10 flex items-start justify-between">
         <div className="space-y-1">
           <h1 className="text-4xl font-bold text-white tracking-tight leading-none">{restaurantName}</h1>
-          <p className="text-white/70 text-sm font-medium">POS Terminal Dashboard</p>
+          <p className="text-white/70 text-sm font-medium">Welcome Back David R.!</p>
         </div>
 
         <DropdownMenu>
